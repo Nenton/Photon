@@ -34,6 +34,16 @@ public class App extends Application {
     private static RootActivity.RootComponent mRootActivityRootComponent;
 
     @Override
+    public Object getSystemService(String name) {
+        // т. к. выполняем инструментальный тест выполняем так иначе не найдет mortarScope
+        if (mMortarScope != null) {
+            return mMortarScope.hasService(name) ? mMortarScope.getService(name) : super.getSystemService(name);
+        } else {
+            return super.getSystemService(name);
+        }
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         Realm.init(this);

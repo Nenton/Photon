@@ -10,6 +10,12 @@ import io.realm.annotations.PrimaryKey;
 
 public class PhotocardRealm extends RealmObject {
 
+    public PhotocardRealm(String photo, int views, int favorits) {
+        this.photo = photo;
+        this.views = views;
+        this.favorits = favorits;
+    }
+
     @PrimaryKey
     private String id;
     private String owner;

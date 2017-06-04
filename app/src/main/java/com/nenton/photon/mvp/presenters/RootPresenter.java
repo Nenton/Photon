@@ -39,8 +39,6 @@ public class RootPresenter extends Presenter<IRootView> {
     private static int DEFAULT_MODE = 0;
     private static int TAB_MODE = 1;
 
-    FloatingActionButton mButton;
-
     @Override
     protected BundleService extractBundleService(IRootView view) {
         return BundleService.getBundleService((RootActivity) view);

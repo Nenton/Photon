@@ -1,25 +1,32 @@
 package com.nenton.photon.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
+import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.components.AppComponent;
 import com.nenton.photon.di.modules.PicassoCacheModule;
 import com.nenton.photon.di.modules.RootModule;
 import com.nenton.photon.di.sqopes.RootScope;
+import com.nenton.photon.flow.TreeKeyDispatcher;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.mvp.views.IActionBarView;
 import com.nenton.photon.mvp.views.IRootView;
+import com.nenton.photon.mvp.views.IView;
+import com.nenton.photon.ui.screens.main.MainScreen;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,6 +34,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import flow.Flow;
+import mortar.MortarScope;
+import mortar.bundler.BundleServiceRunner;
 import rx.subjects.PublishSubject;
 
 public class RootActivity extends AppCompatActivity implements IRootView, IActionBarView{
@@ -44,8 +55,40 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
+        BundleServiceRunner.getBundleServiceRunner(this).onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+        RootComponent rootComponent = DaggerService.getDaggerComponent(this);
+        rootComponent.inject(this);
+        mRootPresenter.takeView(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mRootPresenter.dropView(this);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        BundleServiceRunner.getBundleServiceRunner(this).onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = Flow.configure(newBase, this)
+                .defaultKey(new MainScreen())
+                .dispatcher(new TreeKeyDispatcher(this))
+                .install();
+        super.attachBaseContext(newBase);
+    }
+
+    @Override
+    public Object getSystemService(String name) {
+        MortarScope rootActivityScope = MortarScope.findChild(getApplicationContext(), RootActivity.class.getName());
+        return rootActivityScope.hasService(name) ? rootActivityScope.getService(name) : super.getSystemService(name);
     }
 
     @Override
@@ -96,6 +139,24 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     @Override
     public void removeTabLayout() {
 
+    }
+
+    @Nullable
+    @Override
+    public IView getCurrentScreen() {
+        return (IView) mFrameContainer.getChildAt(0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getCurrentScreen() != null && !getCurrentScreen().viewOnBackPressed() && !Flow.get(this).goBack()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Выход")
+                    .setPositiveButton("Да", (dialog, which) -> super.onBackPressed())
+                    .setNegativeButton("Нет", (dialog, which) -> dialog.cancel())
+                    .setMessage("Вы действительно хотите выйти?")
+                    .show();
+        }
     }
 
     public PublishSubject<ActivityResultDto> getActivityResultSubject() {
