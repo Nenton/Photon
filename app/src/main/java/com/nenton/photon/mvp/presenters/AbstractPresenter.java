@@ -3,8 +3,7 @@ package com.nenton.photon.mvp.presenters;
 import android.os.Bundle;
 import android.util.Log;
 
-
-import com.nenton.photon.mvp.models.AbstractModel;
+import com.nenton.photon.mvp.model.AbstractModel;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IRootView;
 
@@ -18,7 +17,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
 
 public abstract class AbstractPresenter<V extends AbstractView, M extends AbstractModel> extends ViewPresenter<V> {
 
@@ -44,6 +42,7 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
         super.onLoad(savedInstanceState);
         mCompSubs = new CompositeSubscription();
         initActionBar();
+//        initFab();
     }
 
     @Override
@@ -55,6 +54,8 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
     }
 
     protected abstract void initActionBar();
+
+    protected abstract void initFab();
 
     protected abstract void initDagger(MortarScope scope);
 

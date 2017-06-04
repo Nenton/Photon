@@ -1,12 +1,7 @@
 package com.nenton.photon.data.managers;
 
-import android.support.annotation.Nullable;
-import android.util.Log;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nenton.photon.utils.App;
-
-import rx.subjects.BehaviorSubject;
 
 /**
  * Created by serge on 20.05.2017.

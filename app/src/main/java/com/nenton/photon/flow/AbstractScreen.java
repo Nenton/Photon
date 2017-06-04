@@ -2,7 +2,6 @@ package com.nenton.photon.flow;
 
 import android.util.Log;
 
-
 import com.nenton.photon.mortar.ScreenScoper;
 
 import flow.ClassKey;

@@ -1,5 +1,4 @@
 package com.nenton.photon.di.modules;
-
 import com.birbit.android.jobqueue.JobManager;
 import com.birbit.android.jobqueue.config.Configuration;
 import com.nenton.photon.data.managers.DataManager;

@@ -49,8 +49,8 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         State outState = traversal.origin == null ? null : traversal.getState(traversal.origin.top());
         outKey = outState == null ? null : outState.getKey();
 
-        //mRootFrame = (FrameLayout) mActivity.findViewById(R.id.root_frame);
-        // TODO: 02.06.2017 сделать
+        mRootFrame = (FrameLayout) mActivity.findViewById(R.id.root_frame);
+
         if (inKey.equals(outKey)) {
             callback.onTraversalCompleted();
             return;
@@ -66,7 +66,7 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
     }
 
     @Override
-    public void changeKey(@Nullable State outgoingState, @NonNull State incomingState, @NonNull final Direction direction, @NonNull Map<Object, Context> incomingContexts, @NonNull final TraversalCallback callback) {
+    public void changeKey(@Nullable State outgoingState, @NonNull State incomingState, @NonNull Direction direction, @NonNull Map<Object, Context> incomingContexts, @NonNull TraversalCallback callback) {
         Context context = incomingContexts.get(inKey);
 
         //save prev View
@@ -85,8 +85,8 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
             int layout = screen.value();
 
             LayoutInflater inflater = LayoutInflater.from(context);
-            final View newView = inflater.inflate(layout, mRootFrame, false);
-            final View oldView = mRootFrame.getChildAt(0);
+            View newView = inflater.inflate(layout, mRootFrame, false);
+            View oldView = mRootFrame.getChildAt(0);
             // restore state to new view
             incomingState.restore(newView);
 
@@ -108,7 +108,7 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         }
     }
 
-    private void runAnimation(final FrameLayout container, final View from, View to, Direction direction, final TraversalCallback callback) {
+    private void runAnimation(FrameLayout container, View from, View to, Direction direction, TraversalCallback callback) {
 
         Animator animator = createAnimation(from, to, direction);
         animator.addListener(new AnimatorListenerAdapter() {

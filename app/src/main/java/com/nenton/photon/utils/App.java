@@ -2,6 +2,7 @@ package com.nenton.photon.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -33,16 +34,6 @@ public class App extends Application {
     private static RootActivity.RootComponent mRootActivityRootComponent;
 
     @Override
-    public Object getSystemService(String name) {
-        // т. к. выполняем инструментальный тест выполняем так иначе не найдет mortarScope
-        if (mMortarScope != null) {
-            return mMortarScope.hasService(name) ? mMortarScope.getService(name) : super.getSystemService(name);
-        } else {
-            return super.getSystemService(name);
-        }
-    }
-
-    @Override
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
@@ -63,6 +54,7 @@ public class App extends Application {
 
         ScreenScoper.registerScope(mMortarScope);
         ScreenScoper.registerScope(mRootActivityScope);
+
     }
 
     private void createRootActivityComponent() {
@@ -78,7 +70,6 @@ public class App extends Application {
                 .appModule(new AppModule(getApplicationContext()))
                 .build();
     }
-
 
     public static Context getContext() {
         return sContext;

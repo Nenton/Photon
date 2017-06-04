@@ -1,5 +1,4 @@
-package com.nenton.photon.mvp.models;
-
+package com.nenton.photon.mvp.model;
 
 import com.birbit.android.jobqueue.JobManager;
 import com.nenton.photon.data.managers.DataManager;
@@ -7,6 +6,7 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.components.DaggerModelComponent;
 import com.nenton.photon.di.components.ModelComponent;
 import com.nenton.photon.di.modules.ModelModule;
+
 
 import javax.inject.Inject;
 
@@ -35,6 +35,4 @@ public abstract class AbstractModel {
                 .modelModule(new ModelModule())
                 .build();
     }
-
-
 }

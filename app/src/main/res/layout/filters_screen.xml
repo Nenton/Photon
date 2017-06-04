@@ -118,6 +118,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_red_24dp"
                 />
 
             <TextView
@@ -131,6 +132,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_orange_24dp"
                 />
 
             <TextView
@@ -144,6 +146,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_yellow_24dp"
                 />
 
             <TextView
@@ -157,6 +160,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_green_24dp"
                 />
 
             <TextView
@@ -170,6 +174,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_light_blue_24dp"
                 />
 
             <TextView
@@ -187,6 +192,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_dark_blue_24dp"
                 />
 
             <TextView
@@ -200,6 +206,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_purple_24dp"
                 />
 
             <TextView
@@ -213,6 +220,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_brown_24dp"
                 />
 
             <TextView
@@ -226,6 +234,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_black_24dp"
                 />
 
             <TextView
@@ -239,6 +248,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_color_white_24dp"
                 />
 
             <TextView
@@ -484,5 +494,6 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Найти"/>
 </LinearLayout>

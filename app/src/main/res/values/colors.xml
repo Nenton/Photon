@@ -4,4 +4,26 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
+
+    <color name="filterRed">#f44336</color>
+    <color name="filterLightBlue">#2095f2</color>
+    <color name="filterDarkBlue">#3e50b4</color>
+    <color name="filterOrange">#fe9700</color>
+    <color name="filterYellow">#fec006</color>
+    <color name="filterGreen">#4bae4f</color>
+    <color name="filterPurple">#9b26af</color>
+    <color name="filterBrown">#785447</color>
+    <color name="filterBlack">#000000</color>
+    <color name="filterWhite">#ffffff</color>
+
+    <color name="filterRedT">#80f44336</color>
+    <color name="filterLightBlueT">#802095f2</color>
+    <color name="filterDarkBlueT">#803e50b4</color>
+    <color name="filterOrangeT">#80fe9700</color>
+    <color name="filterYellowT">#80fec006</color>
+    <color name="filterGreenT">#804bae4f</color>
+    <color name="filterPurpleT">#809b26af</color>
+    <color name="filterBrownT">#80785447</color>
+    <color name="filterBlackT">#80000000</color>
+    <color name="filterWhiteT">#80ffffff</color>
 </resources>

@@ -2,7 +2,7 @@ package com.nenton.photon.di.components;
 
 
 import com.nenton.photon.di.modules.ModelModule;
-import com.nenton.photon.mvp.models.AbstractModel;
+import com.nenton.photon.mvp.model.AbstractModel;
 
 import javax.inject.Singleton;
 

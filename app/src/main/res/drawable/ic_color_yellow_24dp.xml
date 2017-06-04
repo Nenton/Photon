@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/filterBlack"/>
+                    <size android:width="24dp" android:height="24dp"/>
+                </shape>
+            </item>
+            <item
+                android:top="@dimen/ic_margin_color"
+                android:bottom="@dimen/ic_margin_color"
+                android:left="@dimen/ic_margin_color"
+                android:right="@dimen/ic_margin_color">
+                <shape android:shape="oval">
+                    <solid android:color="@color/filterYellow"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item >
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/filterBlackT"/>
+                    <size android:width="24dp" android:height="24dp"/>
+                </shape>
+            </item>
+            <item
+                android:top="@dimen/ic_margin_color"
+                android:bottom="@dimen/ic_margin_color"
+                android:left="@dimen/ic_margin_color"
+                android:right="@dimen/ic_margin_color">
+                <shape android:shape="oval">
+                    <solid android:color="@color/filterYellowT"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

@@ -35,7 +35,7 @@ public class ViewHelper {
         return childs;
     }
 
-    public static void waitForMeasure(final View view, final OnMeasureCallback callback) {
+    public static void waitForMeasure(View view, OnMeasureCallback callback) {
         int width = view.getWidth();
         int height = view.getHeight();
 

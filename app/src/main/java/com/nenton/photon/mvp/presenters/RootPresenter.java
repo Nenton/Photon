@@ -1,16 +1,25 @@
 package com.nenton.photon.mvp.presenters;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.fernandocejas.frodo.annotation.RxLogSubscriber;
+import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.di.DaggerService;
-import com.nenton.photon.mvp.models.AccountModel;
 import com.nenton.photon.mvp.views.IRootView;
 import com.nenton.photon.ui.activities.RootActivity;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +36,18 @@ public class RootPresenter extends Presenter<IRootView> {
 
     private PublishSubject<ActivityResultDto> mActivityResultSubject = PublishSubject.create();
 
-    @Inject
-    AccountModel mAccountModel;
-
     private static int DEFAULT_MODE = 0;
     private static int TAB_MODE = 1;
+
+    FloatingActionButton mButton;
 
     @Override
     protected BundleService extractBundleService(IRootView view) {
         return BundleService.getBundleService((RootActivity) view);
+    }
+
+    public PublishSubject<ActivityResultDto> getActivityResultSubject() {
+        return mActivityResultSubject;
     }
 
     @Override
@@ -49,6 +61,9 @@ public class RootPresenter extends Presenter<IRootView> {
         return getView();
     }
 
+    public ActionBarBuilder newActionBarBuilder() {
+        return this.new ActionBarBuilder();
+    }
 
     public boolean checkPermissionsAndRequestIfNotGranted(@NonNull String[] permissions, int requestCode) {
         boolean allGranted = true;

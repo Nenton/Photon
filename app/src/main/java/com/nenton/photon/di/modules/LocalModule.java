@@ -26,4 +26,5 @@ public class LocalModule{
     RealmManager provideRealmManager(Context context){
         return new RealmManager();
     }
+
 }

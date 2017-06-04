@@ -2,7 +2,6 @@ package com.nenton.photon.di.components;
 
 import android.content.Context;
 
-
 import com.nenton.photon.di.modules.AppModule;
 
 import dagger.Component;

@@ -1,5 +1,9 @@
 package com.nenton.photon.utils;
 
+/**
+ * Created by serge on 03.06.2017.
+ */
+
 public interface AppConfig {
     String BASE_URL = "https://skba1.mgbeta.ru/api/v1/";
 
@@ -14,6 +18,4 @@ public interface AppConfig {
     int UPDATE_DATA_INTERVAL = 30;
     int RETRY_REQUEST_COUNT = 5;
     int RETRY_REQUEST_BASE_DELAY = 500;
-    String BASE_VK_URL = "https://api.vk.com/method/";
-    String FB_BASE_URL = "https://graph.facebook.com/v2.8/";
 }

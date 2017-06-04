@@ -7,8 +7,6 @@ public class PreferencesManager {
 
     private final SharedPreferences mSharedPreferences;
 
-
-
     public SharedPreferences getSharedPreferences() {
         return mSharedPreferences;
     }
@@ -16,5 +14,4 @@ public class PreferencesManager {
     public PreferencesManager(Context context) {
         mSharedPreferences = context.getSharedPreferences("softesing", Context.MODE_PRIVATE);
     }
-
 }
