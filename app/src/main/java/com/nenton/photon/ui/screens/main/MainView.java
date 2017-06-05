@@ -5,6 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.widget.Button;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.PhotoDto;
@@ -12,12 +13,16 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IMainView;
+import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
+import com.nenton.photon.ui.screens.search_filters.search.SearchScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import flow.Flow;
 
 /**
  * Created by serge on 04.06.2017.
@@ -28,6 +33,11 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
     private MainAdapter mMainAdapter = new MainAdapter();
     @BindView(R.id.list_photos_main_rv)
     RecyclerView mRecyclerView;
+
+    @OnClick(R.id.search_btn)
+    void clickSearch(){
+        Flow.get(getContext()).set(new SearchFiltersScreen());
+    }
 
     private void initAdapter() {
         mMainAdapter.addPhoto(new PhotocardRealm("http://s1.1zoom.me/big7/635/Meat_products_Roast_343470.jpg", 56, 74));

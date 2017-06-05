@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IActionBarView {
     void setTitle(CharSequence title);
-    void setVisable(boolean visable);
+    void setVisibleToolbar(boolean visible);
     void setBackArrow(boolean enabled);
     void setMenuItem(List<MenuItemHolder> items);
     void setTabLayout(ViewPager pager);

@@ -52,7 +52,6 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         void inject(MainView view);
         void inject(MainAdapter adapter);
 
-        PhotoModel getPhotoModel();
         Picasso getPicasso();
         RootPresenter getRootPresenter();
     }
@@ -61,7 +60,6 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         protected void initActionBar() {
-
         }
 
         @Override
