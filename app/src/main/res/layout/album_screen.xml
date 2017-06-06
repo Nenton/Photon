@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/album_screen_name_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Закуски"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="Закуски"/>
+                android:text="Карты"
+                android:textColor="@color/black"/>
+
             <TextView
+                android:id="@+id/album_screen_count_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:text="9"
                 android:textColor="@color/black"
-                android:text="Карты"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="9"/>
+                android:textStyle="bold"/>
         </LinearLayout>
+
         <TextView
+            android:id="@+id/album_description"
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Разные закуски (шпажки, сендвичи, нарезки, фрукты, заготовки и тд.)"
-            android:maxLines="3"/>
+            android:layout_weight="2"
+            android:maxLines="3"
+            tools:text="Разные закуски (шпажки, сендвичи, нарезки, фрукты, заготовки и тд.)"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/album_RV"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

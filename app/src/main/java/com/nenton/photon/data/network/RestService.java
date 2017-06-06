@@ -1,12 +1,127 @@
 package com.nenton.photon.data.network;
 
 
+import com.nenton.photon.data.network.req.AlbumCreateReq;
+import com.nenton.photon.data.network.req.AlbumEditReq;
+import com.nenton.photon.data.network.req.PhotoIdReq;
+import com.nenton.photon.data.network.req.PhotocardReq;
+import com.nenton.photon.data.network.req.UserCreateReq;
+import com.nenton.photon.data.network.req.UserEditReq;
+import com.nenton.photon.data.network.req.UserLoginReq;
+import com.nenton.photon.data.network.res.AlbumRes;
+import com.nenton.photon.data.network.res.IdRes;
+import com.nenton.photon.data.network.res.PhotocardRes;
+import com.nenton.photon.data.network.res.SuccessRes;
+import com.nenton.photon.data.network.res.TagsRes;
+import com.nenton.photon.data.network.res.UploadPhotoRes;
+import com.nenton.photon.data.network.res.UserCreateRes;
+import com.nenton.photon.data.network.res.UserEditRes;
+import com.nenton.photon.data.network.res.UserInfo;
+import com.nenton.photon.data.network.res.UserLoginRes;
+
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import rx.Observable;
+
 public interface RestService {
 
-//    @GET("products/{productId}/comments")
-//    Observable<List<Comment>> getCommentsResObs(@Path("productId") String productId);
-//
-//    @POST("products/{productId}/comments")
-//    Observable<Comment> sendComment(@Path("productId") String productId, @Body Comment comment);
+    //region ========================= Users =========================
 
+    // get User info
+    @GET("user/{userId}")
+    Observable<UserInfo> getUserInfoObs(@Path("userId") String productId);
+
+    // edit user info
+    @PUT("user/{userId}")
+    Observable<Response<UserEditRes>> editUserInfoObs(@Path("userId") String productId, @Body UserEditReq user);
+
+    // create user
+    @POST("user/signUp")
+    Observable<Response<UserCreateRes>> createUser(@Body UserCreateReq user);
+
+    // login user
+    @POST("user/signIn")
+    Observable<Response<UserLoginRes>> loginUser(@Body UserLoginReq user);
+
+    //upload image photo
+    @Multipart
+    @POST("user/{userId}/image/upload")
+    Observable<UploadPhotoRes> uploadPhoto(@Part MultipartBody.Part file);
+
+    //endregion
+
+    //region ========================= Photocard =========================
+
+    // get photocard list
+    @GET("photocard/list")
+    Observable<List<PhotocardRes>> getPhotocardListObs(@Query("limit") int limit, @Query("offset") int offset);
+
+    // get tags
+    @GET("photocard/tags")
+    Observable<TagsRes> getTagsObs();
+
+    // get photocard
+    @GET("user/{userId}/photocard/{id}")
+    Observable<PhotocardRes> getPhotocardObs(@Path("userId") String userId, @Path("id") String id);
+
+    // create photocard
+    @POST("user/{userId}/photocard/{id}")
+    Observable<IdRes> createPhotocardObs(@Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
+
+    // edit photocard
+    @PUT("user/{userId}/photocard/{id}")
+    Observable<IdRes> editPhotocardObs(@Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
+
+    // delete photocard
+    @DELETE("user/{userId}/photocard/{id}")
+    void deletePhotocardObs(@Path("userId") String userId, @Path("id") String id);
+
+    //add views
+    @POST("/photocard/{photocardId}/view")
+    Observable<SuccessRes> addPhotocardViewsObs(@Path("photocardId") String photocardId, @Body PhotoIdReq id);
+
+    //endregion
+
+    //region ========================= Album =========================
+
+    // add to favorite
+    @POST("/user/{userId}/favorite/{photocardId}")
+    Observable<SuccessRes> addPhotocardFavObs(@Path("userId") String userId, @Path("photocardId") String photocardId);
+
+    //delete photocard from favorite
+    @DELETE("/user/{userId}/favorite/{photocardId}")
+    void deletePhotocardFavObs (@Path("userId") String userId, @Path("photocardId") String photocardId);
+
+    //get album list
+    @GET("user/{userId}/album/list")
+    Observable<List<AlbumRes>> getAlbumListObs(@Query("limit") int limit, @Query("offset") int offset);
+
+    // get album
+    @GET("user/{userId}/album/{id}")
+    Observable<AlbumRes> getAlbumObs(@Path("userId") String userId, @Path("id") String id);
+
+    // create album
+    @POST("user/{userId}/album/{id}")
+    Observable<IdRes> createAlbumObs(@Path("userId") String userId, @Path("id") String id, @Body AlbumCreateReq album);
+
+    // edit album
+    @PUT("user/{userId}/album/{id}")
+    Observable<IdRes> editAlbumObs(@Path("userId") String userId, @Path("id") String id, @Body AlbumEditReq album);
+
+    // delete album
+    @DELETE("user/{userId}/album/{id}")
+    void deleteAlbumObs(@Path("userId") String userId, @Path("id") String id);
+
+    //endregion
 }

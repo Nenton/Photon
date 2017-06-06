@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nenton.photon.ui.custom_views.ImageViewSquare
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/photo_card_account_IV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/colorAccent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/album_name_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            tools:text="Альбом"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Карты"/>
+
+        <TextView
+            android:id="@+id/album_photos_count_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3"/>
+    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/share_photo_IV"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            tools:background="@color/colorPrimary"
+            android:layout_gravity="bottom"/>
+
+
+</com.nenton.photon.ui.custom_views.ImageViewSquare>
