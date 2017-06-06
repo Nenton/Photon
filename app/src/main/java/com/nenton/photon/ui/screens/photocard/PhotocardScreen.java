@@ -1,78 +1,66 @@
-package com.nenton.photon.ui.screens.search_filters;
+package com.nenton.photon.ui.screens.photocard;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.SearchModel;
+import com.nenton.photon.mvp.model.PhotoModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.screens.main.MainScreen;
+import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
-import flow.TreeKey;
 import mortar.MortarScope;
 
 /**
- * Created by serge on 05.06.2017.
+ * Created by serge_000 on 06.06.2017.
  */
-@Screen(R.layout.search_filters_screen)
-public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> implements TreeKey{
+@Screen(R.layout.photocard_screen)
+public class PhotocardScreen extends AbstractScreen<MainScreen.Component> {
 
     @Override
     public Object createScreenComponent(MainScreen.Component parentComponent) {
-        return DaggerSearchFiltersScreen_Component.builder()
+        return DaggerPhotocardScreen_Component.builder()
                 .component(parentComponent)
                 .module(new Module())
                 .build();
     }
 
-    @NonNull
-    @Override
-    public Object getParentKey() {
-        return new MainScreen();
-    }
-
-    //region ========================= DI =========================
-
     @dagger.Module
     public class Module{
         @Provides
-        @DaggerScope(SearchFiltersScreen.class)
-        SearchFiltersPresenter provideSearchFiltersPresenter(){
-            return new SearchFiltersPresenter();
+        @DaggerScope(PhotocardScreen.class)
+        PhotoModel provideSearchModel(){
+            return new PhotoModel();
         }
 
         @Provides
-        @DaggerScope(SearchFiltersScreen.class)
-        SearchModel provideSearchModel(){
-            return new SearchModel();
+        @DaggerScope(PhotocardScreen.class)
+        PhotocardPresenter provideSearchPresenter(){
+            return new PhotocardPresenter();
         }
     }
 
     @dagger.Component(dependencies = MainScreen.Component.class, modules = Module.class)
-    @DaggerScope(SearchFiltersScreen.class)
+    @DaggerScope(PhotocardScreen.class)
     public interface Component{
-        void inject(SearchFiltersPresenter searchFiltersPresenter);
-        void inject(SearchFiltersView searchFiltersView);
+        void inject(PhotocardPresenter presenter);
+        void inject(PhotocardView view);
+        void inject(PhotocardAdapter adapter);
 
         RootPresenter getRootPresenter();
+        Picasso getPicasso();
     }
 
-    //endregion
-
-    public class SearchFiltersPresenter extends AbstractPresenter<SearchFiltersView, SearchModel>{
+    public class PhotocardPresenter extends AbstractPresenter<PhotocardView, PhotoModel>{
 
         @Override
         protected void initActionBar() {
-            mRootPresenter.new ActionBarBuilder()
-                    .setVisibleToolbar(false)
-                    .setTab(getView().getViewPager())
-                    .build();
+
         }
 
         @Override

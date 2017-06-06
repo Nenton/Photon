@@ -66,4 +66,6 @@ public abstract class AbstractView<P extends AbstractPresenter> extends FrameLay
         afterInflate();
         startInitAnimation();
     }
+
+
 }
