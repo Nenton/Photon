@@ -47,20 +47,21 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        mContext = recyclerView.getContext();
+//        mContext = recyclerView.getContext();
         DaggerService.<MainScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
         super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_main, parent, false);
         return new MainViewHolder(convertView);
     }
 
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position) {
-        PhotocardRealm photocard = mPhotocards.get(position);
+        final PhotocardRealm photocard = mPhotocards.get(position);
         holder.mImageSea.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_custom_views_white_24dp));
         holder.mImageFav.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_custom_favorites_white_24dp));
         holder.mTextSea.setText(String.valueOf(photocard.getViews()));

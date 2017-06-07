@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.ui.screens.account.AccountAdapter;
@@ -29,9 +30,9 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
     @BindView(R.id.album_screen_count_TV)
     TextView mCountPhoto;
     @BindView(R.id.album_description)
-    TextView mSeaCount;
+    TextView mDescription;
 
-    private AccountAdapter mAccountAdapter = new AccountAdapter();
+    private AlbumAdapter mAccountAdapter = new AlbumAdapter();
 
     public AlbumView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,6 +53,11 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAccountAdapter);
-        // TODO: 06.06.2017 добавить фотографий в аккаунт
+        mNameAlbum.setText(mAlbum.getTitle());
+        mCountPhoto.setText(String.valueOf(mAlbum.getPhotocards().size()));
+        mDescription.setText(mAlbum.getDescription());
+        for (PhotocardRealm photo:mAlbum.getPhotocards()) {
+            mAccountAdapter.addAlbum(photo);
+        }
     }
 }

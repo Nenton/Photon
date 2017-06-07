@@ -19,6 +19,14 @@ public class PhotocardRealm extends RealmObject {
         this.favorits = favorits;
     }
 
+    public PhotocardRealm(String photo, int views, int favorits, String title, RealmList<StringRealm> tags) {
+        this.title = title;
+        this.photo = photo;
+        this.views = views;
+        this.favorits = favorits;
+        this.tags = tags;
+    }
+
     @PrimaryKey
     private String id;
     private String owner;

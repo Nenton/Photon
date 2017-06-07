@@ -52,6 +52,7 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
         super.dropView(view);
     }
 
+
     protected abstract void initActionBar();
 
     protected abstract void initDagger(MortarScope scope);

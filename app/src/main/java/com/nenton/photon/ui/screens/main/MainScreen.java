@@ -1,9 +1,11 @@
 package com.nenton.photon.ui.screens.main;
 
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
 import android.view.MenuItem;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -14,6 +16,7 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.DaggerRootActivity_RootComponent;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.squareup.picasso.Picasso;
 
@@ -68,11 +71,12 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     .setTitle("Фотон")
                     .addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
                         Flow.get(getView().getContext()).set(new SearchFiltersScreen());
-                        return false;
+                        return true;
                     }))
                     .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
+                        ((RootActivity) getRootView()).showMenu();
                         // TODO: 07.06.2017 открыть меню
-                        return false;
+                        return true;
                     }))
                     .build();
         }
@@ -86,6 +90,10 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
             getView().initView();
+        }
+
+        public void clickOnPhoto(PhotocardRealm photo) {
+            Flow.get(getView().getContext()).set(new PhotocardScreen(photo));
         }
     }
 }

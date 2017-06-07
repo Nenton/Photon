@@ -69,8 +69,6 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         // TODO: 07.06.2017 Информация об авторе
 
         mPicasso.load(photocardRealm.getPhoto())
-                .fit()
-                .centerCrop()
                 .into(mPhoto);
     }
 }

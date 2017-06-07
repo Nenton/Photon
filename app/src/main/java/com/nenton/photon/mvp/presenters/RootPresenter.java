@@ -122,6 +122,7 @@ public class RootPresenter extends Presenter<IRootView> {
         public void build() {
             if (getRootView() != null) {
                 RootActivity activity = (RootActivity) getRootView();
+                activity.removeTabLayout();
                 activity.setVisibleToolbar(isVisable);
                 activity.setTitle(title);
                 activity.setBackArrow(isGoBack);

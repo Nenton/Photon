@@ -15,9 +15,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -115,6 +119,16 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         return rootActivityScope.hasService(name) ? rootActivityScope.getService(name) : super.getSystemService(name);
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+//    }
+
     @Override
     public boolean viewOnBackPressed() {
         return false;
@@ -179,14 +193,24 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         if (mActionBarMenuItems != null && !mActionBarMenuItems.isEmpty()){
             for (MenuItemHolder menuItem: mActionBarMenuItems) {
                 MenuItem item = menu.add(menuItem.getTitle());
+
                 item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                         .setIcon(menuItem.getIconResId())
                         .setOnMenuItemClickListener(menuItem.getListener());
+
             }
         } else {
             menu.clear();
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    public void showMenu() {
+        PopupMenu menu = new PopupMenu(this, mToolbar, Gravity.RIGHT);
+        MenuInflater menuInflater = menu.getMenuInflater();
+        menuInflater.inflate(R.menu.main_settings_menu, menu.getMenu());
+        menu.show();
     }
 
     @Override
