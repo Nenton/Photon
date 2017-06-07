@@ -4,4 +4,7 @@
 
     <string name="open_drawer">open</string>
     <string name="close_drawer">close</string>
+    <string name="main_screen">Главная</string>
+    <string name="account_screen">Профиль</string>
+    <string name="download_photo">Загрузить</string>
 </resources>
