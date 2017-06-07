@@ -45,6 +45,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
     @Override
     protected void initDagger(Context context) {
         DaggerService.<AlbumScreen.Component>getDaggerComponent(context).inject(this);
+
     }
 
     public void initView(AlbumRealm mAlbum) {
