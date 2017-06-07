@@ -11,11 +11,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/splash" />
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/photo_IV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/splash">
+
+            </ImageView>
+
+            <TextView
+                android:id="@+id/name_photocard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                tools:text="Хелена Марчиано" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

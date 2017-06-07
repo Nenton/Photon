@@ -3,6 +3,7 @@ package com.nenton.photon.ui.screens.photocard;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -21,6 +22,12 @@ import mortar.MortarScope;
  */
 @Screen(R.layout.photocard_screen)
 public class PhotocardScreen extends AbstractScreen<MainScreen.Component> {
+
+    private PhotocardRealm mPhotocard;
+
+    public PhotocardScreen(PhotocardRealm photocard) {
+        this.mPhotocard = photocard;
+    }
 
     @Override
     public Object createScreenComponent(MainScreen.Component parentComponent) {
@@ -71,7 +78,7 @@ public class PhotocardScreen extends AbstractScreen<MainScreen.Component> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
+            getView().initView(mPhotocard);
         }
     }
 }

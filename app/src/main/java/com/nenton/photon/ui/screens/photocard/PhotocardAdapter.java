@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.StringRealm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ import butterknife.ButterKnife;
 public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.PhotocardViewHolder> {
     private List<String> mStrings = new ArrayList<>();
 
-    public void addString(String s){
-        mStrings.add(s);
+    public void addString(StringRealm s){
+        mStrings.add(s.getString());
         notifyDataSetChanged();
     }
     @Override

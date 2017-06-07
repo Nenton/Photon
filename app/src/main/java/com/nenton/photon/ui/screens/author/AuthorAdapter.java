@@ -41,7 +41,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
     @Override
     public AuthorAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_photo, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
         return new AccountViewHolder(convertView);
     }
 

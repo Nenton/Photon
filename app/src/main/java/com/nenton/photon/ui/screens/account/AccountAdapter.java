@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.dto.AlbumDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.ui.screens.album.AlbumScreen;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
 
@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import flow.Flow;
 
 /**
  * Created by serge_000 on 06.06.2017.
@@ -42,7 +43,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
     @Override
     public AccountAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_photo, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
         return new AccountViewHolder(convertView);
     }
 
@@ -62,6 +63,10 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
                 .centerCrop()
                 .transform(new PhotoTransform())
                 .into(holder.mPhoto);
+
+        holder.mView.setOnClickListener(v -> {
+            Flow.get(context).set(new AlbumScreen(album));
+        });
     }
 
     @Override
@@ -70,6 +75,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
     }
 
     public class AccountViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.item_album)
+        View mView;
         @BindView(R.id.photo_card_account_IV)
         ImageView mPhoto;
         @BindView(R.id.album_name_TV)

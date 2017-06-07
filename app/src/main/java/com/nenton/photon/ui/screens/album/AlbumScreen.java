@@ -3,6 +3,7 @@ package com.nenton.photon.ui.screens.album;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -21,6 +22,13 @@ import mortar.MortarScope;
  */
 @Screen(R.layout.album_screen)
 public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent>{
+
+    private AlbumRealm mAlbum;
+
+    public AlbumScreen(AlbumRealm mAlbum) {
+        this.mAlbum = mAlbum;
+    }
+
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
         return DaggerAlbumScreen_Component.builder()
@@ -70,7 +78,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent>{
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
+            getView().initView(mAlbum);
         }
     }
 }

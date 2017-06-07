@@ -8,8 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -22,6 +27,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 
     @BindView(R.id.photocard_RV)
     RecyclerView mRecyclerView;
+    @BindView(R.id.photo_IV)
+    ImageView mPhoto;
+    @BindView(R.id.name_photocard)
+    TextView mName;
     @BindView(R.id.album_count_TV)
     TextView mAlbumCount;
     @BindView(R.id.photocard_count_TV)
@@ -30,6 +39,9 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     TextView mFullName;
     @BindView(R.id.avatar_photocard_IV)
     ImageView mAvatar;
+
+    @Inject
+    Picasso mPicasso;
 
     public PhotocardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,12 +57,20 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         DaggerService.<PhotocardScreen.Component>getDaggerComponent(getContext()).inject(this);
     }
 
-    public void initView() {
+    public void initView(PhotocardRealm photocardRealm) {
         mRecyclerView.setLayoutManager(new WordsLayoutManager(getContext()));
-        mAdapter.addString("Привет");
-        mAdapter.addString("Привет");
-        mAdapter.addString("Привет");
-        mAdapter.addString("Привет");
+
+        for (StringRealm s : photocardRealm.getTags()) {
+            mAdapter.addString(s);
+        }
         mRecyclerView.setAdapter(mAdapter);
+        mName.setText(photocardRealm.getTitle());
+
+        // TODO: 07.06.2017 Информация об авторе
+
+        mPicasso.load(photocardRealm.getPhoto())
+                .fit()
+                .centerCrop()
+                .into(mPhoto);
     }
 }

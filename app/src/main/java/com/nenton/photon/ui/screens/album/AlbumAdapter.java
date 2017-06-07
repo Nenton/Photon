@@ -1,15 +1,12 @@
 package com.nenton.photon.ui.screens.album;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
@@ -40,7 +37,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
     @Override
     public AlbumAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_photo, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
         return new AccountViewHolder(convertView);
     }
 

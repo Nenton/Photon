@@ -1,6 +1,7 @@
 package com.nenton.photon.ui.screens.main;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
@@ -9,12 +10,15 @@ import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.PhotoModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.DaggerRootActivity_RootComponent;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 
 /**
@@ -60,6 +64,17 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         protected void initActionBar() {
+            mRootPresenter.new ActionBarBuilder()
+                    .setTitle("Фотон")
+                    .addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
+                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                        return false;
+                    }))
+                    .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
+                        // TODO: 07.06.2017 открыть меню
+                        return false;
+                    }))
+                    .build();
         }
 
         @Override

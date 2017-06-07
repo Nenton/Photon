@@ -3,6 +3,7 @@ package com.nenton.photon.ui.screens.account;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -21,6 +22,7 @@ import mortar.MortarScope;
  */
 @Screen(R.layout.account_screen)
 public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
+
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
         return DaggerAccountScreen_Component.builder()

@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
+import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +24,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import flow.Flow;
 
 /**
  * Created by serge on 04.06.2017.
@@ -68,6 +71,10 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                 .centerCrop()
                 .transform(new PhotoTransform())
                 .into(holder.mPhoto);
+
+        holder.mView.setOnClickListener(v -> {
+            Flow.get(mContext).set(new PhotocardScreen(photocard));
+        });
     }
 
     @Override
@@ -76,6 +83,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.item_photo)
+        View mView;
         @BindView(R.id.photo_card_IV)
         ImageView mPhoto;
         @BindView(R.id.fav_photo_IV)

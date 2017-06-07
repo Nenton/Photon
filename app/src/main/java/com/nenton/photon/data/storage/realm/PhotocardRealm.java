@@ -10,6 +10,9 @@ import io.realm.annotations.PrimaryKey;
 
 public class PhotocardRealm extends RealmObject {
 
+    public PhotocardRealm() {
+    }
+
     public PhotocardRealm(String photo, int views, int favorits) {
         this.photo = photo;
         this.views = views;
@@ -34,9 +37,6 @@ public class PhotocardRealm extends RealmObject {
     }
 
     private FiltersRealm filters;
-
-    public PhotocardRealm() {
-    }
 
     public String getId() {
         return id;
