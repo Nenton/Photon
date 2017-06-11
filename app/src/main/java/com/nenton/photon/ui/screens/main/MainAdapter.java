@@ -15,6 +15,8 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.utils.PhotoTransform;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,10 +70,22 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         holder.mTextFav.setText(String.valueOf(photocard.getFavorits()));
 
         mPicasso.load(photocard.getPhoto())
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .fit()
-                .centerCrop()
                 .transform(new PhotoTransform())
-                .into(holder.mPhoto);
+                .into(holder.mPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPicasso.load(photocard.getPhoto())
+                                .fit()
+                                .into(holder.mPhoto);
+                    }
+                });
 
         holder.mView.setOnClickListener(v -> {
             Flow.get(mContext).set(new PhotocardScreen(photocard));

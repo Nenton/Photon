@@ -1,5 +1,9 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.res.Album;
+import com.nenton.photon.data.network.res.Photocard;
+import com.nenton.photon.data.network.res.SignInRes;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -21,6 +25,24 @@ public class AlbumRealm extends RealmObject {
 
     public AlbumRealm() {
     }
+
+    public AlbumRealm(Album album) {
+        this.id = album.getId();
+        this.owner = album.getOwner();
+        this.title = album.getTitle();
+        this.preview = album.getPreview();
+        this.description = album.getDescription();
+        this.views = album.getViews();
+        this.favorits = album.getFavorits();
+
+        photocards = new RealmList<>();
+        for (Photocard photocard : album.getPhotocards()) {
+            photocards.add(new PhotocardRealm(photocard));
+        }
+
+    }
+
+
 
     public String getId() {
         return id;

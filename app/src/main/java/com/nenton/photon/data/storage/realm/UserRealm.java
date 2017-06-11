@@ -1,5 +1,8 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.res.Album;
+import com.nenton.photon.data.network.res.SignInRes;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -14,12 +17,19 @@ public class UserRealm extends RealmObject {
     private String id;
     private String name;
     private String login;
-    private String mail;
     private String avatar;
-    private String token;
-    private int albumCount;
-    private int photocardCount;
     private RealmList<AlbumRealm> albums;
+
+    public UserRealm(SignInRes user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.login = user.getLogin();
+        this.avatar = user.getAvatar();
+        this.albums = new RealmList<>();
+        for (Album album : user.getAlbums()) {
+            albums.add(new AlbumRealm(album));
+        }
+    }
 
     public String getId() {
         return id;
@@ -33,24 +43,8 @@ public class UserRealm extends RealmObject {
         return login;
     }
 
-    public String getMail() {
-        return mail;
-    }
-
     public String getAvatar() {
         return avatar;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public int getAlbumCount() {
-        return albumCount;
-    }
-
-    public int getPhotocardCount() {
-        return photocardCount;
     }
 
     public RealmList<AlbumRealm> getAlbums() {

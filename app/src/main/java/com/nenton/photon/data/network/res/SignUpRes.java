@@ -9,29 +9,26 @@ import java.util.List;
  * Created by serge on 07.06.2017.
  */
 
-public class UserInfo {
-
+public class SignUpRes {
     @SerializedName("id")
     @Expose
-    private String id;
+    public String id;
     @SerializedName("name")
     @Expose
-    private String name;
+    public String name;
     @SerializedName("login")
     @Expose
-    private String login;
-    @SerializedName("avatar")
-    @Expose
-    private String avatar;
-    @SerializedName("albumCount")
-    @Expose
-    private int albumCount;
-    @SerializedName("photocardCount")
-    @Expose
-    private int photocardCount;
+    public String login;
     @SerializedName("albums")
     @Expose
-    private List<Album> albums = null;
+    public List<Album> albums = null;
+
+    public SignUpRes(String id, String name, String login, List<Album> albums) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.albums = albums;
+    }
 
     public String getId() {
         return id;
@@ -45,21 +42,7 @@ public class UserInfo {
         return login;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public int getAlbumCount() {
-        return albumCount;
-    }
-
-    public int getPhotocardCount() {
-        return photocardCount;
-    }
-
     public List<Album> getAlbums() {
         return albums;
     }
 }
-
-

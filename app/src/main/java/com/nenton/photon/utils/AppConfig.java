@@ -5,7 +5,7 @@ package com.nenton.photon.utils;
  */
 
 public interface AppConfig {
-    String BASE_URL = "http://207.154.248.163:8000/";
+    String BASE_URL = "http://207.154.248.163:5000/";
 
     long MAX_CONNECTION_TIMEOUT = 5 * 1000;
     long MAX_READ_TIMEOUT = 5 * 1000;

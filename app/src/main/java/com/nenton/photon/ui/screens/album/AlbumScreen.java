@@ -8,7 +8,7 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.PhotoModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
@@ -41,8 +41,8 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent>{
     public class Module{
         @Provides
         @DaggerScope(AlbumScreen.class)
-        PhotoModel providePhotoModel(){
-            return new PhotoModel();
+        MainModel providePhotoModel(){
+            return new MainModel();
         }
 
         @Provides
@@ -63,7 +63,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent>{
         RootPresenter getRootPresenter();
     }
 
-    public class AlbumPresenter extends AbstractPresenter<AlbumView, PhotoModel>{
+    public class AlbumPresenter extends AbstractPresenter<AlbumView, MainModel>{
 
         @Override
         protected void initActionBar() {

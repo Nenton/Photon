@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.screens.album.AlbumScreen;
+import com.nenton.photon.ui.screens.main.MainScreen;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +43,12 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        DaggerService.<AccountScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
     public AccountAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
@@ -52,17 +60,19 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         AlbumRealm album = mAlbums.get(position);
 
         holder.mNameAlbum.setText(album.getTitle());
-        holder.mCountPhoto.setText(album.getPhotocards().size());
+        holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
         holder.mFavIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_custom_favorites_white_24dp));
         holder.mSeaIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_custom_views_white_24dp));
         holder.mFavCount.setText(String.valueOf(album.getFavorits()));
         holder.mSeaCount.setText(String.valueOf(album.getViews()));
 
-        picasso.load(album.getPreview())
-                .fit()
-                .centerCrop()
-                .transform(new PhotoTransform())
-                .into(holder.mPhoto);
+        if (album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()){
+            picasso.load(album.getPhotocards().get(0).getPhoto())
+                    .fit()
+                    .centerCrop()
+                    .transform(new PhotoTransform())
+                    .into(holder.mPhoto);
+        }
 
         holder.mView.setOnClickListener(v -> {
             Flow.get(context).set(new AlbumScreen(album));

@@ -27,4 +27,6 @@
     <color name="filterBrownT">#80785447</color>
     <color name="filterBlackT">#80000000</color>
     <color name="filterWhiteT">#80ffffff</color>
+
+    <color name="error">#A20707</color>
 </resources>

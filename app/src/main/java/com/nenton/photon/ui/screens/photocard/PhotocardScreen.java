@@ -8,11 +8,10 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.PhotoModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
-import com.nenton.photon.ui.screens.main.MainScreen;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
@@ -42,8 +41,8 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
     public class Module{
         @Provides
         @DaggerScope(PhotocardScreen.class)
-        PhotoModel provideSearchModel(){
-            return new PhotoModel();
+        MainModel provideSearchModel(){
+            return new MainModel();
         }
 
         @Provides
@@ -64,7 +63,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         Picasso getPicasso();
     }
 
-    public class PhotocardPresenter extends AbstractPresenter<PhotocardView, PhotoModel>{
+    public class PhotocardPresenter extends AbstractPresenter<PhotocardView, MainModel>{
 
         @Override
         protected void initActionBar() {

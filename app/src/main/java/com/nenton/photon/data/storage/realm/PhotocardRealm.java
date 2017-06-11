@@ -1,5 +1,7 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.res.Photocard;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -9,6 +11,16 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class PhotocardRealm extends RealmObject {
+
+    @PrimaryKey
+    private String id;
+    private String owner;
+    private String title;
+    private String photo;
+    private int views;
+    private int favorits;
+    private RealmList<StringRealm> tags;
+    private FiltersRealm filters;
 
     public PhotocardRealm() {
     }
@@ -27,14 +39,22 @@ public class PhotocardRealm extends RealmObject {
         this.tags = tags;
     }
 
-    @PrimaryKey
-    private String id;
-    private String owner;
-    private String title;
-    private String photo;
-    private int views;
-    private int favorits;
-    private RealmList<StringRealm> tags;
+    public PhotocardRealm(Photocard photocardRes) {
+        this.id = photocardRes.getId();
+        this.owner = photocardRes.getOwner();
+        this.title = photocardRes.getTitle();
+        this.photo = photocardRes.getPhoto();
+        this.views = photocardRes.getViews();
+        this.favorits = photocardRes.getFavorits();
+        this.filters = new FiltersRealm(photocardRes.getId(), photocardRes.getFilters());
+
+        tags = new RealmList<>();
+
+        for (String s : photocardRes.getTags()) {
+            tags.add(new StringRealm(s));
+        }
+    }
+
 
     public RealmList<StringRealm> getTags() {
         return tags;
@@ -43,8 +63,6 @@ public class PhotocardRealm extends RealmObject {
     public FiltersRealm getFilters() {
         return filters;
     }
-
-    private FiltersRealm filters;
 
     public String getId() {
         return id;

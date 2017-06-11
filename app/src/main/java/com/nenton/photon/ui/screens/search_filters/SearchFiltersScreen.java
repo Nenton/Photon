@@ -69,7 +69,7 @@ public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> im
 
         @Override
         protected void initActionBar() {
-            mRootPresenter.new ActionBarBuilder()
+            mRootPresenter.newActionBarBuilder()
                     .setVisibleToolbar(false)
                     .setTab(getView().getViewPager())
                     .build();

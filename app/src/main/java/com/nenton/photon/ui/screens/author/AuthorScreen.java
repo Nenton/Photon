@@ -7,12 +7,10 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.PhotoModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
-import com.nenton.photon.ui.screens.account.AccountAdapter;
-import com.nenton.photon.ui.screens.account.AccountView;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
@@ -35,8 +33,8 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent>{
     public class Module{
         @Provides
         @DaggerScope(AuthorScreen.class)
-        PhotoModel providePhotoModel(){
-            return new PhotoModel();
+        MainModel providePhotoModel(){
+            return new MainModel();
         }
 
         @Provides
@@ -57,7 +55,7 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent>{
         RootPresenter getRootPresenter();
     }
 
-    public class AuthorPresenter extends AbstractPresenter<AuthorView, PhotoModel>{
+    public class AuthorPresenter extends AbstractPresenter<AuthorView, MainModel>{
 
         @Override
         protected void initActionBar() {

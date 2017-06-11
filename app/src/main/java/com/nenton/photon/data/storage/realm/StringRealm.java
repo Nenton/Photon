@@ -1,6 +1,7 @@
 package com.nenton.photon.data.storage.realm;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by serge on 01.06.2017.
@@ -8,6 +9,7 @@ import io.realm.RealmObject;
 
 public class StringRealm extends RealmObject {
 
+    @PrimaryKey
     private String mString;
 
     public StringRealm() {

@@ -8,16 +8,16 @@ import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserEditReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
-import com.nenton.photon.data.network.res.AlbumRes;
+import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.IdRes;
-import com.nenton.photon.data.network.res.PhotocardRes;
+import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SuccessRes;
 import com.nenton.photon.data.network.res.TagsRes;
 import com.nenton.photon.data.network.res.UploadPhotoRes;
-import com.nenton.photon.data.network.res.UserCreateRes;
+import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.UserEditRes;
 import com.nenton.photon.data.network.res.UserInfo;
-import com.nenton.photon.data.network.res.UserLoginRes;
+import com.nenton.photon.data.network.res.SignInRes;
 
 import java.util.List;
 
@@ -48,11 +48,11 @@ public interface RestService {
 
     // create user
     @POST("user/signUp")
-    Observable<Response<UserCreateRes>> createUser(@Body UserCreateReq user);
+    Observable<Response<SignUpRes>> signUp(@Body UserCreateReq user);
 
     // login user
     @POST("user/signIn")
-    Observable<Response<UserLoginRes>> loginUser(@Body UserLoginReq user);
+    Observable<Response<SignInRes>> signIn(@Body UserLoginReq user);
 
     //upload image photo
     @Multipart
@@ -65,7 +65,7 @@ public interface RestService {
 
     // get photocard list
     @GET("photocard/list")
-    Observable<List<PhotocardRes>> getPhotocardListObs(@Query("limit") int limit, @Query("offset") int offset);
+    Observable<Response<List<Photocard>>> getPhotocardListObs(@Query("limit") int limit, @Query("offset") int offset);
 
     // get tags
     @GET("photocard/tags")
@@ -73,7 +73,7 @@ public interface RestService {
 
     // get photocard
     @GET("user/{userId}/photocard/{id}")
-    Observable<PhotocardRes> getPhotocardObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Photocard> getPhotocardObs(@Path("userId") String userId, @Path("id") String id);
 
     // create photocard
     @POST("user/{userId}/photocard/{id}")
@@ -105,11 +105,11 @@ public interface RestService {
 
     //get album list
     @GET("user/{userId}/album/list")
-    Observable<List<AlbumRes>> getAlbumListObs(@Query("limit") int limit, @Query("offset") int offset);
+    Observable<List<Album>> getAlbumListObs(@Query("limit") int limit, @Query("offset") int offset);
 
     // get album
     @GET("user/{userId}/album/{id}")
-    Observable<AlbumRes> getAlbumObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Album> getAlbumObs(@Path("userId") String userId, @Path("id") String id);
 
     // create album
     @POST("user/{userId}/album/{id}")

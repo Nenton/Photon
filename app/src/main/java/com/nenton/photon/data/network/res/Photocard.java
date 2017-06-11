@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by serge on 07.06.2017.
+ * Created by serge on 10.06.2017.
  */
 
-public class PhotocardRes {
+public class Photocard {
 
     @SerializedName("id")
     @Expose
@@ -36,29 +36,35 @@ public class PhotocardRes {
     @Expose
     public Filters filters;
 
-    public class Filters {
+    public String getId() {
+        return id;
+    }
 
-        @SerializedName("dish")
-        @Expose
-        public String dish;
-        @SerializedName("nuances")
-        @Expose
-        public String nuances;
-        @SerializedName("decor")
-        @Expose
-        public String decor;
-        @SerializedName("temperature")
-        @Expose
-        public String temperature;
-        @SerializedName("light")
-        @Expose
-        public String light;
-        @SerializedName("lightDirection")
-        @Expose
-        public String lightDirection;
-        @SerializedName("lightSource")
-        @Expose
-        public String lightSource;
+    public String getOwner() {
+        return owner;
+    }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public int getFavorits() {
+        return favorits;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public Filters getFilters() {
+        return filters;
     }
 }

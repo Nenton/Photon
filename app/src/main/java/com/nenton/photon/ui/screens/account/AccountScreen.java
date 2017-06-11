@@ -3,12 +3,13 @@ package com.nenton.photon.ui.screens.account;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.data.storage.dto.UserInfoDto;
+import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.PhotoModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
@@ -35,8 +36,8 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
     public class Module{
         @Provides
         @DaggerScope(AccountScreen.class)
-        PhotoModel providePhotoModel(){
-            return new PhotoModel();
+        MainModel providePhotoModel(){
+            return new MainModel();
         }
 
         @Provides
@@ -57,7 +58,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
         RootPresenter getRootPresenter();
     }
 
-    public class AccountPresenter extends AbstractPresenter<AccountView, PhotoModel>{
+    public class AccountPresenter extends AbstractPresenter<AccountView, MainModel>{
 
         @Override
         protected void initActionBar() {
@@ -72,7 +73,17 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
+            UserInfoDto userInfo = mModel.getUserInfo();
+            mCompSubs.add(mModel.getUserRealm(userInfo.getId())
+            .subscribe(userRealm -> {
+                getView().showAuthState(userRealm);
+            }, throwable -> {
+                getView().showUnAuthState();
+            }));
+        }
+
+        public boolean isAuth() {
+            return mModel.isSignIn();
         }
     }
 }

@@ -24,7 +24,6 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
 
     @BindView(R.id.album_RV)
     RecyclerView mRecycleView;
-
     @BindView(R.id.album_screen_name_TV)
     TextView mNameAlbum;
     @BindView(R.id.album_screen_count_TV)
@@ -46,7 +45,6 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
     @Override
     protected void initDagger(Context context) {
         DaggerService.<AlbumScreen.Component>getDaggerComponent(context).inject(this);
-
     }
 
     public void initView(AlbumRealm mAlbum) {

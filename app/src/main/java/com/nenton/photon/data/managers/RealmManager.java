@@ -1,10 +1,16 @@
 package com.nenton.photon.data.managers;
 
+import com.nenton.photon.data.network.res.Album;
+import com.nenton.photon.data.network.res.Photocard;
+import com.nenton.photon.data.network.res.SignInRes;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
+
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by serge on 09.01.2017.
@@ -14,33 +20,47 @@ public class RealmManager {
 
     private Realm mRealmInstance;
 
-    public void saveProductResponseToRealm(){
-        Realm realm = Realm.getDefaultInstance();
+    public Realm getQueryRealmInstance() {
+        if (mRealmInstance == null || mRealmInstance.isClosed()){
+            mRealmInstance = Realm.getDefaultInstance();
+        }
+        return mRealmInstance;
+    }
 
-//        ProductRealm productRealm = new ProductRealm(productRes);
-//
-//        if (!productRes.getComments().isEmpty()){
-//            Observable.from(productRes.getComments())
-//                    .doOnNext(comment -> {
-//                        if (!comment.isActive()){
-//                            deleteFromRealm(CommentRealm.class, comment.getId());
-//                        }})
-//                    .filter(Comment::isActive)
-//                    .map(CommentRealm::new)
-//                    .subscribe(commentRealm -> productRealm.getCommentRealms().add(commentRealm));
-//
-//        }
-//
-//        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(productRealm));
+
+    public void savePhotocardResponseToRealm(Photocard photocardRes){
+        Realm realm = Realm.getDefaultInstance();
+        PhotocardRealm photocardRealm = new PhotocardRealm(photocardRes);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(photocardRealm));
         realm.close();
     }
 
+    public void saveAlbumResponseToRealm(Album album){
+        Realm realm = Realm.getDefaultInstance();
+        AlbumRealm albumRealm = new AlbumRealm(album);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(albumRealm));
+        realm.close();
+    }
+
+    public void saveAccountInfoToRealm(SignInRes user){
+        Realm realm = Realm.getDefaultInstance();
+        UserRealm userRealm = new UserRealm(user);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(userRealm));
+        realm.close();
+    }
+
+    public Observable<UserRealm> getUserById(String id){
+        UserRealm userRealms = getQueryRealmInstance().where(UserRealm.class).equalTo("id", id).findFirst();
+        return userRealms.asObservable();
+    }
+
+
     public void deleteFromRealm(Class<? extends RealmObject> entityRealmClass, String id) {
         Realm realm = Realm.getDefaultInstance();
-//        RealmObject entity = realm.where(entityRealmClass).equalTo("id", id).findFirst();
-//        if (entity != null){
-//            realm.executeTransaction(realm1 -> entity.deleteFromRealm());
-//        }
+        RealmObject entity = realm.where(entityRealmClass).equalTo("id", id).findFirst();
+        if (entity != null){
+            realm.executeTransaction(realm1 -> entity.deleteFromRealm());
+        }
         realm.close();
     }
 
@@ -53,10 +73,11 @@ public class RealmManager {
 //                .flatMap(Observable::from);
 //    }
 
-    public Realm getQueryRealmInstance() {
-        if (mRealmInstance == null || mRealmInstance.isClosed()){
-            mRealmInstance = Realm.getDefaultInstance();
-        }
-        return mRealmInstance;
+    public Observable<PhotocardRealm> getAllPhotocardFromRealm() {
+        RealmResults<PhotocardRealm> photocardRealms = getQueryRealmInstance().where(PhotocardRealm.class).findAllAsync();
+        return photocardRealms
+                .asObservable()
+                .filter(RealmResults::isLoaded)
+                .flatMap(Observable::from);
     }
 }

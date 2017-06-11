@@ -9,7 +9,7 @@ import java.util.List;
  * Created by serge on 07.06.2017.
  */
 
-public class UserInfo {
+public class SignInRes {
 
     @SerializedName("id")
     @Expose
@@ -23,6 +23,9 @@ public class UserInfo {
     @SerializedName("avatar")
     @Expose
     private String avatar;
+    @SerializedName("token")
+    @Expose
+    private String token;
     @SerializedName("albumCount")
     @Expose
     private int albumCount;
@@ -49,6 +52,10 @@ public class UserInfo {
         return avatar;
     }
 
+    public String getToken() {
+        return token;
+    }
+
     public int getAlbumCount() {
         return albumCount;
     }
@@ -61,5 +68,3 @@ public class UserInfo {
         return albums;
     }
 }
-
-

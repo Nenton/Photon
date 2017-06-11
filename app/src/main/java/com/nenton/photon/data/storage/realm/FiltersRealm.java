@@ -1,8 +1,7 @@
 package com.nenton.photon.data.storage.realm;
 
-import java.util.ArrayList;
+import com.nenton.photon.data.network.res.Filters;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,15 +13,58 @@ public class FiltersRealm extends RealmObject{
 
     @PrimaryKey
     private String id;
-    private RealmList<StringRealm> dish;
-    private RealmList<StringRealm> nuances;
-    private RealmList<StringRealm> decor;
-    private RealmList<StringRealm> temperature;
-    private RealmList<StringRealm> light;
-    private RealmList<StringRealm> lightDirection;
-    private RealmList<StringRealm> lightSource;
+    private String dish;
+    private String nuances;
+    private String decor;
+    private String temperature;
+    private String light;
+    private String lightDirection;
+    private String lightSource;
 
 
     public FiltersRealm() {
+    }
+
+    public FiltersRealm(String id, Filters filters) {
+        this.id = id;
+        this.dish = filters.getDish();
+        this.nuances = filters.getNuances();
+        this.decor = filters.getDecor();
+        this.temperature = filters.getTemperature();
+        this.light = filters.getLight();
+        this.lightDirection = filters.getLightDirection();
+        this.lightSource = filters.getLightSource();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getDish() {
+        return dish;
+    }
+
+    public String getNuances() {
+        return nuances;
+    }
+
+    public String getDecor() {
+        return decor;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public String getLight() {
+        return light;
+    }
+
+    public String getLightDirection() {
+        return lightDirection;
+    }
+
+    public String getLightSource() {
+        return lightSource;
     }
 }

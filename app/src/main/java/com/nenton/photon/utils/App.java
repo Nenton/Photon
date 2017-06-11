@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.facebook.stetho.Stetho;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.components.AppComponent;
 import com.nenton.photon.di.components.DaggerAppComponent;
@@ -48,7 +49,9 @@ public class App extends Application {
         super.onCreate();
         Realm.init(this);
 
+
         sContext = getApplicationContext();
+
         sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         createAppComponent();
         createRootActivityComponent();
