@@ -2,8 +2,12 @@ package com.nenton.photon.ui.screens.account;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,6 +50,8 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     TextView mAlbumCount;
     @BindView(R.id.account_photocard_count)
     TextView mPhotocardCount;
+    @BindView(R.id.anchor_popup_menu)
+    View mView;
 
     private AccountAdapter mAccountAdapter = new AccountAdapter();
 

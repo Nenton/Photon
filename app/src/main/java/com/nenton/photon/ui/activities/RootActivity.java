@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -17,14 +18,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuItemWrapperICS;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -37,13 +35,16 @@ import com.nenton.photon.di.modules.RootModule;
 import com.nenton.photon.di.sqopes.RootScope;
 import com.nenton.photon.flow.TreeKeyDispatcher;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
+import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.mvp.views.IActionBarView;
 import com.nenton.photon.mvp.views.IRootView;
 import com.nenton.photon.mvp.views.IView;
+import com.nenton.photon.ui.screens.account.AccountScreen;
 import com.nenton.photon.ui.screens.main.MainScreen;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -71,10 +72,17 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     DrawerLayout mDrawerLayout;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView mBottomNavigationView;
+    @BindView(R.id.popup_menu)
+    View mView;
 
     private ActionBarDrawerToggle mToggle;
     private ActionBar mActionBar;
     private List<MenuItemHolder> mActionBarMenuItems;
+
+    private List<PopupMenuItem> mMenuPopups;
+    private int mMenuIdRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,14 +95,33 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         rootComponent.inject(this);
         mRootPresenter.takeView(this);
         initToolbar();
+        initBottomNavView();
+    }
+
+    private void initBottomNavView() {
+        mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Object key = null;
+            switch (item.getItemId()){
+                case R.id.action_home:
+                    key = new MainScreen();
+                    break;
+                case R.id.action_account:
+                    key = new AccountScreen();
+                    break;
+                case R.id.action_upload:
+                    break;
+            }
+
+            if (key != null){
+                Flow.get(RootActivity.this).set(key);
+            }
+            return true;
+        });
     }
 
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
-//        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
-////        mDrawerLayout.setDrawerListener(mToggle);
-//        mToggle.syncState();
     }
 
     @Override
@@ -124,16 +151,6 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         return rootActivityScope.hasService(name) ? rootActivityScope.getService(name) : super.getSystemService(name);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public boolean viewOnBackPressed() {
         return false;
@@ -158,6 +175,8 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     public void hideLoad() {
 
     }
+
+
 
     @Override
     public void setVisibleToolbar(boolean visible) {
@@ -269,6 +288,31 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         mRootPresenter.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void setMenuIdRes(int menuIdRes){
+        this.mMenuIdRes = menuIdRes;
+    }
+
+    public void setMenuPopup(List<PopupMenuItem> menuPopup){
+        mMenuPopups = menuPopup;
+    }
+
+    @Override
+    public void showSettings(){
+        if (mMenuPopups != null && !mMenuPopups.isEmpty()){
+            PopupMenu menu = new PopupMenu(this, mView, Gravity.RIGHT);
+            menu.inflate(mMenuIdRes);
+            menu.setOnMenuItemClickListener(item -> {
+                for (PopupMenuItem menuPopup : mMenuPopups) {
+                    if(item.getItemId() == menuPopup.getItemId()){
+                        menuPopup.getAction().action();
+                        return true;
+                    }
+                }
+                return false;
+            });
+            menu.show();
+        }
+    }
 
     //region ========================= DI =========================
 

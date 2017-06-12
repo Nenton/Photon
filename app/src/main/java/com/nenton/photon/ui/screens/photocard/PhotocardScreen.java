@@ -10,6 +10,8 @@ import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.MenuItemHolder;
+import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.squareup.picasso.Picasso;
@@ -67,7 +69,35 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
         @Override
         protected void initActionBar() {
+            mRootPresenter.newActionBarBuilder()
+                    .setTitle("Фотокарточка")
+                    .setBackArrow(true)
+                    .addAction(new MenuItemHolder("Меню", R.drawable.ic_custom_menu_black_24dp, item -> {
+                        getRootView().showSettings();
+                        return true;
+                    }))
+                    .build();
+        }
 
+        @Override
+        protected void initMenuPopup() {
+            mRootPresenter.newMenuPopupBuilder()
+                    .setIdMenuRes(R.menu.photocard_settings_menu)
+                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_dial, this::addToFavourite))
+                    .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, this::sharePhoto))
+                    .addMenuPopup(new PopupMenuItem(R.id.download_photo_dial, this::downloadPhoto))
+                    .build();
+        }
+
+        private void downloadPhoto() {
+
+        }
+
+        private void sharePhoto() {
+
+        }
+
+        private void addToFavourite() {
         }
 
         @Override

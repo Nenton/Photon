@@ -49,7 +49,6 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-//        mContext = recyclerView.getContext();
         DaggerService.<MainScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
         super.onAttachedToRecyclerView(recyclerView);
     }
@@ -72,6 +71,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         mPicasso.load(photocard.getPhoto())
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .fit()
+                .centerCrop()
                 .transform(new PhotoTransform())
                 .into(holder.mPhoto, new Callback() {
                     @Override
@@ -83,6 +83,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
                                 .fit()
+                                .centerCrop()
+                                .transform(new PhotoTransform())
                                 .into(holder.mPhoto);
                     }
                 });

@@ -11,7 +11,6 @@ import java.util.List;
 public interface IMainView {
     void showPhotos(List<PhotoDto> photoList);
     void showSearch();
-    void showSettings();
     void showPhoto(int id);
     void editCountFav(int id);
 }

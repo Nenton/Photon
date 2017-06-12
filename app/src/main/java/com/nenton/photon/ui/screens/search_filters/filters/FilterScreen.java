@@ -55,6 +55,11 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         }
 
         @Override
+        protected void initMenuPopup() {
+
+        }
+
+        @Override
         protected void initDagger(MortarScope scope) {
             ((Component)scope.getService(DaggerService.SERVICE_NAME)).inject(this);
         }

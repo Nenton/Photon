@@ -1,5 +1,7 @@
 package com.nenton.photon.mvp.model;
 
+import android.support.annotation.Nullable;
+
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserLoginReq;

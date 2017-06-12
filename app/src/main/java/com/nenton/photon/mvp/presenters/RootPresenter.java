@@ -1,20 +1,11 @@
 package com.nenton.photon.mvp.presenters;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import com.fernandocejas.frodo.annotation.RxLogSubscriber;
-import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.IRootView;
@@ -23,8 +14,6 @@ import com.nenton.photon.ui.activities.RootActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import mortar.MortarScope;
 import mortar.Presenter;
@@ -61,6 +50,10 @@ public class RootPresenter extends Presenter<IRootView> {
 
     public ActionBarBuilder newActionBarBuilder() {
         return this.new ActionBarBuilder();
+    }
+
+    public MenuPopupBuilder newMenuPopupBuilder() {
+        return this.new MenuPopupBuilder();
     }
 
     public boolean checkPermissionsAndRequestIfNotGranted(@NonNull String[] permissions, int requestCode) {
@@ -132,6 +125,30 @@ public class RootPresenter extends Presenter<IRootView> {
                 } else {
                     activity.removeTabLayout();
                 }
+            }
+        }
+    }
+
+    public class MenuPopupBuilder {
+
+        private List<PopupMenuItem> items = new ArrayList<>();
+        private int mIdMenuRes;
+
+        public MenuPopupBuilder setIdMenuRes(int toolbarMode) {
+            this.mIdMenuRes = toolbarMode;
+            return this;
+        }
+
+        public MenuPopupBuilder addMenuPopup(PopupMenuItem menuPopup){
+            items.add(menuPopup);
+            return this;
+        }
+
+        public void build() {
+            if (getRootView() != null) {
+                RootActivity activity = (RootActivity) getRootView();
+                activity.setMenuIdRes(mIdMenuRes);
+                activity.setMenuPopup(items);
             }
         }
     }

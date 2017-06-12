@@ -11,6 +11,8 @@ import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.MenuItemHolder;
+import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.squareup.picasso.Picasso;
@@ -62,6 +64,47 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
 
         @Override
         protected void initActionBar() {
+            if (mModel.isSignIn()){
+                mRootPresenter.newActionBarBuilder()
+                        .setTitle("Профиль")
+                        .setBackArrow(false)
+                        .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_menu_black_24dp, item -> {
+                            getRootView().showSettings();
+                            return true;
+                        }))
+                        .build();
+            } else {
+                mRootPresenter.newActionBarBuilder()
+                        .setTitle("Профиль")
+                        .setBackArrow(false)
+                        .build();
+            }
+        }
+
+        @Override
+        protected void initMenuPopup() {
+            mRootPresenter.newMenuPopupBuilder()
+                    .setIdMenuRes(R.menu.account_settings_menu)
+                    .addMenuPopup(new PopupMenuItem(R.id.add_album_dial, this::addAlbum))
+                    .addMenuPopup(new PopupMenuItem(R.id.edit_user_dial, this::editUserInfo))
+                    .addMenuPopup(new PopupMenuItem(R.id.upload_avatar_dial, this::uploadAvatar))
+                    .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, this::exitAccount))
+                    .build();
+        }
+
+        private void exitAccount() {
+
+        }
+
+        private void uploadAvatar() {
+
+        }
+
+        private void editUserInfo() {
+
+        }
+
+        private void addAlbum() {
 
         }
 

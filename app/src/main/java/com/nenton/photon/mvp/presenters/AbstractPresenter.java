@@ -42,6 +42,7 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
         super.onLoad(savedInstanceState);
         mCompSubs = new CompositeSubscription();
         initActionBar();
+        initMenuPopup();
     }
 
     @Override
@@ -54,6 +55,8 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
 
 
     protected abstract void initActionBar();
+
+    protected abstract void initMenuPopup();
 
     protected abstract void initDagger(MortarScope scope);
 

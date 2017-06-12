@@ -1,5 +1,7 @@
 package com.nenton.photon.data.managers;
 
+import android.support.annotation.Nullable;
+
 import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SignInRes;
@@ -51,7 +53,11 @@ public class RealmManager {
 
     public Observable<UserRealm> getUserById(String id){
         UserRealm userRealms = getQueryRealmInstance().where(UserRealm.class).equalTo("id", id).findFirst();
-        return userRealms.asObservable();
+        if (userRealms!=null){
+            return userRealms.asObservable();
+        } else {
+            return Observable.error(new Throwable());
+        }
     }
 
 

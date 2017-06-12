@@ -13,6 +13,7 @@ import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
+import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
@@ -68,6 +69,10 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     public class MainPresenter extends AbstractPresenter<MainView, MainModel> {
 
+        private static final int AUTH_STATE = 900;
+        private static final int UN_AUTH_STATE = 990;
+        private int mLoginState;
+
         @Override
         protected void initActionBar() {
             mRootPresenter.newActionBarBuilder()
@@ -77,15 +82,51 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                         return true;
                     }))
                     .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
-                        getView().showSettings();
+                        getRootView().showSettings();
+//                        getView().showSettings();
                         return true;
                     }))
                     .build();
+
+        }
+
+        @Override
+        protected void initMenuPopup() {
+            if (mLoginState == AUTH_STATE) {
+                mRootPresenter.newMenuPopupBuilder()
+                        .setIdMenuRes(R.menu.main_auth_settings_menu)
+                        .addMenuPopup(new PopupMenuItem(R.id.enter_dial, new PopupMenuItem.MenuPopup() {
+                            @Override
+                            public void action() {
+                                enterAccount();
+                            }
+                        }))
+                        .addMenuPopup(new PopupMenuItem(R.id.registration_dial, this::registration))
+                        .build();
+            } else {
+                mRootPresenter.newMenuPopupBuilder()
+                        .setIdMenuRes(R.menu.main_un_auth_settings_menu)
+                        .addMenuPopup(new PopupMenuItem(R.id.exit_dial, this::exitUser))
+                        .build();
+            }
+        }
+
+        private void registration() {
+            getView().signUp();
+        }
+
+        private void enterAccount() {
+            getView().signIn();
+        }
+
+        private void exitUser() {
+            mModel.unAuth();
         }
 
         @Override
         protected void initDagger(MortarScope scope) {
             ((Component) scope.getService(DaggerService.SERVICE_NAME)).inject(this);
+            mLoginState = mModel.isSignIn() ? AUTH_STATE : UN_AUTH_STATE;
         }
 
         @Override
@@ -119,10 +160,6 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         public boolean isAuth() {
             return mModel.isSignIn();
-        }
-
-        public void exitUser() {
-            mModel.unAuth();
         }
 
         private class RealmSubscriber extends Subscriber<PhotocardRealm> {

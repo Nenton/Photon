@@ -2,8 +2,12 @@ package com.nenton.photon.ui.screens.album;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
@@ -20,7 +24,7 @@ import butterknife.BindView;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
+public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
 
     @BindView(R.id.album_RV)
     RecyclerView mRecycleView;
@@ -30,6 +34,8 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
     TextView mCountPhoto;
     @BindView(R.id.album_description)
     TextView mDescription;
+    @BindView(R.id.anchor_popup_menu)
+    View mView;
 
     private AlbumAdapter mAccountAdapter = new AlbumAdapter();
 
@@ -58,4 +64,5 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter>{
             mAccountAdapter.addAlbum(photo);
         }
     }
+
 }

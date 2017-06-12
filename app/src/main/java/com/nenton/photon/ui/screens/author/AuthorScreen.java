@@ -59,7 +59,16 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent>{
 
         @Override
         protected void initActionBar() {
+            mRootPresenter.newActionBarBuilder()
+                    .setBackArrow(true)
+                    .setTitle("Автор")
+                    .build();
+        }
 
+        @Override
+        protected void initMenuPopup() {
+            mRootPresenter.newMenuPopupBuilder()
+                    .build();
         }
 
         @Override

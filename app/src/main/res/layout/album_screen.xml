@@ -5,63 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    <View
+        android:id="@+id/anchor_popup_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/album_screen_name_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    tools:text="Закуски"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Карты"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/album_screen_count_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    tools:text="9"/>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/album_screen_name_TV"
-                android:layout_width="wrap_content"
+                android:id="@+id/album_description"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tools:text="Закуски"
+                android:layout_weight="2"
+                android:maxLines="3"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Карты"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:id="@+id/album_screen_count_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="9"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
+                tools:text="Разные закуски (шпажки, сендвичи, нарезки, фрукты, заготовки и тд.)"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/album_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:maxLines="3"
-            tools:text="Разные закуски (шпажки, сендвичи, нарезки, фрукты, заготовки и тд.)"
-            android:textColor="@color/black"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/album_RV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/album_RV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-
-</LinearLayout>
 
 </com.nenton.photon.ui.screens.album.AlbumView>

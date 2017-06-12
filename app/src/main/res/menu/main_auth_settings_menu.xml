@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:visible="false"
         android:id="@+id/enter_dial"
         android:title="Войти"/>
     <item
-        android:visible="false"
-        android:id="@+id/exit_dial"
-        android:title="Выйти"/>
-    <item
-        android:visible="false"
         android:id="@+id/registration_dial"
         android:title="Зарегистрироваться" />
 </menu>
