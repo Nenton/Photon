@@ -8,6 +8,7 @@ import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.SearchModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
+import com.nenton.photon.utils.SearchFilterQuery;
 
 import dagger.Provides;
 import mortar.MortarScope;
@@ -26,28 +27,35 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     }
 
     @dagger.Module
-    public class Module{
+    public class Module {
         @Provides
         @DaggerScope(FilterScreen.class)
-        SearchModel provideSearchModel(){
+        SearchModel provideSearchModel() {
             return new SearchModel();
         }
 
         @Provides
         @DaggerScope(FilterScreen.class)
-        FilterPresenter provideFilterPresenter(){
+        FilterPresenter provideFilterPresenter() {
             return new FilterPresenter();
         }
     }
 
     @dagger.Component(dependencies = SearchFiltersScreen.Component.class, modules = Module.class)
     @DaggerScope(FilterScreen.class)
-    public interface Component{
+    public interface Component {
         void inject(FilterPresenter presenter);
+
         void inject(FilterView view);
     }
 
-    public class FilterPresenter extends AbstractPresenter<FilterView, SearchModel>{
+    public class FilterPresenter extends AbstractPresenter<FilterView, SearchModel> {
+
+        SearchFilterQuery getSearchModel() {
+            return mSearchModel;
+        }
+
+        private SearchFilterQuery mSearchModel = new SearchFilterQuery();
 
         @Override
         protected void initActionBar() {
@@ -61,8 +69,11 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
 
         @Override
         protected void initDagger(MortarScope scope) {
-            ((Component)scope.getService(DaggerService.SERVICE_NAME)).inject(this);
+            ((Component) scope.getService(DaggerService.SERVICE_NAME)).inject(this);
             getView().initView();
+        }
+
+        public void clickOnSearch() {
         }
     }
 }

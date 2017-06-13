@@ -7,4 +7,43 @@
     <string name="main_screen">Главная</string>
     <string name="account_screen">Профиль</string>
     <string name="download_photo">Загрузить</string>
+
+    <string name="dish_meat">meat</string>
+    <string name="dish_fish">fish</string>
+    <string name="dish_vegetables">vegetables</string>
+    <string name="dish_fruit">fruit</string>
+    <string name="dish_cheese">cheese</string>
+    <string name="dish_desserts">desserts</string>
+    <string name="dish_drinks">drinks</string>
+
+    <string name="nuances_red">red</string>
+    <string name="nuances_orange">orange</string>
+    <string name="nuances_yellow">yellow</string>
+    <string name="nuances_green">green</string>
+    <string name="nuances_blue_light">lightBlue</string>
+    <string name="nuances_blue">blue</string>
+    <string name="nuances_purple">purple</string>
+    <string name="nuances_brown">brown</string>
+    <string name="nuances_black">black</string>
+    <string name="nuances_white">white</string>
+
+    <string name="decor_simple">simple</string>
+    <string name="decor_holiday">holiday</string>
+
+    <string name="temperature_hot">hot</string>
+    <string name="temperature_middle">middle</string>
+    <string name="temperature_cold">cold</string>
+
+    <string name="light_natural">natural</string>
+    <string name="light_synthetic">synthetic</string>
+    <string name="light_mixed">mixed</string>
+
+    <string name="light_direction_side_light">sideLight</string>
+    <string name="light_direction_back_light">backlight</string>
+    <string name="light_direction_direct">direct</string>
+    <string name="light_direction_mixed">mixed</string>
+
+    <string name="light_source_one">one</string>
+    <string name="light_source_two">two</string>
+    <string name="light_source_three">three</string>
 </resources>

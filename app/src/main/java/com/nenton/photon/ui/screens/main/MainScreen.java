@@ -141,7 +141,8 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq)
                     .subscribe(userLoginRes -> {
-                    }, throwable -> getRootView().showMessage("не правильный логин или пароль"), () -> {
+                    }, throwable -> getRootView().showMessage("не правильный логин или пароль"),
+                            () -> {
                         getRootView().showMessage("Пользователь залогинен");
                         getView().cancelSignIn();
                     }));

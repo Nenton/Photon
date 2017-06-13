@@ -39,48 +39,12 @@ public class SearchView extends AbstractView<SearchScreen.SearchPresenter> {
 
     void initView(){
         mRecyclerViewTags.setLayoutManager(new WordsLayoutManager(getContext()));
-//        mRecyclerViewTags.setLayoutManager(new LinearLayoutManager(getContext()));
         initAdapter();
         mRecyclerViewTags.setAdapter(mTagsAdapter);
     }
 
     private void initAdapter() {
-        mTagsAdapter.addString("#Африка");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Таджикистан");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Парагвай");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#США");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
-        mTagsAdapter.addString("#Россия");
+
     }
 
     public TagsAdapter getAdapter() {
