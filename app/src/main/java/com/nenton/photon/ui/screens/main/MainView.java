@@ -4,27 +4,21 @@ import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
-import com.nenton.photon.data.storage.dto.PhotoDto;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IMainView;
 import com.nenton.photon.utils.ConstantsManager;
 import com.nenton.photon.utils.TextWatcherEditText;
-
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -32,7 +26,7 @@ import butterknife.BindView;
  * Created by serge on 04.06.2017.
  */
 
-public class MainView extends AbstractView<MainScreen.MainPresenter> implements IMainView{
+public class MainView extends AbstractView<MainScreen.MainPresenter> implements IMainView {
 
     private MainAdapter mMainAdapter = new MainAdapter();
     @BindView(R.id.list_photos_main_rv)
@@ -40,18 +34,8 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
     @BindView(R.id.anchor_popup_menu)
     View mView;
 
-//
-//    private void initAdapter() {
-//        RealmList<StringRealm> stringRealms = new RealmList<>();
-//        stringRealms.add(new StringRealm("Салат"));
-//        stringRealms.add(new StringRealm("Груша"));
-//        stringRealms.add(new StringRealm("Персик"));
-//        stringRealms.add(new StringRealm("Финик"));
-//        mMainAdapter.addPhoto(new PhotocardRealm("http://s1.1zoom.me/big7/635/Meat_products_Roast_343470.jpg", 56, 74, "Салат", stringRealms));
-//        mMainAdapter.addPhoto(new PhotocardRealm("http://i1.imageban.ru/out/2017/05/18/d20adec5c79e16a60bca28e9b8c7aa36.jpg", 13, 42, "Манты", stringRealms));
-//        mMainAdapter.addPhoto(new PhotocardRealm("http://boombob.ru/img/picture/Jul/10/85af725d3426a6e6ca9838a5ef16c182/8.jpg", 55, 16, " Ребра",stringRealms));
-//        mMainAdapter.addPhoto(new PhotocardRealm("http://vkusnoe.biz/uploads/taginator/Aug-2015/vtorye-blyuda.jpg", 98, 14, "Стейк",stringRealms));
-//    }
+    private AlertDialog dialogSignIn = null;
+    private AlertDialog dialogSignUp = null;
 
     public MainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,19 +51,16 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         DaggerService.<MainScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    @Override
-    public void showPhotos(List<PhotoDto> photoList) {
-
-    }
-
-    @Override
-    public void showSearch() {
-
-    }
-
     public void signUp() {
+        if (dialogSignUp == null) {
+            dialogSignUp = createDialogSignUp();
+        }
+        dialogSignUp.show();
+    }
+
+    private AlertDialog createDialogSignUp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.registration_account_dialog, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_registration_account, null);
         TextInputLayout login_ti = (TextInputLayout) view.findViewById(R.id.registration_login_til);
         TextInputLayout email_ti = (TextInputLayout) view.findViewById(R.id.registration_email_til);
         TextInputLayout name_ti = (TextInputLayout) view.findViewById(R.id.registration_name_til);
@@ -90,7 +71,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length() > 2){
+                if (s.toString().length() > 2) {
                     login_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     login_ti.setBackground(null);
                     login_ti.setHint("Логин");
@@ -105,7 +86,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         email_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().matches(ConstantsManager.REG_EXP_EMAIL)){
+                if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
                     email_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     email_ti.setBackground(null);
                     email_ti.setHint("E-mail");
@@ -120,7 +101,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().length() > 2){
+                if (s.toString().length() > 2) {
                     name_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     name_ti.setBackground(null);
                     name_ti.setHint("Имя");
@@ -135,7 +116,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         password_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().matches(ConstantsManager.REG_EXP_PASSWORD) && s.toString().length() > 7){
+                if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD) && s.toString().length() > 7) {
                     password_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     password_ti.setBackground(null);
                     password_ti.setHint("Пароль");
@@ -153,28 +134,37 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
             String name = name_ti.getEditText().getText().toString();
             String password = password_ti.getEditText().getText().toString();
 
-            if (validateSignUp(login, email, name, password)){
+            if (login.length() > 3 && email.matches(ConstantsManager.REG_EXP_EMAIL) && name.length() > 2 &&
+                    password.matches(ConstantsManager.REG_EXP_PASSWORD) && password.length() > 7) {
                 mPresenter.signUp(new UserCreateReq(name, login, email, password));
             }
         });
 
-        AlertDialog dialog = builder.setTitle("Регистрация")
+        cancelBtn.setOnClickListener(v -> {
+            cancelSignUp();
+        });
+
+        return builder.setTitle("Регистрация")
                 .setView(view)
                 .create();
-
-        cancelBtn.setOnClickListener(v -> {
-            dialog.cancel();
-        });
-        dialog.show();
     }
 
-    private boolean validateSignUp(String login, String email, String name, String password) {
-        return login.length() > 3 && email.matches(ConstantsManager.REG_EXP_EMAIL) && name.length() > 2 && password.matches(ConstantsManager.REG_EXP_PASSWORD) && password.length() > 7;
+    public void cancelSignUp() {
+        if (dialogSignUp != null) {
+            dialogSignUp.cancel();
+        }
     }
 
     public void signIn() {
+        if (dialogSignIn == null) {
+            dialogSignIn = createDialogSignIn();
+        }
+        dialogSignIn.show();
+    }
+
+    private AlertDialog createDialogSignIn() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.enter_account_dialog, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_enter_account, null);
         TextInputLayout email_til = (TextInputLayout) view.findViewById(R.id.sign_in_email_til);
         TextInputLayout password_til = (TextInputLayout) view.findViewById(R.id.sing_in_password_til);
         Button okBtn = (Button) view.findViewById(R.id.sign_in_positive_btn);
@@ -183,7 +173,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         email_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().matches(ConstantsManager.REG_EXP_EMAIL)){
+                if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
                     email_til.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     email_til.setBackground(null);
                     email_til.setHint("E-mail");
@@ -198,7 +188,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
         password_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.toString().matches(ConstantsManager.REG_EXP_PASSWORD) && s.toString().length() > 7){
+                if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD) && s.toString().length() > 7) {
                     password_til.getEditText().setTextColor(getContext().getResources().getColor(R.color.colorAccent));
                     password_til.setBackground(null);
                     password_til.setHint("Пароль");
@@ -210,38 +200,28 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
             }
         });
 
-
-        AlertDialog dialog = builder.setTitle("Вход в аккаунт")
-                .setView(view)
-                .create();
+        cancelBtn.setOnClickListener(v -> {
+            cancelSignIn();
+        });
 
         okBtn.setOnClickListener(v -> {
             String email = email_til.getEditText().getText().toString();
             String password = password_til.getEditText().getText().toString();
 
-//            if (email.matches(ConstantsManager.REG_EXP_EMAIL) && password.matches(ConstantsManager.REG_EXP_PASSWORD) && password.length() > 7){
-//                mPresenter.signIn(new UserLoginReq(email, password));
-//            }
-            if (true){
+            if (email.matches(ConstantsManager.REG_EXP_EMAIL) && password.matches(ConstantsManager.REG_EXP_PASSWORD) && password.length() > 7) {
                 mPresenter.signIn(new UserLoginReq(email, password));
             }
         });
 
-        cancelBtn.setOnClickListener(v -> {
-            dialog.cancel();
-        });
-
-        dialog.show();
+        return builder.setTitle("Вход в аккаунт")
+                .setView(view)
+                .create();
     }
 
-    @Override
-    public void showPhoto(int id) {
-
-    }
-
-    @Override
-    public void editCountFav(int id) {
-
+    public void cancelSignIn() {
+        if (dialogSignIn != null) {
+            dialogSignIn.cancel();
+        }
     }
 
     @Override

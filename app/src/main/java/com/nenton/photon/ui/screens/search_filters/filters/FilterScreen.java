@@ -15,7 +15,7 @@ import mortar.MortarScope;
 /**
  * Created by serge on 05.06.2017.
  */
-@Screen(R.layout.filters_screen)
+@Screen(R.layout.screen_filters)
 public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> {
     @Override
     public Object createScreenComponent(SearchFiltersScreen.Component parentComponent) {
@@ -62,6 +62,7 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         @Override
         protected void initDagger(MortarScope scope) {
             ((Component)scope.getService(DaggerService.SERVICE_NAME)).inject(this);
+            getView().initView();
         }
     }
 }

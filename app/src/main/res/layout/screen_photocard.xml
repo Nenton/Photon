@@ -10,17 +10,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.nenton.photon.ui.custom_views.ImageViewSquare
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView
+            <com.nenton.photon.ui.custom_views.ImageViewSquare
                 android:id="@+id/photo_IV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/splash">
 
-            </ImageView>
+            </com.nenton.photon.ui.custom_views.ImageViewSquare>
 
             <TextView
                 android:id="@+id/name_photocard"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 tools:text="Хелена Марчиано" />
-        </com.nenton.photon.ui.custom_views.ImageViewSquare>
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

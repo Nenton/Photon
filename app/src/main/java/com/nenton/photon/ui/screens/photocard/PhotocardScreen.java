@@ -22,7 +22,7 @@ import mortar.MortarScope;
 /**
  * Created by serge_000 on 06.06.2017.
  */
-@Screen(R.layout.photocard_screen)
+@Screen(R.layout.screen_photocard)
 public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     private PhotocardRealm mPhotocard;

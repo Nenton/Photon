@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
-import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -23,7 +22,7 @@ import mortar.MortarScope;
 /**
  * Created by serge_000 on 06.06.2017.
  */
-@Screen(R.layout.account_screen)
+@Screen(R.layout.screen_account)
 public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
 
     @Override

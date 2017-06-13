@@ -10,7 +10,6 @@ import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.SearchModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
-import com.nenton.photon.ui.screens.main.MainScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 
 import dagger.Provides;
@@ -19,7 +18,7 @@ import mortar.MortarScope;
 /**
  * Created by serge on 05.06.2017.
  */
-@Screen(R.layout.search_screen)
+@Screen(R.layout.screen_search)
 public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> {
 
     @Override

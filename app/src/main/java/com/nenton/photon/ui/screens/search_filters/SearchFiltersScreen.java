@@ -2,6 +2,7 @@ package com.nenton.photon.ui.screens.search_filters;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.RadioButton;
 
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
@@ -20,7 +21,7 @@ import mortar.MortarScope;
 /**
  * Created by serge on 05.06.2017.
  */
-@Screen(R.layout.search_filters_screen)
+@Screen(R.layout.screen_search_filters)
 public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> implements TreeKey{
 
     @Override

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nenton.photon.ui.screens.search_filters.filters.FilterView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Блюдо"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_bludo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/ic_meat"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_meat_black_24dp"
+                    android:text="Мясо"/>
+
+                <RadioButton
+                    android:id="@+id/ic_fish"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_fish_black_24dp"
+                    android:text="Рыба"/>
+
+                <RadioButton
+                    android:id="@+id/ic_vegetables"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_vegetables_black_24dp"
+                    android:text="Овощи"/>
+
+                <RadioButton
+                    android:id="@+id/ic_fruit"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_fruit_black_24dp"
+                    android:text="Фрукты"/>
+
+                <RadioButton
+                    android:id="@+id/ic_cheese"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_cheese_black_24dp"
+                    android:text="Сыр"/>
+
+                <RadioButton
+                    android:id="@+id/ic_desserts"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_dish_desserts"
+                    android:text="Десерты"/>
+
+                <RadioButton
+                    android:id="@+id/ic_drinks"
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_drinks_black_24dp"
+                    android:text="Напитки"/>
+            </RadioGroup>
+
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Оттенки"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_red_24dp"
+                    android:text="Красный"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_orange_24dp"
+                    android:text="Оранжевый"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_yellow_24dp"
+                    android:text="Желтый"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_green_24dp"
+                    android:text="Зеленый"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_light_blue_24dp"
+                    android:text="Голубой"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_dark_blue_24dp"
+                    android:text="Синий"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_purple_24dp"
+                    android:text="Фиолетовый"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_brown_24dp"
+                    android:text="Коричневый"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_black_24dp"
+                    android:text="Черный"/>
+
+                <CheckBox
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_color_white_24dp"
+                    android:text="Белый"/>
+            </LinearLayout>
+
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Оформление"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_tea_black_24dp"
+                    android:text="Обычное"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_cocktail_black_24dp"
+                    android:text="Праздничное"/>
+            </RadioGroup>
+
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Температура"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_temperature_hot_black_24dp"
+                    android:text="Горячая"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_temperature_comfort_black_24dp"
+                    android:text="Комнатная"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_temperature_cold_black_24dp"
+                    android:text="Холодная"/>
+            </RadioGroup>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Свет"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_natural_black_24dp"
+                    android:text="Естественный"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_synthetic_black_24dp"
+                    android:text="Искуственный"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_mixed_black_24dp"
+                    android:text="Смешанный"/>
+            </RadioGroup>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Направление света"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_dir_front_black_24dp"
+                    android:text="Прямой"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_dir_back_black_24dp"
+                    android:text="Контровой"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_dir_side_black_24dp"
+                    android:text="Боковой"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_dir_mixed"
+                    android:text="Смешанный"/>
+            </RadioGroup>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Источник света"/>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_count_1_black_24dp"
+                    android:text="Один"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_count_2_black_24dp"
+                    android:text="Два"/>
+
+                <RadioButton
+                    style="@style/RadioButton"
+                    android:drawableTop="@drawable/ic_custom_light_count_3_black_24dp"
+                    android:text="Три"/>
+            </RadioGroup>
+
+            <Button
+                style="@style/ButtonSearch"
+                android:text="Найти"/>
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</com.nenton.photon.ui.screens.search_filters.filters.FilterView>

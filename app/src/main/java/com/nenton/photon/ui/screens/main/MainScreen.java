@@ -16,6 +16,7 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.squareup.picasso.Picasso;
 
@@ -28,7 +29,7 @@ import rx.Subscription;
 /**
  * Created by serge on 04.06.2017.
  */
-@Screen(R.layout.main_screen)
+@Screen(R.layout.screen_main)
 public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
@@ -83,7 +84,6 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     }))
                     .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
                         getRootView().showSettings();
-//                        getView().showSettings();
                         return true;
                     }))
                     .build();
@@ -92,15 +92,10 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         protected void initMenuPopup() {
-            if (mLoginState == AUTH_STATE) {
+            if (mLoginState == UN_AUTH_STATE) {
                 mRootPresenter.newMenuPopupBuilder()
                         .setIdMenuRes(R.menu.main_auth_settings_menu)
-                        .addMenuPopup(new PopupMenuItem(R.id.enter_dial, new PopupMenuItem.MenuPopup() {
-                            @Override
-                            public void action() {
-                                enterAccount();
-                            }
-                        }))
+                        .addMenuPopup(new PopupMenuItem(R.id.enter_dial, this::enterAccount))
                         .addMenuPopup(new PopupMenuItem(R.id.registration_dial, this::registration))
                         .build();
             } else {
@@ -121,6 +116,9 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         private void exitUser() {
             mModel.unAuth();
+            changeStateAuth();
+            initMenuPopup();
+            getRootView().showMessage("Пользователь вышел");
         }
 
         @Override
@@ -143,23 +141,32 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq)
                     .subscribe(userLoginRes -> {
-
-                    }, throwable -> {
-                        getRootView().showMessage("не правильный логин или пароль");
+                    }, throwable -> getRootView().showMessage("не правильный логин или пароль"), () -> {
+                        getRootView().showMessage("Пользователь залогинен");
+                        getView().cancelSignIn();
                     }));
         }
 
         public void signUp(UserCreateReq createReq) {
             mCompSubs.add(mModel.signUp(createReq)
                     .subscribe(userCreateRes -> {
-                        getRootView().showMessage("Пользователь успешно создан");
-                    }, throwable -> {
-                        getRootView().showMessage("не правильный логин или пароль");
-                    }));
+                            }, throwable -> getRootView().showMessage("не правильный логин или пароль"),
+                            () -> {
+                                getRootView().showMessage("Пользователь успешно создан");
+                                getView().cancelSignUp();
+                            }));
         }
 
-        public boolean isAuth() {
-            return mModel.isSignIn();
+        private void changeStateAuth() {
+            if (mLoginState == AUTH_STATE) {
+                mLoginState = UN_AUTH_STATE;
+            } else {
+                mLoginState = AUTH_STATE;
+            }
+        }
+
+        public void clickOnPhoto(PhotocardRealm photocard) {
+            Flow.get(getView().getContext()).set(new PhotocardScreen(photocard));
         }
 
         private class RealmSubscriber extends Subscriber<PhotocardRealm> {

@@ -33,6 +33,8 @@ public class RestCallTransformer<R> implements Observable.Transformer<Response<R
                                 DataManager.getInstance().getPreferencesManager().saveLastProductUpdate(lastModified);
                             }
                             return Observable.just(rResponse.body());
+                        case 201:
+                            return Observable.just(rResponse.body());
                         case 304:
                             return Observable.empty();
                         case 403:

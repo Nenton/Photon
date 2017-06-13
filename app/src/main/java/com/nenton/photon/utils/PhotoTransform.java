@@ -22,11 +22,10 @@ public class PhotoTransform implements Transformation {
         Bitmap bitmap = Bitmap.createBitmap(source.getWidth(),
                 source.getHeight(),
                 source.getConfig());
-        float i = source.getHeight() / 2;
 
         Shader[] shaders = new Shader[2];
         shaders[0] = new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        shaders[1] = new LinearGradient(0, i - i/3, 0, i,
+        shaders[1] = new LinearGradient(0, source.getHeight()*3/4, 0, source.getHeight(),
                 Color.TRANSPARENT, Color.BLACK,
                 Shader.TileMode.CLAMP);
 

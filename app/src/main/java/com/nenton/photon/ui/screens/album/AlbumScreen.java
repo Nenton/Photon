@@ -22,7 +22,7 @@ import mortar.MortarScope;
 /**
  * Created by serge_000 on 06.06.2017.
  */
-@Screen(R.layout.album_screen)
+@Screen(R.layout.screen_album)
 public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     private AlbumRealm mAlbum;

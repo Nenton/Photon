@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.nenton.photon.ui.custom_views.ImageViewSquare
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.nenton.photon.ui.custom_views.ImageViewSquare
         android:id="@+id/photo_card_account_IV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,4 +44,4 @@
             android:layout_gravity="bottom"/>
 
 
-</com.nenton.photon.ui.custom_views.ImageViewSquare>
+</FrameLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.nenton.photon.R;
 
@@ -11,7 +12,7 @@ import com.nenton.photon.R;
  * Created by serge on 03.06.2017.
  */
 
-public class ImageViewSquare extends FrameLayout {
+public class ImageViewSquare extends android.support.v7.widget.AppCompatImageView {
 
     private static final float DEFAULT_ASPECT_RATIO = 1f;
     private final float mAspectRatio;

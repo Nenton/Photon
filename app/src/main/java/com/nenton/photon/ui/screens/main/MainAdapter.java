@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
+import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Callback;
@@ -34,13 +35,11 @@ import flow.Flow;
 
 class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
     private final List<PhotocardRealm> mPhotocards = new ArrayList<>();
-    private Context mContext;
 
     @Inject
     Picasso mPicasso;
-
-    public MainAdapter() {
-    }
+    @Inject
+    MainScreen.MainPresenter mPresenter;
 
     void addPhoto(PhotocardRealm photocard){
         mPhotocards.add(photocard);
@@ -55,7 +54,6 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_main, parent, false);
         return new MainViewHolder(convertView);
     }
@@ -63,14 +61,12 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
     @Override
     public void onBindViewHolder(MainViewHolder holder, int position) {
         final PhotocardRealm photocard = mPhotocards.get(position);
-        holder.mImageSea.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_custom_views_white_24dp));
-        holder.mImageFav.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_custom_favorites_white_24dp));
         holder.mTextSea.setText(String.valueOf(photocard.getViews()));
         holder.mTextFav.setText(String.valueOf(photocard.getFavorits()));
 
         mPicasso.load(photocard.getPhoto())
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .fit()
+                .resize(400,400)
                 .centerCrop()
                 .transform(new PhotoTransform())
                 .into(holder.mPhoto, new Callback() {
@@ -82,7 +78,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
-                                .fit()
+                                .resize(400,400)
                                 .centerCrop()
                                 .transform(new PhotoTransform())
                                 .into(holder.mPhoto);
@@ -90,7 +86,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                 });
 
         holder.mView.setOnClickListener(v -> {
-            Flow.get(mContext).set(new PhotocardScreen(photocard));
+            mPresenter.clickOnPhoto(photocard);
         });
     }
 
@@ -101,15 +97,11 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_photo)
-        View mView;
+        FrameLayout mView;
         @BindView(R.id.photo_card_IV)
-        ImageView mPhoto;
-        @BindView(R.id.fav_photo_IV)
-        ImageView mImageFav;
+        ImageViewSquare mPhoto;
         @BindView(R.id.fav_photo_TV)
         TextView mTextFav;
-        @BindView(R.id.sea_photo_count_IV)
-        ImageView mImageSea;
         @BindView(R.id.sea_photo_count_TV)
         TextView mTextSea;
         public MainViewHolder(View itemView) {

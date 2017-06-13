@@ -66,7 +66,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         holder.mFavCount.setText(String.valueOf(album.getFavorits()));
         holder.mSeaCount.setText(String.valueOf(album.getViews()));
 
-        if (album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()){
+        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()){
             picasso.load(album.getPhotocards().get(0).getPhoto())
                     .fit()
                     .centerCrop()

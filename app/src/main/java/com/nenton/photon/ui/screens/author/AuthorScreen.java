@@ -19,7 +19,7 @@ import mortar.MortarScope;
 /**
  * Created by serge_000 on 06.06.2017.
  */
-@Screen(R.layout.account_screen)
+@Screen(R.layout.screen_account)
 public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent>{
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
