@@ -115,13 +115,17 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            UserInfoDto userInfo = mModel.getUserInfo();
-            mCompSubs.add(mModel.getUserRealm(userInfo.getId())
-            .subscribe(userRealm -> {
-                getView().showAuthState(userRealm);
-            }, throwable -> {
+            if (mModel.isSignIn()){
+                UserInfoDto userInfo = mModel.getUserInfo();
+                mCompSubs.add(mModel.getUser(userInfo.getId())
+                        .subscribe(userRealm -> {
+                            getView().showAuthState(userRealm);
+                        }, throwable -> {
+                            getView().showUnAuthState();
+                        }));
+            } else {
                 getView().showUnAuthState();
-            }));
+            }
         }
 
         public boolean isAuth() {

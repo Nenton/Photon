@@ -2,6 +2,7 @@ package com.nenton.photon.data.managers;
 
 import android.util.Log;
 
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.nenton.photon.data.network.RestCallTransformer;
 import com.nenton.photon.data.network.RestService;
 import com.nenton.photon.data.network.req.UserCreateReq;
@@ -9,8 +10,12 @@ import com.nenton.photon.data.network.req.UserLoginReq;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.SignInRes;
+import com.nenton.photon.data.network.res.TagsRes;
+import com.nenton.photon.data.network.res.UserInfo;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.data.storage.realm.StringRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.components.DaggerDataManagerComponent;
 import com.nenton.photon.di.components.DataManagerComponent;
@@ -18,6 +23,8 @@ import com.nenton.photon.di.modules.LocalModule;
 import com.nenton.photon.di.modules.NetworkModule;
 import com.nenton.photon.utils.App;
 import com.nenton.photon.utils.AppConfig;
+import com.nenton.photon.utils.SearchFilterQuery;
+import com.nenton.photon.utils.SearchQuery;
 
 import java.util.Date;
 import java.util.List;
@@ -104,21 +111,44 @@ public class DataManager {
                 .flatMap(productRes -> Observable.empty());
     }
 
+    public Observable<TagsRes> getPhotocardTagsObs() {
+        return mRestService.getTagsObs()
+                .compose(((RestCallTransformer<TagsRes>) mRestCallTransformer))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(tagsRes -> mRealmManager.savePhotocardTags(tagsRes.getTags()))
+                .flatMap(tagsObs -> Observable.empty());
+    }
+
+    public Observable<StringRealm> getTagsFromRealm() {
+        return mRealmManager.getTags();
+    }
+
     public Observable<PhotocardRealm> getPhotocardFromRealm() {
         return mRealmManager.getAllPhotocardFromRealm();
     }
 
+    public Observable<PhotocardRealm> getSearchFromRealm(SearchQuery sq) {
+        return mRealmManager.getAllPhotocardOnSearchRealm(sq);
+    }
+
+    public Observable<PhotocardRealm> getSearchFilterFromRealm(SearchFilterQuery sfq) {
+        return mRealmManager.getAllPhotocardOnSearchFilterRealm(sfq);
+    }
+
+    @RxLogObservable
     public Observable<SignInRes> singIn(UserLoginReq loginReq) {
         return mRestService.signIn(loginReq)
                 .compose(((RestCallTransformer<SignInRes>) mRestCallTransformer))
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .doOnNext(userRes -> {
-                            saveUserInfo(new UserInfoDto(userRes.getId(), userRes.getName(), userRes.getLogin(), userRes.getAvatar(), userRes.getToken()));
+                            saveUserInfo(new UserInfoDto(userRes.getId(), userRes.getName(), userRes.getLogin(), userRes.getAvatar()), userRes.getToken());
                             mRealmManager.saveAccountInfoToRealm(userRes);
                         }
                 )
-                .flatMap(signInRes -> Observable.empty());
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(Observable::just);
     }
 
     public Observable<SignUpRes> singUp(UserCreateReq createReq) {
@@ -126,11 +156,11 @@ public class DataManager {
                 .compose(((RestCallTransformer<SignUpRes>) mRestCallTransformer))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
-                .flatMap(userCreateRes -> Observable.empty());
+                .flatMap(Observable::just);
     }
 
-    private void saveUserInfo(UserInfoDto userLoginRes) {
-        getPreferencesManager().saveUserInfo(userLoginRes);
+    private void saveUserInfo(UserInfoDto userLoginRes, String token) {
+        getPreferencesManager().saveUserInfo(userLoginRes, token);
     }
 
     public UserInfoDto getUserInfo() {
@@ -139,5 +169,29 @@ public class DataManager {
 
     public boolean isSignIn() {
         return mPreferencesManager.isUserAuth();
+    }
+
+    public Observable<UserRealm> getUserById(String id) {
+        return mRealmManager.getUserById(id);
+    }
+
+    public Observable<UserRealm> getUserFromNetwork(String id) {
+        return mRestService.getUserInfoObs(id)
+                .compose(((RestCallTransformer<UserInfo>) mRestCallTransformer))
+                .observeOn(Schedulers.io())
+                .flatMap(userInfo -> Observable.just(new UserRealm(userInfo, id)))
+                .doOnNext(userRealm -> {
+                    mRealmManager.saveUserInfo(userRealm);
+                })
+                .subscribeOn(Schedulers.newThread())
+                .retryWhen(errorObservable ->
+                        errorObservable
+                                .zipWith(Observable.range(1, AppConfig.RETRY_REQUEST_COUNT), (throwable, retryCount) -> retryCount)
+                                .doOnNext(retryCount -> Log.e(TAG, "LOCAL UPDATE request retry count: " + retryCount + " " + new Date()))
+                                .map(retryCount -> ((long) (AppConfig.RETRY_REQUEST_BASE_DELAY * Math.pow(Math.E, retryCount))))
+                                .doOnNext(delay -> Log.e(TAG, "LOCAL UPDATE delay: " + delay))
+                                .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(Observable::just);
     }
 }

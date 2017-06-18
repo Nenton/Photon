@@ -1,17 +1,14 @@
 package com.nenton.photon.ui.screens.album;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
-import com.nenton.photon.ui.screens.account.AccountScreen;
-import com.nenton.photon.utils.PhotoTransform;
+import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,6 +28,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     @Inject
     Picasso picasso;
 
+    @Inject
+    AlbumScreen.AlbumPresenter mPresenter;
+
     private List<PhotocardRealm> mAlbums = new ArrayList<>();
 
     public void addAlbum(PhotocardRealm album) {
@@ -40,7 +40,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
     @Override
     public AlbumAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_photo, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_album, parent, false);
         return new AccountViewHolder(convertView);
     }
 
@@ -55,10 +55,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
         PhotocardRealm mPhoto = mAlbums.get(position);
 
             picasso.load(mPhoto.getPhoto())
-//                    .fit()
-                    .resize(300, 300)
+                    .fit()
                     .centerCrop()
                     .into(holder.mPhoto);
+
+        holder.mPhoto.setOnClickListener(v -> {
+            mPresenter.clickOnPhotocard(mPhoto);
+        });
     }
 
     @Override
@@ -67,9 +70,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     }
 
     public class AccountViewHolder extends RecyclerView.ViewHolder {
+
         @BindView(R.id.photo_card_album_IV)
-        @Nullable
-        ImageView mPhoto;
+        ImageViewSquare mPhoto;
 
         public AccountViewHolder(View itemView) {
             super(itemView);

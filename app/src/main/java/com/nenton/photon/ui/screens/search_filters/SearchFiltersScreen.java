@@ -1,41 +1,32 @@
 package com.nenton.photon.ui.screens.search_filters;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.widget.RadioButton;
 
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.SearchModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
-import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.ui.activities.RootActivity;
 
 import dagger.Provides;
-import flow.TreeKey;
 import mortar.MortarScope;
 
 /**
  * Created by serge on 05.06.2017.
  */
 @Screen(R.layout.screen_search_filters)
-public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> implements TreeKey{
+public class SearchFiltersScreen extends AbstractScreen<RootActivity.RootComponent>{
 
     @Override
-    public Object createScreenComponent(MainScreen.Component parentComponent) {
+    public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
         return DaggerSearchFiltersScreen_Component.builder()
-                .component(parentComponent)
+                .rootComponent(parentComponent)
                 .module(new Module())
                 .build();
-    }
-
-    @NonNull
-    @Override
-    public Object getParentKey() {
-        return new MainScreen();
     }
 
     //region ========================= DI =========================
@@ -50,12 +41,12 @@ public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> im
 
         @Provides
         @DaggerScope(SearchFiltersScreen.class)
-        SearchModel provideSearchModel(){
-            return new SearchModel();
+        MainModel provideSearchModel(){
+            return new MainModel();
         }
     }
 
-    @dagger.Component(dependencies = MainScreen.Component.class, modules = Module.class)
+    @dagger.Component(dependencies = RootActivity.RootComponent.class, modules = Module.class)
     @DaggerScope(SearchFiltersScreen.class)
     public interface Component{
         void inject(SearchFiltersPresenter searchFiltersPresenter);
@@ -66,7 +57,7 @@ public class SearchFiltersScreen extends AbstractScreen<MainScreen.Component> im
 
     //endregion
 
-    public class SearchFiltersPresenter extends AbstractPresenter<SearchFiltersView, SearchModel>{
+    public class SearchFiltersPresenter extends AbstractPresenter<SearchFiltersView, MainModel>{
 
         @Override
         protected void initActionBar() {

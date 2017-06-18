@@ -10,20 +10,20 @@ import io.realm.annotations.PrimaryKey;
 public class StringRealm extends RealmObject {
 
     @PrimaryKey
-    private String mString;
+    private String string;
 
     public StringRealm() {
     }
 
     public StringRealm(String string) {
-        mString = string;
+        this.string = string;
     }
 
     public String getString() {
-        return mString;
+        return string;
     }
 
     public void setString(String string) {
-        mString = string;
+        this.string = string;
     }
 }

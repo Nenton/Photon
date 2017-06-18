@@ -5,12 +5,15 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.SearchModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.nenton.photon.utils.SearchFilterQuery;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 
 /**
@@ -30,8 +33,8 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     public class Module {
         @Provides
         @DaggerScope(FilterScreen.class)
-        SearchModel provideSearchModel() {
-            return new SearchModel();
+        MainModel provideSearchModel() {
+            return new MainModel();
         }
 
         @Provides
@@ -45,17 +48,16 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     @DaggerScope(FilterScreen.class)
     public interface Component {
         void inject(FilterPresenter presenter);
-
         void inject(FilterView view);
     }
 
-    public class FilterPresenter extends AbstractPresenter<FilterView, SearchModel> {
+    public class FilterPresenter extends AbstractPresenter<FilterView, MainModel> {
 
-        SearchFilterQuery getSearchModel() {
-            return mSearchModel;
+        private SearchFilterQuery mSearchFilterQuery = new SearchFilterQuery();
+
+        public SearchFilterQuery getSearchFilterQuery() {
+            return mSearchFilterQuery;
         }
-
-        private SearchFilterQuery mSearchModel = new SearchFilterQuery();
 
         @Override
         protected void initActionBar() {
@@ -74,6 +76,13 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         }
 
         public void clickOnSearch() {
+            if (mSearchFilterQuery.isReadySearchModel()) {
+                mRootPresenter.setSearchFilterQuery(mSearchFilterQuery);
+                mRootPresenter.setSearchEnum(SearchEnum.FILTER);
+                Flow.get(getView().getContext()).set(new MainScreen());
+            } else {
+                getRootView().showMessage("Ни один из параметров не был выбран");
+            }
         }
     }
 }

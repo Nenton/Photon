@@ -13,6 +13,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.screens.album.AlbumScreen;
 import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.utils.AlbumTransform;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
 
@@ -61,8 +62,6 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
         holder.mNameAlbum.setText(album.getTitle());
         holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
-        holder.mFavIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_custom_favorites_white_24dp));
-        holder.mSeaIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_custom_views_white_24dp));
         holder.mFavCount.setText(String.valueOf(album.getFavorits()));
         holder.mSeaCount.setText(String.valueOf(album.getViews()));
 
@@ -70,7 +69,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
             picasso.load(album.getPhotocards().get(0).getPhoto())
                     .fit()
                     .centerCrop()
-                    .transform(new PhotoTransform())
+                    .transform(new AlbumTransform())
                     .into(holder.mPhoto);
         }
 
@@ -93,10 +92,6 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         TextView mNameAlbum;
         @BindView(R.id.album_photos_count_TV)
         TextView mCountPhoto;
-        @BindView(R.id.fav_photo_IV)
-        ImageView mFavIcon;
-        @BindView(R.id.sea_photo_IV)
-        ImageView mSeaIcon;
         @BindView(R.id.fav_photo_TV)
         TextView mFavCount;
         @BindView(R.id.sea_photo_TV)

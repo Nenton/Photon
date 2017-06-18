@@ -41,6 +41,7 @@ import com.nenton.photon.mvp.views.IActionBarView;
 import com.nenton.photon.mvp.views.IRootView;
 import com.nenton.photon.mvp.views.IView;
 import com.nenton.photon.ui.screens.account.AccountScreen;
+import com.nenton.photon.ui.screens.add_photocard.AddPhotocardScreen;
 import com.nenton.photon.ui.screens.main.MainScreen;
 import com.squareup.picasso.Picasso;
 
@@ -109,6 +110,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
                     key = new AccountScreen();
                     break;
                 case R.id.action_upload:
+                    key = new AddPhotocardScreen();
                     break;
             }
 
@@ -122,6 +124,9 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         mActionBar = getSupportActionBar();
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
+        mDrawerLayout.setDrawerListener(mToggle);
+        mToggle.syncState();
     }
 
     @Override
@@ -197,7 +202,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
                     mToggle.setToolbarNavigationClickListener(v -> onBackPressed());
                 }
             } else {
-                mToggle.setDrawerIndicatorEnabled(true);
+                mToggle.setDrawerIndicatorEnabled(false);
                 mActionBar.setDisplayHomeAsUpEnabled(false);
                 mToggle.setToolbarNavigationClickListener(null);
             }

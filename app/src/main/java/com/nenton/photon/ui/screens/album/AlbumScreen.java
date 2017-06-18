@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -14,9 +15,11 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 
 /**
@@ -113,6 +116,10 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         public void addPhotoToAlbum() {
 
+        }
+
+        public void clickOnPhotocard(PhotocardRealm mPhoto) {
+            Flow.get(getView().getContext()).set(new PhotocardScreen(mPhoto));
         }
     }
 }

@@ -15,6 +15,7 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
+import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -69,6 +70,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                 .resize(400,400)
                 .centerCrop()
                 .transform(new PhotoTransform())
+
                 .into(holder.mPhoto, new Callback() {
                     @Override
                     public void onSuccess() {

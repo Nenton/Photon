@@ -77,7 +77,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     login_ti.setHint("Логин");
                 } else {
                     login_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    login_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    login_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     login_ti.setHint("Логин (Не валидный логин)");
                 }
             }
@@ -92,7 +92,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     email_ti.setHint("E-mail");
                 } else {
                     email_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    email_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    email_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     email_ti.setHint("E-mail (Не валидный E-mail)");
                 }
             }
@@ -107,7 +107,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     name_ti.setHint("Имя");
                 } else {
                     name_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    name_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    name_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     name_ti.setHint("Имя (Не валидное имя)");
                 }
             }
@@ -122,7 +122,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     password_ti.setHint("Пароль");
                 } else {
                     password_ti.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    password_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    password_ti.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     password_ti.setHint("Пароль (Не валидный пароль)");
                 }
             }
@@ -179,7 +179,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     email_til.setHint("E-mail");
                 } else {
                     email_til.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    email_til.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    email_til.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     email_til.setHint("E-mail (Не валидный E-mail)");
                 }
             }
@@ -194,7 +194,7 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                     password_til.setHint("Пароль");
                 } else {
                     password_til.getEditText().setTextColor(getContext().getResources().getColor(R.color.error));
-                    password_til.setBackground(getContext().getResources().getDrawable(R.drawable.et_normal_state));
+                    password_til.setBackground(getContext().getResources().getDrawable(R.drawable.et_error_state));
                     password_til.setHint("Пароль (Не валидный пароль)");
                 }
             }

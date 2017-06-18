@@ -23,6 +23,11 @@ public class AlbumRealm extends RealmObject {
     private int favorits;
     private RealmList<PhotocardRealm> photocards;
 
+    public AlbumRealm(String title, RealmList<PhotocardRealm> photocards) {
+        this.title = title;
+        this.photocards = photocards;
+    }
+
     public AlbumRealm() {
     }
 
@@ -30,7 +35,9 @@ public class AlbumRealm extends RealmObject {
         this.id = album.getId();
         this.owner = album.getOwner();
         this.title = album.getTitle();
-        this.preview = album.getPreview();
+        if (album.getPhotocards().size() != 0){
+            this.preview = album.getPhotocards().get(0).getPhoto();
+        }
         this.description = album.getDescription();
         this.views = album.getViews();
         this.favorits = album.getFavorits();
@@ -41,8 +48,6 @@ public class AlbumRealm extends RealmObject {
         }
 
     }
-
-
 
     public String getId() {
         return id;

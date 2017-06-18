@@ -3,103 +3,107 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.nenton.photon.ui.custom_views.ImageViewSquare
-                android:id="@+id/photo_IV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                tools:src="@drawable/splash">
-
-            </com.nenton.photon.ui.custom_views.ImageViewSquare>
-
-            <TextView
-                android:id="@+id/name_photocard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                tools:text="Хелена Марчиано" />
-        </FrameLayout>
+        app:behavior_overlapTop="30dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/avatar_photocard_IV"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                tools:src="@color/colorAccent" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:orientation="vertical">
+                <com.nenton.photon.ui.custom_views.ImageViewSquare
+                    android:id="@+id/photo_IV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@drawable/splash">
+
+                </com.nenton.photon.ui.custom_views.ImageViewSquare>
 
                 <TextView
-                    android:id="@+id/full_name_TV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Хелена Марчиано" />
+                    android:id="@+id/name_photocard"
+                    style="@style/TextOnPhotocard"
+                    tools:text="Хелена Марчиано"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/avatar_photocard_IV"
+                    style="@style/Avatar"
+                    tools:src="@color/colorAccent"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/full_name_TV"
+                        style="@style/TextFullName"
+                        tools:text="Хелена Марчиано"/>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Альбомы" />
+                            android:layout_marginRight="16dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/album_count_TV"
+                            <TextView
+                                style="@style/TextCountTitle"
+                                android:text="Альбомы"/>
+
+                            <TextView
+                                android:id="@+id/album_count_TV"
+                                style="@style/TextCount"
+                                tools:text="3"/>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="3" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextCountTitle"
+                                android:text="Карты"/>
+
+                            <TextView
+                                android:id="@+id/photocard_count_TV"
+                                style="@style/TextCount"
+                                tools:text="9"/>
+                        </LinearLayout>
+
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Карты" />
-
-                        <TextView
-                            android:id="@+id/photocard_count_TV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            tools:text="9" />
-                    </LinearLayout>
-
                 </LinearLayout>
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/photocard_RV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/photocard_RV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </com.nenton.photon.ui.screens.photocard.PhotocardView>

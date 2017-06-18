@@ -4,14 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckBox;
 
 import com.nenton.photon.R;
-import com.nenton.photon.di.DaggerService;
-import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.data.storage.realm.StringRealm;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,9 +23,14 @@ import butterknife.ButterKnife;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder> {
 
-    private final List<String> mStrings = new ArrayList<>();
+    private final List<StringRealm> mStrings = new ArrayList<>();
+    private Set<StringRealm> mStringSet = new HashSet<>();
 
-    public void addString(String s){
+    public Set<StringRealm> getStringSet() {
+        return mStringSet;
+    }
+
+    public void addString(StringRealm s){
         mStrings.add(s);
         notifyDataSetChanged();
     }
@@ -37,8 +43,15 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
     @Override
     public void onBindViewHolder(TagsViewHolder holder, int position) {
-        String s = mStrings.get(position);
-        holder.mTextView.setText(s);
+        StringRealm s = mStrings.get(position);
+        holder.mTagCheckBox.setText(s.getString());
+        holder.mTagCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                mStringSet.add(s);
+            } else {
+                mStringSet.remove(s);
+            }
+        });
     }
 
     @Override
@@ -49,9 +62,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
     class TagsViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.tag_TV)
-        TextView mTextView;
+        CheckBox mTagCheckBox;
 
-        public TagsViewHolder(View itemView) {
+        TagsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }

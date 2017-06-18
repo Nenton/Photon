@@ -3,16 +3,23 @@ package com.nenton.photon.ui.screens.search_filters.search;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.SearchModel;
+import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
+import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
+import com.nenton.photon.utils.SearchQuery;
+
+import java.util.Set;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 
 /**
@@ -33,8 +40,8 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     public class Module{
         @Provides
         @DaggerScope(SearchScreen.class)
-        SearchModel provideSearchModel(){
-            return new SearchModel();
+        MainModel provideSearchModel(){
+            return new MainModel();
         }
 
         @Provides
@@ -48,14 +55,20 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     @DaggerScope(SearchScreen.class)
     public interface Component{
         void inject(SearchPresenter presenter);
-        void inject(SearchView view);
+        void inject(SearchTitleView view);
         void inject(TagsAdapter adapter);
+        void inject(SearchAdapter adapter);
 
         RootPresenter getRootPresenter();
     }
 
-    public class SearchPresenter extends AbstractPresenter<SearchView,SearchModel>{
+    public class SearchPresenter extends AbstractPresenter<SearchTitleView,MainModel>{
 
+        public SearchQuery getSearchFilterQuery() {
+            return mSearchFilterQuery;
+        }
+
+        private SearchQuery mSearchFilterQuery = new SearchQuery();
 
         @Override
         protected void initActionBar() {
@@ -74,7 +87,23 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
+            mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(stringRealm -> {
+                    getView().getAdapter().addString(stringRealm);
+            }, throwable -> {}));
+            getView().initView(mModel.getStrings());
+        }
+
+        public void clickOnStringQuery(String s) {
+            getView().setTextSearchViewByQueryString(s);
+        }
+
+        public void clickOnSearch(CharSequence query, Set<StringRealm> stringSet) {
+            mModel.saveSearchString(query.toString());
+            mSearchFilterQuery.setTags(stringSet);
+            mSearchFilterQuery.setTitle(query.toString());
+            mRootPresenter.setSearchQuery(mSearchFilterQuery);
+            mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
+            Flow.get(getView().getContext()).set(new MainScreen());
         }
     }
 }

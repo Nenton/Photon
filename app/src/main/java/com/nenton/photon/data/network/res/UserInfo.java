@@ -11,15 +11,15 @@ import java.util.List;
 
 public class UserInfo {
 
-    @SerializedName("id")
-    @Expose
-    private String id;
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("login")
     @Expose
     private String login;
+    @SerializedName("albums")
+    @Expose
+    private List<Album> albums = null;
     @SerializedName("avatar")
     @Expose
     private String avatar;
@@ -29,12 +29,13 @@ public class UserInfo {
     @SerializedName("photocardCount")
     @Expose
     private int photocardCount;
-    @SerializedName("albums")
-    @Expose
-    private List<Album> albums = null;
 
-    public String getId() {
-        return id;
+    public int getAlbumCount() {
+        return albumCount;
+    }
+
+    public int getPhotocardCount() {
+        return photocardCount;
     }
 
     public String getName() {
@@ -47,14 +48,6 @@ public class UserInfo {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public int getAlbumCount() {
-        return albumCount;
-    }
-
-    public int getPhotocardCount() {
-        return photocardCount;
     }
 
     public List<Album> getAlbums() {

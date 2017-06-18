@@ -1,6 +1,5 @@
 package com.nenton.photon.ui.screens.author;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,8 @@ import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
-import com.nenton.photon.utils.PhotoTransform;
+import com.nenton.photon.di.DaggerService;
+import com.nenton.photon.utils.AlbumTransform;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,9 +29,10 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
 
     @Inject
     Picasso picasso;
+    @Inject
+    AuthorScreen.AuthorPresenter mPresenter;
 
     private List<AlbumRealm> mAlbums = new ArrayList<>();
-    private Context context;
 
     public void addAlbum(AlbumRealm album){
         mAlbums.add(album);
@@ -39,9 +40,14 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        DaggerService.<AuthorScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
     public AuthorAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_author_album, parent, false);
         return new AccountViewHolder(convertView);
     }
 
@@ -50,14 +56,17 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
         AlbumRealm album = mAlbums.get(position);
 
         holder.mNameAlbum.setText(album.getTitle());
-        holder.mCountPhoto.setText(album.getPhotocards().size());
-        holder.mShareIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_custom_favorites_white_24dp));
-        // TODO: 06.06.2017 другая иконка
+        holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
+
         picasso.load(album.getPreview())
                 .fit()
                 .centerCrop()
-                .transform(new PhotoTransform())
+                .transform(new AlbumTransform())
                 .into(holder.mPhoto);
+
+        holder.mPhoto.setOnClickListener(v -> {
+            mPresenter.clickOnAlbum(album);
+        });
     }
 
     @Override
@@ -66,14 +75,12 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
     }
 
     public class AccountViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.photo_card_account_IV)
+        @BindView(R.id.album_author_item_IV)
         ImageView mPhoto;
-        @BindView(R.id.album_name_TV)
+        @BindView(R.id.album_author_name_TV)
         TextView mNameAlbum;
-        @BindView(R.id.album_photos_count_TV)
+        @BindView(R.id.album_author_count_TV)
         TextView mCountPhoto;
-        @BindView(R.id.share_photo_IV)
-        ImageView mShareIcon;
 
         public AccountViewHolder(View itemView) {
             super(itemView);

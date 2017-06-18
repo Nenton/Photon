@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_album"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.nenton.photon.ui.custom_views.ImageViewSquare
         android:id="@+id/photo_card_account_IV"
@@ -15,59 +15,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_normal_16"
+        android:layout_marginTop="@dimen/spacing_normal_16"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/album_name_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            style="@style/TextNameAlbum"
             tools:text="Альбом"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
+            android:fontFamily="@string/roboto_light"
+            android:layout_marginBottom="4dp"
             android:text="Карты"/>
 
         <TextView
             android:id="@+id/album_photos_count_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextNameAlbum"
             tools:text="3"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:orientation="horizontal">
+        style="@style/TextIconItemWrap">
 
         <ImageView
-            android:id="@+id/fav_photo_IV"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            tools:background="@color/colorPrimary"/>
+            style="@style/IconItem"
+            android:src="@drawable/ic_custom_favorites_white_24dp"/>
 
         <TextView
             android:id="@+id/fav_photo_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            style="@style/TextIconItem"
             tools:text="57"/>
 
         <ImageView
-            android:id="@+id/sea_photo_IV"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            tools:background="@color/colorPrimary"/>
+            style="@style/IconItem"
+            android:src="@drawable/ic_custom_views_white_24dp"/>
 
         <TextView
             android:id="@+id/sea_photo_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            style="@style/TextIconItem"
             tools:text="71"/>
     </LinearLayout>
 

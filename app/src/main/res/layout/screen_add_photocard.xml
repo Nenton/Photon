@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.nenton.photon.ui.screens.add_photocard.AddPhotocardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_overlapTop="30dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Укажите название фотографии"/>
+
+            <EditText
+                android:id="@+id/add_name_photocard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_custom_cancel_black_24dp"
+                android:hint="Название фотографии"
+                android:inputType="textEmailAddress"/>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Укажите параметры фотографии"/>
+
+            <include layout="@layout/include_filters"/>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Укажите тэги"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/add_tags_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/add_tag_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_pound_24dp"
+                android:drawableRight="@drawable/ic_custom_cancel_black_24dp"
+                android:hint="Имя тэга"
+                android:inputType="textEmailAddress"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/available_tags"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <TextView
+                style="@style/FiltersTitle"
+                android:text="Выберите альбом"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/add_album_for_photocard_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/save_photocard_btn"
+                    style="?attr/buttonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Сохранить"/>
+
+                <Button
+                    android:id="@+id/cancel_add_photocard_btn"
+                    style="?attr/buttonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Отмена"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:minLines="3"
+            android:text="Выберите фотокарточку\nиз галереи и добавьте\nк вашим альбомам"
+            android:textAlignment="center"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать фото "/>
+
+    </LinearLayout>
+</com.nenton.photon.ui.screens.add_photocard.AddPhotocardView>

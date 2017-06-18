@@ -40,7 +40,7 @@ public interface RestService {
 
     // get User info
     @GET("user/{userId}")
-    Observable<UserInfo> getUserInfoObs(@Path("userId") String productId);
+    Observable<Response<UserInfo>> getUserInfoObs(@Path("userId") String productId);
 
     // edit user info
     @PUT("user/{userId}")
@@ -69,7 +69,7 @@ public interface RestService {
 
     // get tags
     @GET("photocard/tags")
-    Observable<TagsRes> getTagsObs();
+    Observable<Response<TagsRes>> getTagsObs();
 
     // get photocard
     @GET("user/{userId}/photocard/{id}")

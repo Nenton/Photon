@@ -10,6 +10,9 @@ import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.IRootView;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.search_filters.SearchEnum;
+import com.nenton.photon.utils.SearchFilterQuery;
+import com.nenton.photon.utils.SearchQuery;
 
 
 import java.util.ArrayList;
@@ -27,6 +30,33 @@ public class RootPresenter extends Presenter<IRootView> {
 
     private static int DEFAULT_MODE = 0;
     private static int TAB_MODE = 1;
+    private SearchEnum mSearchEnum = SearchEnum.NONE;
+    private SearchFilterQuery mSearchFilterQuery;
+    private SearchQuery mSearchQuery;
+
+    public SearchQuery getSearchQuery() {
+        return mSearchQuery;
+    }
+
+    public void setSearchQuery(SearchQuery searchQuery) {
+        mSearchQuery = searchQuery;
+    }
+
+    public SearchFilterQuery getSearchFilterQuery() {
+        return mSearchFilterQuery;
+    }
+
+    public void setSearchFilterQuery(SearchFilterQuery searchFilterQuery) {
+        mSearchFilterQuery = searchFilterQuery;
+    }
+
+    public SearchEnum getSearchEnum() {
+        return mSearchEnum;
+    }
+
+    public void setSearchEnum(SearchEnum searchEnum) {
+        mSearchEnum = searchEnum;
+    }
 
     @Override
     protected BundleService extractBundleService(IRootView view) {

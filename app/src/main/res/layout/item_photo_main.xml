@@ -1,59 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/item_photo"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_photo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.nenton.photon.ui.custom_views.ImageViewSquare
         android:id="@+id/photo_card_IV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:background="@color/colorAccent"/>
+        android:layout_height="match_parent"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp">
+        style="@style/TextIconItemWrap">
 
         <ImageView
-            android:id="@+id/fav_photo_IV"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="24dp"
-            android:gravity="center"
+            style="@style/IconItem"
             android:src="@drawable/ic_custom_favorites_white_24dp"/>
 
         <TextView
             android:id="@+id/fav_photo_TV"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:gravity="center"
+            style="@style/TextIconItem"
             tools:text="57"/>
 
         <ImageView
-            android:id="@+id/sea_photo_count_IV"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="24dp"
-            android:gravity="center"
+            style="@style/IconItem"
             android:src="@drawable/ic_custom_views_white_24dp"/>
 
         <TextView
             android:id="@+id/sea_photo_count_TV"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:gravity="center"
+            style="@style/TextIconItem"
             tools:text="71"/>
     </LinearLayout>
 

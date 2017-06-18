@@ -51,7 +51,7 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
                 mNuancesString.add(((String) checkBox.getTag()));
             }
         }
-        mPresenter.getSearchModel().setNuances(mNuancesString);
+        mPresenter.getSearchFilterQuery().setNuances(mNuancesString);
         mPresenter.clickOnSearch();
     }
 
@@ -67,27 +67,27 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
 
     public void initView() {
         mDish.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setDish((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setDish((String) findViewById(checkedId).getTag());
         });
 
         mDecor.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setDecor((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setDecor((String) findViewById(checkedId).getTag());
         });
 
         mTemperature.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setTemperature((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setTemperature((String) findViewById(checkedId).getTag());
         });
 
         mLight.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setLight((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setLight((String) findViewById(checkedId).getTag());
         });
 
         mDir.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setLightDirection((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setLightDirection((String) findViewById(checkedId).getTag());
         });
 
         mLightSource.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchModel().setLightSource((String) findViewById(checkedId).getTag());
+            mPresenter.getSearchFilterQuery().setLightSource((String) findViewById(checkedId).getTag());
         });
 
     }

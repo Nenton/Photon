@@ -18,6 +18,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.utils.AvatarTransform;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -44,14 +45,10 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     ImageView mAvatar;
     @BindView(R.id.account_login_TV)
     TextView mLogin;
-    @BindView(R.id.account_name_TV)
-    TextView mName;
     @BindView(R.id.account_albums_count)
     TextView mAlbumCount;
     @BindView(R.id.account_photocard_count)
     TextView mPhotocardCount;
-    @BindView(R.id.anchor_popup_menu)
-    View mView;
 
     private AccountAdapter mAccountAdapter = new AccountAdapter();
 
@@ -77,16 +74,18 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
         if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()){
             mPicasso.load(userRealm.getAvatar())
                     .fit()
-                    .placeholder(R.color.black)
+                    .centerCrop()
                     .into(mAvatar);
         } else {
             mPicasso.load(R.color.black)
                     .fit()
+                    .centerCrop()
+                    .transform(new AvatarTransform())
                     .into(mAvatar);
         }
 
         mLogin.setText(userRealm.getLogin());
-        mName.setText(userRealm.getName());
+//        mName.setText(userRealm.getName());
 
         mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
 

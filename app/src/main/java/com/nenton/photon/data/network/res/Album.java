@@ -12,28 +12,25 @@ import java.util.List;
 public class Album {
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("owner")
     @Expose
-    public String owner;
+    private String owner;
     @SerializedName("title")
     @Expose
-    public String title;
-    @SerializedName("preview")
-    @Expose
-    public String preview;
+    private String title;
     @SerializedName("description")
     @Expose
-    public String description;
+    private String description;
     @SerializedName("views")
     @Expose
-    public int views;
+    private int views;
     @SerializedName("favorits")
     @Expose
-    public int favorits;
+    private int favorits;
     @SerializedName("photocards")
     @Expose
-    public List<Photocard> photocards = null;
+    private List<Photocard> photocards = null;
 
     public String getId() {
         return id;
@@ -45,10 +42,6 @@ public class Album {
 
     public String getTitle() {
         return title;
-    }
-
-    public String getPreview() {
-        return preview;
     }
 
     public String getDescription() {

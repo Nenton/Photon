@@ -26,16 +26,16 @@ public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.Phot
         mStrings.add(s.getString());
         notifyDataSetChanged();
     }
+
     @Override
     public PhotocardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag_photocard, parent, false);
         return new PhotocardViewHolder(convertView);
     }
 
     @Override
     public void onBindViewHolder(PhotocardViewHolder holder, int position) {
-        String s = mStrings.get(position);
-        holder.mTextView.setText(s);
+        holder.mTextView.setText(mStrings.get(position));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.Phot
     }
 
     public class PhotocardViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tag_TV)
+        @BindView(R.id.tag_photocard_TV)
         TextView mTextView;
 
         public PhotocardViewHolder(View itemView) {

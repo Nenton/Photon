@@ -10,7 +10,11 @@ import java.util.List;
  */
 
 public class TagsRes {
-    @SerializedName("tags")
+    @SerializedName("")
     @Expose
     public List<String> tags = null;
+
+    public List<String> getTags() {
+        return tags;
+    }
 }

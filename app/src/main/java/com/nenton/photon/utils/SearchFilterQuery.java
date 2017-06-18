@@ -70,4 +70,8 @@ public class SearchFilterQuery {
     public String getLightSource() {
         return lightSource;
     }
+
+    public boolean isReadySearchModel(){
+        return dish != null || !nuances.isEmpty() || decor != null || temperature != null || light != null || lightDirection != null || lightSource != null;
+    }
 }

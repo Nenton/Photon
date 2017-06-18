@@ -8,15 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.utils.AvatarTransform;
+import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by serge_000 on 06.06.2017.
@@ -40,6 +44,11 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     @BindView(R.id.avatar_photocard_IV)
     ImageView mAvatar;
 
+    @OnClick(R.id.avatar_photocard_IV)
+    public void clickOnAuthor(){
+        mPresenter.clickOnAuthor();
+    }
+
     @Inject
     Picasso mPicasso;
 
@@ -57,18 +66,29 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         DaggerService.<PhotocardScreen.Component>getDaggerComponent(getContext()).inject(this);
     }
 
-    public void initView(PhotocardRealm photocardRealm) {
-        mRecyclerView.setLayoutManager(new WordsLayoutManager(getContext()));
+    public void initView(PhotocardRealm photocardRealm, UserInfoDto infoDto) {
+        mName.setText(photocardRealm.getTitle());
 
+        mPicasso.load(photocardRealm.getPhoto())
+                .fit()
+                .centerCrop()
+                .transform(new PhotoTransform())
+                .into(mPhoto);
+
+        mPicasso.load(infoDto.getAvatar())
+                .fit()
+                .centerCrop()
+                .transform(new AvatarTransform())
+                .into(mAvatar);
+
+        mFullName.setText(infoDto.getName() + " " + infoDto.getLogin());
+        mAlbumCount.setText(String.valueOf(infoDto.getCountAlbum()));
+        mPhotocardCount.setText(String.valueOf(infoDto.getCountPhoto()));
+
+        mRecyclerView.setLayoutManager(new WordsLayoutManager(getContext()));
         for (StringRealm s : photocardRealm.getTags()) {
             mAdapter.addString(s);
         }
         mRecyclerView.setAdapter(mAdapter);
-        mName.setText(photocardRealm.getTitle());
-
-        // TODO: 07.06.2017 Информация об авторе
-
-        mPicasso.load(photocardRealm.getPhoto())
-                .into(mPhoto);
     }
 }

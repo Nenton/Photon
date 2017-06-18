@@ -4,12 +4,20 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.ui.screens.account.AccountAdapter;
 import com.nenton.photon.ui.screens.account.AccountScreen;
+import com.nenton.photon.utils.AvatarTransform;
+import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -22,7 +30,19 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter>{
     @BindView(R.id.author_photocard_RV)
     RecyclerView mRecycleView;
 
-    private AccountAdapter mAccountAdapter = new AccountAdapter();
+    @BindView(R.id.author_avatar_IV)
+    ImageView mAvatar;
+    @BindView(R.id.author_login_TV)
+    TextView mLogin;
+    @BindView(R.id.author_albums_count)
+    TextView mAlbumCount;
+    @BindView(R.id.author_photocard_count)
+    TextView mPhotocardCount;
+
+    @Inject
+    Picasso mPicasso;
+
+    private AuthorAdapter mAuthorAdapter = new AuthorAdapter();
 
     public AuthorView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,10 +58,35 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter>{
         DaggerService.<AuthorScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    public void initView() {
+    public void initView(UserRealm userRealm) {
+        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()){
+            mPicasso.load(userRealm.getAvatar())
+                    .fit()
+                    .centerCrop()
+                    .into(mAvatar);
+        } else {
+            mPicasso.load(R.color.black)
+                    .fit()
+                    .centerCrop()
+                    .transform(new AvatarTransform())
+                    .into(mAvatar);
+        }
+
+        mLogin.setText(userRealm.getLogin());
+
+        mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
+
+        int countPhotocard = 0;
+
+        for (AlbumRealm albumRealm : userRealm.getAlbums()) {
+            countPhotocard += albumRealm.getPhotocards().size();
+            mAuthorAdapter.addAlbum(albumRealm);
+        }
+
+        mPhotocardCount.setText(String.valueOf(countPhotocard));
+
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(manager);
-        mRecycleView.setAdapter(mAccountAdapter);
-        // TODO: 06.06.2017 добавить фотографий в аккаунт
+        mRecycleView.setAdapter(mAuthorAdapter);
     }
 }

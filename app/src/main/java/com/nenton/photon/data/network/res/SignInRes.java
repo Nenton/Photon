@@ -26,12 +26,7 @@ public class SignInRes {
     @SerializedName("token")
     @Expose
     private String token;
-    @SerializedName("albumCount")
-    @Expose
-    private int albumCount;
-    @SerializedName("photocardCount")
-    @Expose
-    private int photocardCount;
+
     @SerializedName("albums")
     @Expose
     private List<Album> albums = null;
@@ -54,14 +49,6 @@ public class SignInRes {
 
     public String getToken() {
         return token;
-    }
-
-    public int getAlbumCount() {
-        return albumCount;
-    }
-
-    public int getPhotocardCount() {
-        return photocardCount;
     }
 
     public List<Album> getAlbums() {

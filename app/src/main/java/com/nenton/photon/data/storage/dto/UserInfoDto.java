@@ -1,5 +1,10 @@
 package com.nenton.photon.data.storage.dto;
 
+import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
+
+import rx.Observable;
+
 /**
  * Created by serge on 10.06.2017.
  */
@@ -9,21 +14,26 @@ public class UserInfoDto {
     private String name;
     private String login;
     private String avatar;
-    private String token;
-
-    public UserInfoDto(String id, String name, String login, String avatar, String token) {
-        this.id = id;
-        this.name = name;
-        this.login = login;
-        this.avatar = avatar;
-        this.token = token;
-    }
+    private int countAlbum;
+    private int countPhoto;
 
     public UserInfoDto(String id, String name, String login, String avatar) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.avatar = avatar;
+    }
+
+    public UserInfoDto(UserRealm userRealm) {
+        this.id = userRealm.getId();
+        this.name = userRealm.getName();
+        this.login = userRealm.getLogin();
+        this.avatar = userRealm.getAvatar();
+        this.countAlbum = userRealm.getAlbums().size();
+
+        for (AlbumRealm albumRealm : userRealm.getAlbums()) {
+            this.countPhoto += albumRealm.getPhotocards().size();
+        }
     }
 
     public String getId() {
@@ -42,7 +52,11 @@ public class UserInfoDto {
         return avatar;
     }
 
-    public String getToken() {
-        return token;
+    public int getCountAlbum() {
+        return countAlbum;
+    }
+
+    public int getCountPhoto() {
+        return countPhoto;
     }
 }

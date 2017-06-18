@@ -16,6 +16,7 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.account.AccountScreen;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.squareup.picasso.Picasso;
@@ -31,6 +32,7 @@ import rx.Subscription;
  */
 @Screen(R.layout.screen_main)
 public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
+
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
         return DaggerMainScreen_Component.builder()
@@ -76,16 +78,33 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         protected void initActionBar() {
-            mRootPresenter.newActionBarBuilder()
-                    .setTitle("Фотон")
-                    .addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
+            RootPresenter.ActionBarBuilder builder = mRootPresenter.newActionBarBuilder()
+                    .setTitle("Фотон");
+            switch (mRootPresenter.getSearchEnum()) {
+                case SEARCH:
+                    builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_primary_24dp, item -> {
                         Flow.get(getView().getContext()).set(new SearchFiltersScreen());
                         return true;
-                    }))
-                    .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
-                        getRootView().showSettings();
+                    }));
+                    break;
+                case FILTER:
+                    builder.addAction(new MenuItemHolder("Фильтер", R.drawable.ic_style_accent_24dp, item -> {
+                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
                         return true;
-                    }))
+                    }));
+                    break;
+                case NONE:
+                    builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
+                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                        return true;
+                    }));
+                    break;
+            }
+
+            builder.addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
+                getRootView().showSettings();
+                return true;
+            }))
                     .build();
 
         }
@@ -130,7 +149,17 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            mCompSubs.add(subscribeOnProductRealmObs());
+            switch (mRootPresenter.getSearchEnum()) {
+                case SEARCH:
+                    mCompSubs.add(subscribeOnSearchRealmObs());
+                    break;
+                case FILTER:
+                    mCompSubs.add(subscribeOnSearchFilterRealmObs());
+                    break;
+                case NONE:
+                default:
+                    mCompSubs.add(subscribeOnProductRealmObs());
+            }
         }
 
         private Subscription subscribeOnProductRealmObs() {
@@ -138,24 +167,29 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     .subscribe(new RealmSubscriber());
         }
 
+        private Subscription subscribeOnSearchFilterRealmObs() {
+            return mModel.searchOnFilterPhoto(mRootPresenter.getSearchFilterQuery())
+                    .subscribe(new RealmSubscriber());
+        }
+
+        private Subscription subscribeOnSearchRealmObs() {
+            return mModel.searchPhoto(mRootPresenter.getSearchQuery())
+                    .subscribe(new RealmSubscriber());
+        }
+
         public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq)
-                    .subscribe(userLoginRes -> {
-                    }, throwable -> getRootView().showMessage("не правильный логин или пароль"),
-                            () -> {
-                        getRootView().showMessage("Пользователь залогинен");
-                        getView().cancelSignIn();
-                    }));
+                    .subscribe(signInRes -> {},
+                            throwable -> getRootView().showMessage("не правильный логин или пароль"),
+                            () -> Flow.get(getView().getContext()).set(new AccountScreen())));
         }
 
         public void signUp(UserCreateReq createReq) {
             mCompSubs.add(mModel.signUp(createReq)
-                    .subscribe(userCreateRes -> {
-                            }, throwable -> getRootView().showMessage("не правильный логин или пароль"),
-                            () -> {
-                                getRootView().showMessage("Пользователь успешно создан");
-                                getView().cancelSignUp();
-                            }));
+                    .subscribe(signUpRes -> {
+                        getView().cancelSignUp();
+                        getView().signIn();
+                    }, throwable -> getRootView().showMessage("не правильный логин или пароль")));
         }
 
         private void changeStateAuth() {
