@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class SearchQuery {
     private String title;
-    private Set<StringRealm> tags;
+    private Set<String> tags;
 
     public String getTitle() {
         return title;
@@ -21,11 +21,11 @@ public class SearchQuery {
         this.title = title;
     }
 
-    public Set<StringRealm> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
-    public void setTags(Set<StringRealm> tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 }

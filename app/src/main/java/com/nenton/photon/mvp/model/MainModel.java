@@ -1,13 +1,12 @@
 package com.nenton.photon.mvp.model;
 
-import android.support.annotation.Nullable;
-
 import com.fernandocejas.frodo.annotation.RxLogObservable;
+import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.SignInRes;
-import com.nenton.photon.data.network.res.TagsRes;
+import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
@@ -15,10 +14,13 @@ import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.utils.SearchFilterQuery;
 import com.nenton.photon.utils.SearchQuery;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
-import rx.Subscription;
 
 /**
  * Created by serge on 04.06.2017.
@@ -54,6 +56,7 @@ public class MainModel extends AbstractModel {
     public Observable<PhotocardRealm> searchOnFilterPhoto(SearchFilterQuery sfq) {
         return mDataManager.getSearchFilterFromRealm(sfq);
     }
+
     @RxLogObservable
     public Observable<SignInRes> signIn(UserLoginReq loginReq) {
         return mDataManager.singIn(loginReq);
@@ -93,16 +96,45 @@ public class MainModel extends AbstractModel {
     }
 
     @RxLogObservable
-    public Observable<StringRealm> getPhotocardTagsObs() {
-        Observable<StringRealm> disk = mDataManager.getTagsFromRealm();
-        Observable<StringRealm> network = mDataManager.getPhotocardTagsObs()
-                .flatMap(tagsRes -> Observable.from(tagsRes.getTags()))
-                .flatMap(s -> Observable.just(new StringRealm(s)));
+    public Observable<String> getPhotocardTagsObs() {
+        Observable<String> disk = mDataManager.getTagsFromRealm();
+        Observable<String> network = mDataManager.getPhotocardTagsObs();
 
         return Observable.mergeDelayError(disk, network)
-                .distinct(StringRealm::getString);
+                .distinct(String::toString);
     }
 
 
+    public Observable<String> uploadPhotoToNetwork(String avatarUri, File file) {
+        if (avatarUri != null) {
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("photo", file.getName(), requestBody);
 
+            return mDataManager.uploadPhoto(mDataManager.getUserInfo().getId(), part);
+
+        } else {
+            return Observable.empty();
+        }
+    }
+
+    public Observable<String> createPhotocard(PhotocardReq photocardReq) {
+        return mDataManager.createPhotocard(mDataManager.getPreferencesManager().getUserId(), photocardReq);
+    }
+
+    public void savePhotoToRealm(PhotocardDto photocardDto) {
+        photocardDto.setOwner(mDataManager.getPreferencesManager().getUserId());
+        mDataManager.getRealmManager().saveCreatePhotocard(photocardDto);
+    }
+
+    public Observable<Boolean> addToFav(String photocardId){
+        return mDataManager.addToFav(photocardId);
+    }
+
+    public Observable<Boolean> deleteFromFav(String photocardId){
+        return mDataManager.deleteFromFav(photocardId);
+    }
+
+    public Observable<Boolean> addViewsToPhotocard(String photoId){
+        return mDataManager.addViewsToPhotocard(photoId);
+    }
 }

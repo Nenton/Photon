@@ -77,7 +77,6 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         }
 
         //create new view
-
         Screen screen;
         screen = inKey.getClass().getAnnotation(Screen.class);
         if (screen == null) {

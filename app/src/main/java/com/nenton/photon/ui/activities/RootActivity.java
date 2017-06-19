@@ -59,7 +59,7 @@ import rx.subjects.PublishSubject;
 
 public class RootActivity extends AppCompatActivity implements IRootView, IActionBarView {
 
-    private PublishSubject<ActivityResultDto> mActivityResultSubject = PublishSubject.create();
+
 
     @Inject
     RootPresenter mRootPresenter;
@@ -264,10 +264,6 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
                     .setMessage("Вы действительно хотите выйти?")
                     .show();
         }
-    }
-
-    public PublishSubject<ActivityResultDto> getActivityResultSubject() {
-        return mActivityResultSubject;
     }
 
     public boolean isAllGranted(@NonNull String[] permissions, boolean allGranted) {

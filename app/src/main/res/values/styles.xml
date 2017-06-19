@@ -55,6 +55,11 @@
         <item name="android:paddingTop">16dp</item>
     </style>
 
+    <style name="TitleAddPhoto" parent="FiltersTitle">
+        <item name="android:layout_marginLeft">@dimen/spacing_normal_16</item>
+        <item name="android:layout_marginRight">@dimen/spacing_normal_16</item>
+    </style>
+
     <style name="FiltersTV">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -66,7 +71,7 @@
     <style name="ButtonSearch" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_gravity">center_horizontal|bottom</item>
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
     </style>
@@ -133,6 +138,19 @@
         <item name="android:paddingTop">@dimen/spacing_small_8</item>
         <item name="android:paddingRight">@dimen/spacing_normal_16</item>
         <item name="android:paddingLeft">@dimen/spacing_normal_16</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="AddPhotocardTag">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fontFamily">@string/roboto_medium</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_small_8</item>
+        <item name="android:layout_marginTop">@dimen/spacing_small_8</item>
+        <item name="android:layout_marginRight">@dimen/spacing_small_8</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_normal_16</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="IconItem">
@@ -158,5 +176,11 @@
         <item name="android:layout_marginRight">@dimen/spacing_small_8</item>
         <item name="android:layout_marginLeft">@dimen/spacing_small_8</item>
         <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="DividerView">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/darkGrey</item>
     </style>
 </resources>

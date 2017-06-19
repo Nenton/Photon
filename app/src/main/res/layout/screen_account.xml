@@ -109,11 +109,13 @@
             />
 
         <Button
+            android:id="@+id/sign_up_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Регистрация "/>
 
         <Button
+            android:id="@+id/sign_in_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Вход"/>

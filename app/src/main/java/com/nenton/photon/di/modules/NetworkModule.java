@@ -21,19 +21,19 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient(){
+    OkHttpClient provideOkHttpClient() {
         return createClient();
     }
 
     @Provides
     @Singleton
-    Retrofit provideRetrofit(OkHttpClient okHttpClient){
+    Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return createRetrofit(okHttpClient);
     }
 
     @Provides
     @Singleton
-    RestService provideRestService(Retrofit retrofit){
+    RestService provideRestService(Retrofit retrofit) {
         return retrofit.create(RestService.class);
     }
 
@@ -41,8 +41,8 @@ public class NetworkModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(AppConfig.MAX_CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-                .readTimeout(AppConfig.MAX_READ_TIMEOUT,TimeUnit.MILLISECONDS)
-                .writeTimeout(AppConfig.MAX_WRITE_TIMEOUT,TimeUnit.MILLISECONDS)
+                .readTimeout(AppConfig.MAX_READ_TIMEOUT, TimeUnit.MILLISECONDS)
+                .writeTimeout(AppConfig.MAX_WRITE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .build();
     }
 

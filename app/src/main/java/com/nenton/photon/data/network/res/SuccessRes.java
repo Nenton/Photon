@@ -10,5 +10,9 @@ import com.google.gson.annotations.SerializedName;
 public class SuccessRes {
     @SerializedName("success")
     @Expose
-    public boolean success;
+    private boolean success;
+
+    public boolean isSuccess() {
+        return success;
+    }
 }

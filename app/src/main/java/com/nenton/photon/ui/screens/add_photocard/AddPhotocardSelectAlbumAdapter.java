@@ -37,6 +37,14 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         notifyDataSetChanged();
     }
 
+    public int getPositionOnSelectItem() {
+        return positionOnSelectItem;
+    }
+
+    public String getIdAlbum(){
+        return mAlbumRealmList.get(positionOnSelectItem).getId();
+    }
+
     @Inject
     Picasso mPicasso;
     @Inject
@@ -61,11 +69,19 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         holder.mNameAlbum.setText(albumRealm.getTitle());
         holder.mCountPhotocards.setText(String.valueOf(albumRealm.getPhotocards().size()));
 
-        mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto())
-                .fit()
-                .centerCrop()
-                .transform(new AlbumTransform())
-                .into(holder.mView);
+        if (albumRealm.getPhotocards().size() != 0) {
+            mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto())
+                    .fit()
+                    .centerCrop()
+                    .transform(new AlbumTransform())
+                    .into(holder.mView);
+        } else {
+            mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg")
+                    .fit()
+                    .centerCrop()
+                    .transform(new AlbumTransform())
+                    .into(holder.mView);
+        }
 
         if (position == positionOnSelectItem) {
             holder.mCheckBox.setChecked(true);

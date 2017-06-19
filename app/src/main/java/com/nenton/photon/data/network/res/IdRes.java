@@ -10,5 +10,9 @@ import com.google.gson.annotations.SerializedName;
 public class IdRes {
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
 }

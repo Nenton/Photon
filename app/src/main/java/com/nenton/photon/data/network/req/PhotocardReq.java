@@ -1,5 +1,7 @@
 package com.nenton.photon.data.network.req;
 
+import com.nenton.photon.data.storage.dto.FiltersDto;
+
 import java.util.List;
 
 /**
@@ -7,38 +9,37 @@ import java.util.List;
  */
 
 public class PhotocardReq {
-    public String album;
-    public String title;
-    public String photo;
-    public List<String> tags = null;
-    public Filters filters;
+    private String album;
+    private String title;
+    private String photo;
+    private List<String> tags = null;
+    private Filters filters;
 
-    public PhotocardReq(String album, String title, String photo, List<String> tags, Filters filters) {
+    public PhotocardReq(String album, String title, String photo, List<String> tags, FiltersDto filters) {
         this.album = album;
         this.title = title;
         this.photo = photo;
         this.tags = tags;
-        this.filters = filters;
+        this.filters =  new Filters(filters);
     }
 
     public class Filters {
-        public Filters(String dish, String nuances, String decor, String temperature, String light, String lightDirection, String lightSource) {
-            this.dish = dish;
-            this.nuances = nuances;
-            this.decor = decor;
-            this.temperature = temperature;
-            this.light = light;
-            this.lightDirection = lightDirection;
-            this.lightSource = lightSource;
+        private String dish;
+        private String nuances;
+        private String decor;
+        private String temperature;
+        private String light;
+        private String lightDirection;
+        private String lightSource;
+
+        public Filters(FiltersDto filters) {
+            this.dish = filters.getDish();
+            this.nuances = filters.getNuances();
+            this.decor = filters.getDecor();
+            this.temperature = filters.getTemperature();
+            this.light = filters.getLight();
+            this.lightDirection = filters.getLightDirection();
+            this.lightSource = filters.getLightSource();
         }
-
-        public String dish;
-        public String nuances;
-        public String decor;
-        public String temperature;
-        public String light;
-        public String lightDirection;
-        public String lightSource;
-
     }
 }

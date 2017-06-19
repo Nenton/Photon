@@ -2,10 +2,12 @@ package com.nenton.photon.data.managers;
 
 import android.support.annotation.Nullable;
 
+import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SignInRes;
 import com.nenton.photon.data.network.res.UserInfo;
+import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
@@ -76,13 +78,15 @@ public class RealmManager {
         realm.close();
     }
 
-    public Observable<StringRealm> getTags() {
+    public Observable<String> getTags() {
         return getQueryRealmInstance()
                 .where(StringRealm.class)
-                .contains("string", "#").findAllAsync()
+                .contains("string", "#")
+                .findAllAsync()
                 .asObservable()
                 .filter(RealmResults::isLoaded)
-                .flatMap(Observable::from);
+                .flatMap(Observable::from)
+                .flatMap(stringRealm -> Observable.just(stringRealm.getString()));
     }
 
 
@@ -152,8 +156,8 @@ public class RealmManager {
         }
 
         if (sq.getTags() != null) {
-            for (StringRealm s : sq.getTags()) {
-                photocardRealms.contains("tags.string", s.getString());
+            for (String s : sq.getTags()) {
+                photocardRealms.contains("tags.string", s);
             }
         }
         return photocardRealms
@@ -176,5 +180,30 @@ public class RealmManager {
         } else {
             return Observable.error(new Throwable());
         }
+    }
+
+    public void saveCreatePhotocard(PhotocardDto photocardDto) {
+        Realm realm = Realm.getDefaultInstance();
+        PhotocardRealm photocardRealm = new PhotocardRealm(photocardDto);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(photocardRealm));
+        realm.close();
+
+    }
+
+    public Observable<PhotocardRealm> getPhotoById(String photoId) {
+        PhotocardRealm photocardRealm = getQueryRealmInstance().where(PhotocardRealm.class).equalTo("id", photoId).findFirstAsync();
+        if (photocardRealm != null) {
+            return photocardRealm.asObservable();
+        } else {
+            return Observable.error(new Throwable());
+        }
+    }
+
+    public void savePhotocardResponseToRealm(String id, PhotocardReq photocardReq) {
+
+    }
+
+    public void deletePhotocard(String photoId) {
+
     }
 }

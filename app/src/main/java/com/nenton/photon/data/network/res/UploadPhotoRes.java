@@ -8,7 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class UploadPhotoRes {
+    public String getImage() {
+        return image;
+    }
+
     @SerializedName("image")
     @Expose
-    public String image;
+    private String image;
 }

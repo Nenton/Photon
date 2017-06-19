@@ -5,4 +5,14 @@ package com.nenton.photon.data.storage.dto;
  */
 
 public class AlbumDto {
+    private String id;
+
+    public AlbumDto(String id) {
+
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

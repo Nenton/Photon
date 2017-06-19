@@ -12,7 +12,6 @@ import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.IdRes;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SuccessRes;
-import com.nenton.photon.data.network.res.TagsRes;
 import com.nenton.photon.data.network.res.UploadPhotoRes;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.UserEditRes;
@@ -26,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -40,11 +40,11 @@ public interface RestService {
 
     // get User info
     @GET("user/{userId}")
-    Observable<Response<UserInfo>> getUserInfoObs(@Path("userId") String productId);
+    Observable<Response<UserInfo>> getUserInfoObs(@Path("userId") String userId);
 
     // edit user info
     @PUT("user/{userId}")
-    Observable<Response<UserEditRes>> editUserInfoObs(@Path("userId") String productId, @Body UserEditReq user);
+    Observable<Response<UserEditRes>> editUserInfoObs(@Path("userId") String userId, @Body UserEditReq user);
 
     // create user
     @POST("user/signUp")
@@ -57,7 +57,7 @@ public interface RestService {
     //upload image photo
     @Multipart
     @POST("user/{userId}/image/upload")
-    Observable<UploadPhotoRes> uploadPhoto(@Part MultipartBody.Part file);
+    Observable<Response<UploadPhotoRes>> uploadPhoto(@Header("Authorization")String authToken, @Path("userId") String userId, @Part MultipartBody.Part file);
 
     //endregion
 
@@ -69,39 +69,39 @@ public interface RestService {
 
     // get tags
     @GET("photocard/tags")
-    Observable<Response<TagsRes>> getTagsObs();
+    Observable<Response<List<String>>> getTagsObs();
 
     // get photocard
     @GET("user/{userId}/photocard/{id}")
-    Observable<Photocard> getPhotocardObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Response<Photocard>> getPhotocardObs(@Header("If-Modified-Since")String date, @Path("userId") String userId, @Path("id") String id);
 
     // create photocard
-    @POST("user/{userId}/photocard/{id}")
-    Observable<IdRes> createPhotocardObs(@Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
+    @POST("user/{userId}/photocard/")
+    Observable<Response<IdRes>> createPhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Body PhotocardReq photocard);
 
     // edit photocard
     @PUT("user/{userId}/photocard/{id}")
-    Observable<IdRes> editPhotocardObs(@Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
+    Observable<Response<IdRes>> editPhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
 
     // delete photocard
     @DELETE("user/{userId}/photocard/{id}")
-    void deletePhotocardObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Response> deletePhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
 
     //add views
-    @POST("/photocard/{photocardId}/view")
-    Observable<SuccessRes> addPhotocardViewsObs(@Path("photocardId") String photocardId, @Body PhotoIdReq id);
+    @POST("photocard/{photocardId}/view")
+    Observable<Response<SuccessRes>> addPhotocardViewsObs(@Path("photocardId") String photocardId, @Body PhotoIdReq id);
 
     //endregion
 
     //region ========================= Album =========================
 
     // add to favorite
-    @POST("/user/{userId}/favorite/{photocardId}")
-    Observable<SuccessRes> addPhotocardFavObs(@Path("userId") String userId, @Path("photocardId") String photocardId);
+    @POST("user/{userId}/favorite/{photocardId}")
+    Observable<Response<SuccessRes>> addPhotocardFavObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("photocardId") String photocardId);
 
     //delete photocard from favorite
-    @DELETE("/user/{userId}/favorite/{photocardId}")
-    void deletePhotocardFavObs (@Path("userId") String userId, @Path("photocardId") String photocardId);
+    @DELETE("user/{userId}/favorite/{photocardId}")
+    Observable<Response> deletePhotocardFavObs (@Header("Authorization")String authToken, @Path("userId") String userId, @Path("photocardId") String photocardId);
 
     //get album list
     @GET("user/{userId}/album/list")

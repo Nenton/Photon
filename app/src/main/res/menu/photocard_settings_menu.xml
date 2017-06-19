@@ -4,6 +4,9 @@
         android:id="@+id/fav_photo_dial"
         android:title="В избранное"/>
     <item
+        android:id="@+id/fav_photo_delete_dial"
+        android:title="Убрать с избранного"/>
+    <item
         android:id="@+id/share_photo_dial"
         android:title="Поделиться"/>
     <item

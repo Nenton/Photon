@@ -97,7 +97,7 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
             getView().setTextSearchViewByQueryString(s);
         }
 
-        public void clickOnSearch(CharSequence query, Set<StringRealm> stringSet) {
+        public void clickOnSearch(CharSequence query, Set<String> stringSet) {
             mModel.saveSearchString(query.toString());
             mSearchFilterQuery.setTags(stringSet);
             mSearchFilterQuery.setTitle(query.toString());

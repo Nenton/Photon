@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/add_property_photo_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:behavior_overlapTop="30dp"
@@ -19,48 +20,75 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/FiltersTitle"
+                style="@style/TitleAddPhoto"
                 android:text="Укажите название фотографии"/>
+
+            <View style="@style/DividerView"/>
 
             <EditText
                 android:id="@+id/add_name_photocard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"
                 android:drawableRight="@drawable/ic_custom_cancel_black_24dp"
                 android:hint="Название фотографии"
                 android:inputType="textEmailAddress"/>
 
+            <View style="@style/DividerView"/>
+
             <TextView
-                style="@style/FiltersTitle"
+                style="@style/TitleAddPhoto"
                 android:text="Укажите параметры фотографии"/>
 
-            <include layout="@layout/include_filters"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"
+                android:orientation="vertical">
+
+                <include layout="@layout/include_filters"/>
+
+            </LinearLayout>
 
             <TextView
-                style="@style/FiltersTitle"
+                style="@style/TitleAddPhoto"
                 android:text="Укажите тэги"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_tags_rv"
+                android:id="@+id/add_tags_selected_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"/>
+
+            <View style="@style/DividerView"/>
 
             <EditText
                 android:id="@+id/add_tag_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"
                 android:drawableLeft="@drawable/ic_pound_24dp"
                 android:drawableRight="@drawable/ic_custom_cancel_black_24dp"
                 android:hint="Имя тэга"
                 android:inputType="textEmailAddress"/>
 
+            <View style="@style/DividerView"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/available_tags"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"/>
+                android:layout_height="200dp"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"/>
+
+            <View style="@style/DividerView"/>
 
             <TextView
-                style="@style/FiltersTitle"
+                style="@style/TitleAddPhoto"
                 android:text="Выберите альбом"/>
 
             <android.support.v7.widget.RecyclerView
@@ -71,6 +99,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
+                android:layout_marginRight="@dimen/spacing_normal_16"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -93,21 +123,23 @@
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
+        android:id="@+id/add_photo_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:minLines="3"
-            android:text="Выберите фотокарточку\nиз галереи и добавьте\nк вашим альбомам"
+            android:text="Выберите фотокарточку
+из галереи и добавьте
+к вашим альбомам"
             android:textAlignment="center"/>
 
         <Button
+            android:id="@+id/add_photo_from_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Выбрать фото "/>

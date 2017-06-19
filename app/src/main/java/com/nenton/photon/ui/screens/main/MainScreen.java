@@ -179,9 +179,13 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq)
-                    .subscribe(signInRes -> {},
+                    .subscribe(signInRes -> {
+                            },
                             throwable -> getRootView().showMessage("не правильный логин или пароль"),
-                            () -> Flow.get(getView().getContext()).set(new AccountScreen())));
+                            () -> {
+                                getView().cancelSignIn();
+                                Flow.get(getView().getContext()).set(new AccountScreen());
+                            }));
         }
 
         public void signUp(UserCreateReq createReq) {

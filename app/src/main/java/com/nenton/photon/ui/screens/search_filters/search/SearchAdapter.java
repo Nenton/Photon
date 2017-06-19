@@ -50,7 +50,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchTV> 
 
     @Override
     public SearchTV onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_suggestion_searview, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_suggestion, parent, false);
         return new SearchTV(convertView);
     }
 
@@ -78,7 +78,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchTV> 
 
     class SearchTV extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.search_tv)
+        @BindView(R.id.suggest)
         TextView mTextView;
 
         public SearchTV(View itemView) {

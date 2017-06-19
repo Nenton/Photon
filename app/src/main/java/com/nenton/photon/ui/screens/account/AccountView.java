@@ -1,6 +1,7 @@
 package com.nenton.photon.ui.screens.account;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +19,14 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.ui.dialogs.DialogSign;
 import com.nenton.photon.utils.AvatarTransform;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by serge_000 on 06.06.2017.
@@ -49,6 +52,9 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     TextView mAlbumCount;
     @BindView(R.id.account_photocard_count)
     TextView mPhotocardCount;
+
+    private AlertDialog dialogSignIn = null;
+    private AlertDialog dialogSignUp = null;
 
     private AccountAdapter mAccountAdapter = new AccountAdapter();
 
@@ -107,4 +113,43 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
         mUserWrap.setVisibility(GONE);
         mNoUserWrap.setVisibility(VISIBLE);
     }
+
+    //region ========================= Events =========================
+
+    @OnClick(R.id.sign_in_btn)
+    public void clickOnSignBtn(){
+        mPresenter.clickOnSignIn();
+    }
+
+    @OnClick(R.id.sign_up_btn)
+    public void clickOnSignUpBtn(){
+        mPresenter.clickOnSignUp();
+    }
+
+    public void signUp() {
+        if (dialogSignUp == null) {
+            dialogSignUp = DialogSign.createDialogSignUp(getContext(), createReq -> mPresenter.signUp(createReq));
+        }
+        dialogSignUp.show();
+    }
+
+    public void cancelSignUp() {
+        if (dialogSignUp != null) {
+            dialogSignUp.cancel();
+        }
+    }
+
+    public void signIn() {
+        if (dialogSignIn == null) {
+            dialogSignIn = DialogSign.createDialogSignIn(getContext(), loginReq -> mPresenter.signIn(loginReq));
+        }
+        dialogSignIn.show();
+    }
+
+    public void cancelSignIn() {
+        if (dialogSignIn != null) {
+            dialogSignIn.cancel();
+        }
+    }
+    //endregion
 }

@@ -5,12 +5,15 @@ import android.util.Log;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.nenton.photon.data.network.RestCallTransformer;
 import com.nenton.photon.data.network.RestService;
+import com.nenton.photon.data.network.errors.AccessError;
+import com.nenton.photon.data.network.errors.ApiError;
+import com.nenton.photon.data.network.req.PhotoIdReq;
+import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.SignInRes;
-import com.nenton.photon.data.network.res.TagsRes;
 import com.nenton.photon.data.network.res.UserInfo;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
@@ -32,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import okhttp3.MultipartBody;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -111,16 +115,27 @@ public class DataManager {
                 .flatMap(productRes -> Observable.empty());
     }
 
-    public Observable<TagsRes> getPhotocardTagsObs() {
+    @RxLogObservable
+    public Observable<String> getPhotocardTagsObs(){
         return mRestService.getTagsObs()
-                .compose(((RestCallTransformer<TagsRes>) mRestCallTransformer))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(tagsRes -> mRealmManager.savePhotocardTags(tagsRes.getTags()))
-                .flatMap(tagsObs -> Observable.empty());
+                .flatMap(response -> {
+                    switch (response.code()){
+                        case 200:
+                            return Observable.just(response.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                })
+                .doOnNext(strings -> getRealmManager().savePhotocardTags(strings))
+                .flatMap(Observable::from)
+                .flatMap(s -> Observable.just("#" + s));
     }
 
-    public Observable<StringRealm> getTagsFromRealm() {
+    public Observable<String> getTagsFromRealm() {
         return mRealmManager.getTags();
     }
 
@@ -193,5 +208,139 @@ public class DataManager {
                                 .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(Observable::just);
+    }
+
+    public Observable<String> uploadPhoto(String userId, MultipartBody.Part file){
+        return mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), userId, file)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(photoResResponse -> {
+                    switch (photoResResponse.code()){
+                        case 201:
+                            return Observable.just(photoResResponse.body().getImage());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(photoResResponse.code()));
+                    }
+                })
+                .subscribeOn(Schedulers.newThread());
+    }
+
+    public Observable<String> createPhotocard(String userId, PhotocardReq photocardReq){
+        return mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), userId, photocardReq)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(photoResResponse -> {
+                    switch (photoResResponse.code()){
+                        case 201:
+                            return Observable.just(photoResResponse.body().getId());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(photoResResponse.code()));
+                    }
+                });
+    }
+
+    public Observable<Boolean> addToFav(String photocardId){
+        return mRestService.addPhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(photoResResponse -> {
+                    switch (photoResResponse.code()){
+                        case 201:
+                            return Observable.just(photoResResponse.body().isSuccess());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(photoResResponse.code()));
+                    }
+                });
+    }
+
+    public Observable<Boolean> deleteFromFav(String photocardId){
+        return mRestService.deletePhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(photoResResponse -> {
+                    switch (photoResResponse.code()){
+                        case 204:
+                            return Observable.just(true);
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(photoResResponse.code()));
+                    }
+                });
+    }
+
+    public Observable<Boolean> addViewsToPhotocard(String photoId){
+        return mRestService.addPhotocardViewsObs(photoId, new PhotoIdReq(getPreferencesManager().getUserId()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(response -> {
+                    switch (response.code()){
+                        case 201:
+                            return Observable.just(response.body().isSuccess());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                });
+    }
+
+    public Observable<PhotocardRealm> getPhotocardObs(String dateLastModified, String userId, String photoId){
+        return mRestService.getPhotocardObs(dateLastModified, userId, photoId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(response -> {
+                    switch (response.code()){
+                        case 200:
+                            return Observable.just(response.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                })
+                .doOnNext(photocard -> getRealmManager().savePhotocardResponseToRealm(photocard))
+                .flatMap(photocard -> Observable.just(new PhotocardRealm(photocard)));
+    }
+
+    public Observable<String> editPhotocardObs(String userId, String photoId, PhotocardReq photocardReq){
+        return mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), userId, photoId, photocardReq)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(response -> {
+                    switch (response.code()){
+                        case 200:
+                            return Observable.just(response.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                })
+                .doOnNext(idRes -> getRealmManager().savePhotocardResponseToRealm(idRes.getId(), photocardReq))
+                .flatMap(idRes -> Observable.just(idRes.getId()));
+    }
+
+    public Observable<Object> deletePhotocardObs(String userId, String photoId){
+        return mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), userId, photoId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(response -> {
+                    switch (response.code()){
+                        case 200:
+                            return Observable.empty();
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                })
+                .doOnNext(o -> getRealmManager().deletePhotocard(photoId));
     }
 }

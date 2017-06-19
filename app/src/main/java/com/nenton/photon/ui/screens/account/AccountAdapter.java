@@ -38,7 +38,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
     private List<AlbumRealm> mAlbums = new ArrayList<>();
     private Context context;
 
-    public void addAlbum(AlbumRealm album){
+    public void addAlbum(AlbumRealm album) {
         mAlbums.add(album);
         notifyDataSetChanged();
     }
@@ -65,8 +65,14 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         holder.mFavCount.setText(String.valueOf(album.getFavorits()));
         holder.mSeaCount.setText(String.valueOf(album.getViews()));
 
-        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()){
+        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
             picasso.load(album.getPhotocards().get(0).getPhoto())
+                    .fit()
+                    .centerCrop()
+                    .transform(new AlbumTransform())
+                    .into(holder.mPhoto);
+        } else {
+            picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg")
                     .fit()
                     .centerCrop()
                     .transform(new AlbumTransform())
@@ -83,7 +89,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         return mAlbums.size();
     }
 
-    public class AccountViewHolder extends RecyclerView.ViewHolder{
+    public class AccountViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_album)
         View mView;
         @BindView(R.id.photo_card_account_IV)
@@ -99,7 +105,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
         public AccountViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

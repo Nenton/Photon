@@ -3,6 +3,8 @@ package com.nenton.photon.ui.screens.account;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.network.req.UserCreateReq;
+import com.nenton.photon.data.network.req.UserLoginReq;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
@@ -17,13 +19,14 @@ import com.nenton.photon.ui.activities.RootActivity;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 
 /**
  * Created by serge_000 on 06.06.2017.
  */
 @Screen(R.layout.screen_account)
-public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
+public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     @Override
     public Object createScreenComponent(RootActivity.RootComponent parentComponent) {
@@ -34,36 +37,39 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
     }
 
     @dagger.Module
-    public class Module{
+    public class Module {
         @Provides
         @DaggerScope(AccountScreen.class)
-        MainModel providePhotoModel(){
+        MainModel providePhotoModel() {
             return new MainModel();
         }
 
         @Provides
         @DaggerScope(AccountScreen.class)
-        AccountPresenter provideAccountPresenter(){
+        AccountPresenter provideAccountPresenter() {
             return new AccountPresenter();
         }
     }
 
     @dagger.Component(dependencies = RootActivity.RootComponent.class, modules = Module.class)
     @DaggerScope(AccountScreen.class)
-    public interface Component{
+    public interface Component {
         void inject(AccountPresenter presenter);
+
         void inject(AccountView view);
+
         void inject(AccountAdapter adapter);
 
         Picasso getPicasso();
+
         RootPresenter getRootPresenter();
     }
 
-    public class AccountPresenter extends AbstractPresenter<AccountView, MainModel>{
+    public class AccountPresenter extends AbstractPresenter<AccountView, MainModel> {
 
         @Override
         protected void initActionBar() {
-            if (mModel.isSignIn()){
+            if (mModel.isSignIn()) {
                 mRootPresenter.newActionBarBuilder()
                         .setTitle("Профиль")
                         .setBackArrow(false)
@@ -109,13 +115,13 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
 
         @Override
         protected void initDagger(MortarScope scope) {
-            ((Component)scope.getService(DaggerService.SERVICE_NAME)).inject(this);
+            ((Component) scope.getService(DaggerService.SERVICE_NAME)).inject(this);
         }
 
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            if (mModel.isSignIn()){
+            if (mModel.isSignIn()) {
                 UserInfoDto userInfo = mModel.getUserInfo();
                 mCompSubs.add(mModel.getUser(userInfo.getId())
                         .subscribe(userRealm -> {
@@ -128,8 +134,31 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent>{
             }
         }
 
-        public boolean isAuth() {
-            return mModel.isSignIn();
+        public void clickOnSignIn() {
+            getView().signIn();
+        }
+
+        public void clickOnSignUp() {
+            getView().signUp();
+        }
+
+        public void signIn(UserLoginReq loginReq) {
+            mCompSubs.add(mModel.signIn(loginReq)
+                    .subscribe(signInRes -> {
+                            },
+                            throwable -> getRootView().showMessage("не правильный логин или пароль"),
+                            () -> {
+                                getView().cancelSignIn();
+                                Flow.get(getView().getContext()).set(new AccountScreen());
+                            }));
+        }
+
+        public void signUp(UserCreateReq createReq) {
+            mCompSubs.add(mModel.signUp(createReq)
+                    .subscribe(signUpRes -> {
+                        getView().cancelSignUp();
+                        getView().signIn();
+                    }, throwable -> getRootView().showMessage("не правильный логин или пароль")));
         }
     }
 }

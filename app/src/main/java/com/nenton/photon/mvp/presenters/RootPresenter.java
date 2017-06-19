@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.IRootView;

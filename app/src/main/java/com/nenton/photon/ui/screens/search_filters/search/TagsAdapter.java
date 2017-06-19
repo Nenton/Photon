@@ -23,14 +23,14 @@ import butterknife.ButterKnife;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder> {
 
-    private final List<StringRealm> mStrings = new ArrayList<>();
-    private Set<StringRealm> mStringSet = new HashSet<>();
+    private final List<String> mStrings = new ArrayList<>();
+    private Set<String> mStringSet = new HashSet<>();
 
-    public Set<StringRealm> getStringSet() {
+    public Set<String> getStringSet() {
         return mStringSet;
     }
 
-    public void addString(StringRealm s){
+    public void addString(String s){
         mStrings.add(s);
         notifyDataSetChanged();
     }
@@ -43,8 +43,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagsViewHolder
 
     @Override
     public void onBindViewHolder(TagsViewHolder holder, int position) {
-        StringRealm s = mStrings.get(position);
-        holder.mTagCheckBox.setText(s.getString());
+        String s = mStrings.get(position);
+        holder.mTagCheckBox.setText(s);
         holder.mTagCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked){
                 mStringSet.add(s);

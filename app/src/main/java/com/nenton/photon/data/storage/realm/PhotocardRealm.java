@@ -1,6 +1,7 @@
 package com.nenton.photon.data.storage.realm;
 
 import com.nenton.photon.data.network.res.Photocard;
+import com.nenton.photon.data.storage.dto.PhotocardDto;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -54,6 +55,21 @@ public class PhotocardRealm extends RealmObject {
 
         tags = new RealmList<>();
         for (String s : photocardRes.getTags()) {
+            tags.add(new StringRealm("#" + s));
+        }
+    }
+
+    public PhotocardRealm(PhotocardDto photocardDto) {
+        this.id = photocardDto.getId();
+        this.owner = photocardDto.getOwner();
+        this.title = photocardDto.getTitle();
+        this.photo = photocardDto.getPhoto();
+        this.views = photocardDto.getViews();
+        this.favorits = photocardDto.getFavorits();
+        this.filters = new FiltersRealm(photocardDto.getId(), photocardDto.getFilters());
+
+        tags = new RealmList<>();
+        for (String s : photocardDto.getTags()) {
             tags.add(new StringRealm("#" + s));
         }
     }
