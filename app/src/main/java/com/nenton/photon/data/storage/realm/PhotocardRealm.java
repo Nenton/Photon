@@ -22,6 +22,9 @@ public class PhotocardRealm extends RealmObject {
     private int favorits;
     private RealmList<StringRealm> tags;
     private FiltersRealm filters;
+    private String updated;
+    private String created;
+
 
     public PhotocardRealm() {
     }
@@ -50,6 +53,8 @@ public class PhotocardRealm extends RealmObject {
         this.title = photocardRes.getTitle();
         this.photo = photocardRes.getPhoto();
         this.views = photocardRes.getViews();
+        this.updated = photocardRes.getUpdated();
+        this.created = photocardRes.getCreated();
         this.favorits = photocardRes.getFavorits();
         this.filters = new FiltersRealm(photocardRes.getId(), photocardRes.getFilters());
 
@@ -105,5 +110,13 @@ public class PhotocardRealm extends RealmObject {
 
     public int getFavorits() {
         return favorits;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public String getCreated() {
+        return created;
     }
 }

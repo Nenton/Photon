@@ -10,11 +10,23 @@ import com.google.gson.annotations.SerializedName;
 public class UserEditRes {
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("login")
     @Expose
-    public String login;
+    private String login;
     @SerializedName("avatar")
     @Expose
-    public String avatar;
+    private String avatar;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
 }

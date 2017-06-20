@@ -183,4 +183,16 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@color/darkGrey</item>
     </style>
+
+    <style name="Field">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/stroke_field</item>
+        <item name="android:paddingTop">@dimen/spacing_small_8</item>
+        <item name="android:paddingBottom">@dimen/spacing_small_8</item>
+        <item name="android:paddingRight">@dimen/spacing_normal_16</item>
+        <item name="android:paddingLeft">@dimen/spacing_normal_16</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_normal_16</item>
+    </style>
+
 </resources>

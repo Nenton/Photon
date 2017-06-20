@@ -1,6 +1,7 @@
 package com.nenton.photon.ui.screens.album;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.ui.screens.account.AccountAdapter;
 import com.nenton.photon.ui.screens.account.AccountScreen;
 
@@ -38,6 +40,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
     View mView;
 
     private AlbumAdapter mAccountAdapter = new AlbumAdapter();
+    private AlertDialog dialogEditAlbum = null;
 
     public AlbumView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,8 +63,34 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         mNameAlbum.setText(mAlbum.getTitle());
         mCountPhoto.setText(String.valueOf(mAlbum.getPhotocards().size()));
         mDescription.setText(mAlbum.getDescription());
-        for (PhotocardRealm photo:mAlbum.getPhotocards()) {
+        for (PhotocardRealm photo : mAlbum.getPhotocards()) {
             mAccountAdapter.addAlbum(photo);
+        }
+    }
+
+    public void showDeleteAlbum() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("Удаление альбома")
+                .setMessage("Вы точно хотите удалить альбом?")
+                .setPositiveButton("Да", (dialog, which) -> mPresenter.deleteAlbum())
+                .setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
+        builder.create().show();
+    }
+
+    public void showEditAlbum() {
+        if (dialogEditAlbum == null) {
+            dialogEditAlbum = DialogsAlbum.editAlbum(getContext(), (name, description) -> {
+                mPresenter.editAlbumObs(name, description);
+                cancelAddAlbum();
+            });
+        }
+        dialogEditAlbum.show();
+    }
+
+    public void cancelAddAlbum() {
+        if (dialogEditAlbum != null) {
+            dialogEditAlbum.cancel();
+            dialogEditAlbum = null;
         }
     }
 

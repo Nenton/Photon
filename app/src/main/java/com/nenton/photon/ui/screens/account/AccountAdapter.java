@@ -43,6 +43,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         notifyDataSetChanged();
     }
 
+    public void reloadAdapter() {
+        mAlbums.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         DaggerService.<AccountScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
@@ -80,7 +85,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         }
 
         holder.mView.setOnClickListener(v -> {
-            Flow.get(context).set(new AlbumScreen(album));
+            Flow.get(context).set(new AlbumScreen(album.getId()));
         });
     }
 

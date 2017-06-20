@@ -13,28 +13,37 @@ public class Photocard {
 
     @SerializedName("id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("owner")
     @Expose
-    public String owner;
+    private String owner;
     @SerializedName("title")
     @Expose
-    public String title;
+    private String title;
     @SerializedName("photo")
     @Expose
-    public String photo;
+    private String photo;
     @SerializedName("views")
     @Expose
-    public int views;
+    private int views;
     @SerializedName("favorits")
     @Expose
-    public int favorits;
+    private int favorits;
     @SerializedName("tags")
     @Expose
-    public List<String> tags = null;
+    private List<String> tags = null;
     @SerializedName("filters")
     @Expose
-    public Filters filters;
+    private Filters filters;
+    @SerializedName("active")
+    @Expose
+    private boolean active;
+    @SerializedName("updated")
+    @Expose
+    private String updated;
+    @SerializedName("created")
+    @Expose
+    private String created;
 
     public String getId() {
         return id;
@@ -66,5 +75,17 @@ public class Photocard {
 
     public Filters getFilters() {
         return filters;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public String getCreated() {
+        return created;
     }
 }

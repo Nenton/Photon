@@ -1,26 +1,31 @@
 package com.nenton.photon.ui.screens.account;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.ui.dialogs.DialogEditUser;
 import com.nenton.photon.ui.dialogs.DialogSign;
+import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.utils.AvatarTransform;
+import com.nenton.photon.utils.ConstantsManager;
+import com.nenton.photon.utils.TextWatcherEditText;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -32,7 +37,7 @@ import butterknife.OnClick;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
+public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
 
     @Inject
     Picasso mPicasso;
@@ -55,6 +60,8 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
 
     private AlertDialog dialogSignIn = null;
     private AlertDialog dialogSignUp = null;
+    private AlertDialog dialogAddAlbum = null;
+    private AlertDialog dialogEditUserInfo = null;
 
     private AccountAdapter mAccountAdapter = new AccountAdapter();
 
@@ -77,7 +84,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
         mUserWrap.setVisibility(VISIBLE);
         mNoUserWrap.setVisibility(GONE);
 
-        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()){
+        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()) {
             mPicasso.load(userRealm.getAvatar())
                     .fit()
                     .centerCrop()
@@ -96,6 +103,8 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
         mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
 
         int countPhotocard = 0;
+
+        mAccountAdapter.reloadAdapter();
 
         for (AlbumRealm albumRealm : userRealm.getAlbums()) {
             countPhotocard += albumRealm.getPhotocards().size();
@@ -117,12 +126,12 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     //region ========================= Events =========================
 
     @OnClick(R.id.sign_in_btn)
-    public void clickOnSignBtn(){
+    public void clickOnSignBtn() {
         mPresenter.clickOnSignIn();
     }
 
     @OnClick(R.id.sign_up_btn)
-    public void clickOnSignUpBtn(){
+    public void clickOnSignUpBtn() {
         mPresenter.clickOnSignUp();
     }
 
@@ -136,6 +145,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     public void cancelSignUp() {
         if (dialogSignUp != null) {
             dialogSignUp.cancel();
+            dialogSignUp = null;
         }
     }
 
@@ -149,6 +159,39 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter>{
     public void cancelSignIn() {
         if (dialogSignIn != null) {
             dialogSignIn.cancel();
+            dialogSignIn = null;
+        }
+    }
+
+    public void showDialogAddAlbum() {
+        if (dialogAddAlbum == null) {
+            dialogAddAlbum = DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
+                mPresenter.addAlbum(name, description);
+            });
+        }
+        dialogAddAlbum.show();
+    }
+
+    public void cancelAddAlbum() {
+        if (dialogAddAlbum != null) {
+            dialogAddAlbum.cancel();
+            dialogAddAlbum = null;
+        }
+    }
+
+    public void showDialogEditUserInfo() {
+        if (dialogEditUserInfo == null) {
+            dialogEditUserInfo = DialogEditUser.editUserInfoDialog(getContext(), (name, login) -> {
+                mPresenter.editUserInfo(name, login);
+            });
+        }
+        dialogEditUserInfo.show();
+    }
+
+    public void cancelEditUserInfo() {
+        if (dialogEditUserInfo != null) {
+            dialogEditUserInfo.cancel();
+            dialogEditUserInfo = null;
         }
     }
     //endregion

@@ -2,6 +2,8 @@ package com.nenton.photon.data.managers;
 
 import android.support.annotation.Nullable;
 
+import com.nenton.photon.data.network.req.AlbumCreateReq;
+import com.nenton.photon.data.network.req.AlbumEditReq;
 import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.Photocard;
@@ -18,6 +20,7 @@ import com.nenton.photon.utils.SearchQuery;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -37,7 +40,6 @@ public class RealmManager {
         }
         return mRealmInstance;
     }
-
 
     public void savePhotocardTags(List<String> strings) {
         Realm realm = Realm.getDefaultInstance();
@@ -167,6 +169,17 @@ public class RealmManager {
                 .flatMap(Observable::from);
     }
 
+    public Observable<AlbumRealm> getAlbumById(String id) {
+        AlbumRealm albumRealm = getQueryRealmInstance().where(AlbumRealm.class).equalTo("id", id).findFirstAsync();
+        if (albumRealm != null) {
+            return albumRealm.<AlbumRealm>asObservable()
+                    .filter(albumRealm1 -> albumRealm1.isLoaded())
+                    .first();
+        } else {
+            return Observable.error(new Throwable());
+        }
+    }
+
     public void saveUserInfo(UserRealm userRealm) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> realm1.insertOrUpdate(userRealm));
@@ -176,7 +189,9 @@ public class RealmManager {
     public Observable<UserRealm> getUserById(String id) {
         UserRealm userRealm = getQueryRealmInstance().where(UserRealm.class).equalTo("id", id).findFirstAsync();
         if (userRealm != null) {
-            return userRealm.asObservable();
+            return userRealm.<UserRealm>asObservable()
+                    .filter(userRealm1 -> userRealm.isLoaded())
+                    .first();
         } else {
             return Observable.error(new Throwable());
         }
@@ -204,6 +219,14 @@ public class RealmManager {
     }
 
     public void deletePhotocard(String photoId) {
+
+    }
+
+    public void saveAlbumToRealm(String id, AlbumEditReq albumCreateReq) {
+
+    }
+
+    public void deleteAlbum(String id) {
 
     }
 }

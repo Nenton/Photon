@@ -1,13 +1,20 @@
 package com.nenton.photon.mvp.model;
 
 import com.fernandocejas.frodo.annotation.RxLogObservable;
+import com.nenton.photon.data.network.req.AlbumCreateReq;
+import com.nenton.photon.data.network.req.AlbumEditReq;
 import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
+import com.nenton.photon.data.network.req.UserEditReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
+import com.nenton.photon.data.network.res.Album;
+import com.nenton.photon.data.network.res.IdRes;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.SignInRes;
+import com.nenton.photon.data.network.res.UserEditRes;
 import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
@@ -21,6 +28,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by serge on 04.06.2017.
@@ -76,7 +84,7 @@ public class MainModel extends AbstractModel {
 
     @RxLogObservable
     public Observable<UserRealm> getUser(String id) {
-        Observable<UserRealm> disk = mDataManager.getUserById(id);
+        Observable<UserRealm> disk = mDataManager.getUserById(id).subscribeOn(Schedulers.io());
         Observable<UserRealm> network = mDataManager.getUserFromNetwork(id);
 
         return Observable.mergeDelayError(disk, network)
@@ -108,7 +116,7 @@ public class MainModel extends AbstractModel {
     public Observable<String> uploadPhotoToNetwork(String avatarUri, File file) {
         if (avatarUri != null) {
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("photo", file.getName(), requestBody);
+            MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
 
             return mDataManager.uploadPhoto(mDataManager.getUserInfo().getId(), part);
 
@@ -126,15 +134,40 @@ public class MainModel extends AbstractModel {
         mDataManager.getRealmManager().saveCreatePhotocard(photocardDto);
     }
 
-    public Observable<Boolean> addToFav(String photocardId){
+    public Observable<Boolean> addToFav(String photocardId) {
         return mDataManager.addToFav(photocardId);
     }
 
-    public Observable<Boolean> deleteFromFav(String photocardId){
+    public Observable<Boolean> deleteFromFav(String photocardId) {
         return mDataManager.deleteFromFav(photocardId);
     }
 
-    public Observable<Boolean> addViewsToPhotocard(String photoId){
+    public Observable<Boolean> addViewsToPhotocard(String photoId) {
         return mDataManager.addViewsToPhotocard(photoId);
+    }
+
+
+    public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {
+        return mDataManager.createAlbumObs(albumCreateReq);
+    }
+
+    public Observable<Void> deleteAlbumObs(String idAlbum) {
+        return mDataManager.deleteAlbumObs(idAlbum);
+    }
+
+    public Observable<Album> editAlbumObs(String id, AlbumEditReq albumEditReq) {
+        return mDataManager.editAlbumObs(id, albumEditReq);
+    }
+
+    public Observable<AlbumRealm> getAlbumFromRealm(String id){
+        return mDataManager.getAlbumById(id);
+    }
+
+    public Observable<UserEditRes> editUserInfoAvatarObs(String s) {
+        return mDataManager.editUserInfoObs(new UserEditReq(mDataManager.getPreferencesManager().getUserName(),mDataManager.getPreferencesManager().getUserLogin(),s));
+    }
+
+    public Observable<UserEditRes> editUserInfoObs(String name, String login) {
+        return mDataManager.editUserInfoObs(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
     }
 }

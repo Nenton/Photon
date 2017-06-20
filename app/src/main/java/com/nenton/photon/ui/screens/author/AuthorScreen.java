@@ -93,7 +93,7 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         public void clickOnAlbum(AlbumRealm album) {
-            Flow.get(getView().getContext()).set(new AlbumScreen(album));
+            Flow.get(getView().getContext()).set(new AlbumScreen(album.getId()));
         }
     }
 }

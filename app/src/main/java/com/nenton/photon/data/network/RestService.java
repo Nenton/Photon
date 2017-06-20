@@ -44,7 +44,7 @@ public interface RestService {
 
     // edit user info
     @PUT("user/{userId}")
-    Observable<Response<UserEditRes>> editUserInfoObs(@Path("userId") String userId, @Body UserEditReq user);
+    Observable<Response<UserEditRes>> editUserInfoObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Body UserEditReq user);
 
     // create user
     @POST("user/signUp")
@@ -105,23 +105,23 @@ public interface RestService {
 
     //get album list
     @GET("user/{userId}/album/list")
-    Observable<List<Album>> getAlbumListObs(@Query("limit") int limit, @Query("offset") int offset);
+    Observable<Response<List<Album>>> getAlbumListObs(@Path("userId") String userId, @Query("limit") int limit, @Query("offset") int offset);
 
     // get album
     @GET("user/{userId}/album/{id}")
-    Observable<Album> getAlbumObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Response<Album>> getAlbumObs(@Path("userId") String userId, @Path("id") String id);
 
     // create album
-    @POST("user/{userId}/album/{id}")
-    Observable<IdRes> createAlbumObs(@Path("userId") String userId, @Path("id") String id, @Body AlbumCreateReq album);
+    @POST("user/{userId}/album/")
+    Observable<Response<Album>> createAlbumObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Body AlbumCreateReq album);
 
     // edit album
     @PUT("user/{userId}/album/{id}")
-    Observable<IdRes> editAlbumObs(@Path("userId") String userId, @Path("id") String id, @Body AlbumEditReq album);
+    Observable<Response<Album>> editAlbumObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id, @Body AlbumEditReq album);
 
     // delete album
     @DELETE("user/{userId}/album/{id}")
-    void deleteAlbumObs(@Path("userId") String userId, @Path("id") String id);
+    Observable<Response<Void>> deleteAlbumObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
 
     //endregion
 }

@@ -121,12 +121,10 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             BasicImageDownloader downloader = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
                 @Override
                 public void onError(BasicImageDownloader.ImageError error) {
-
                 }
 
                 @Override
                 public void onProgressChange(int percent) {
-
                 }
 
                 @Override
@@ -146,7 +144,6 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
                                 @Override
                                 public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
-
                                 }
                             }, Bitmap.CompressFormat.PNG, true);
                 }

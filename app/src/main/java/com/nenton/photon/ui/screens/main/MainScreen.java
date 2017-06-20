@@ -137,7 +137,6 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             mModel.unAuth();
             changeStateAuth();
             initMenuPopup();
-            getRootView().showMessage("Пользователь вышел");
         }
 
         @Override

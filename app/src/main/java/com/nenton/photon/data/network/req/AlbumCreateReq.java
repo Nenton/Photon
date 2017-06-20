@@ -5,15 +5,11 @@ package com.nenton.photon.data.network.req;
  */
 
 public class AlbumCreateReq {
-    public String owner;
-    public String title;
-    public String preview;
-    public String description;
+    private String title;
+    private String description;
 
-    public AlbumCreateReq(String owner, String title, String preview, String description) {
-        this.owner = owner;
+    public AlbumCreateReq(String title, String description) {
         this.title = title;
-        this.preview = preview;
         this.description = description;
     }
 }

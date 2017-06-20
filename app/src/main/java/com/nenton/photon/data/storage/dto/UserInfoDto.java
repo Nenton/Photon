@@ -1,5 +1,6 @@
 package com.nenton.photon.data.storage.dto;
 
+import com.nenton.photon.data.network.res.UserEditRes;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 
@@ -34,6 +35,12 @@ public class UserInfoDto {
         for (AlbumRealm albumRealm : userRealm.getAlbums()) {
             this.countPhoto += albumRealm.getPhotocards().size();
         }
+    }
+
+    public UserInfoDto(UserEditRes userEditRes) {
+        this.name = userEditRes.getName();
+        this.login = userEditRes.getLogin();
+        this.avatar = userEditRes.getAvatar();
     }
 
     public String getId() {

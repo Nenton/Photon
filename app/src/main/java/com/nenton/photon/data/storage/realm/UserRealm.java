@@ -30,7 +30,9 @@ public class UserRealm extends RealmObject {
         this.login = user.getLogin();
         this.avatar = user.getAvatar();
         for (Album album : user.getAlbums()) {
-            this.albums.add(new AlbumRealm(album));
+            if (album.isActive()){
+                this.albums.add(new AlbumRealm(album));
+            }
         }
     }
 
@@ -40,7 +42,9 @@ public class UserRealm extends RealmObject {
         this.login = userInfo.getLogin();
         this.avatar = userInfo.getAvatar();
         for (Album album : userInfo.getAlbums()) {
-            this.albums.add(new AlbumRealm(album));
+            if (album.isActive()){
+                this.albums.add(new AlbumRealm(album));
+            }
         }
     }
 

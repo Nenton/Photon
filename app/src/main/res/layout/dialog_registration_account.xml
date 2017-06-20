@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
-    <android.support.design.widget.TextInputLayout
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/spacing_normal_16"
+    android:paddingRight="@dimen/spacing_normal_16"
+    android:paddingTop="@dimen/spacing_normal_16">
+
+    <EditText
         android:id="@+id/registration_login_til"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Логин"/>
-    </android.support.design.widget.TextInputLayout>
+        style="@style/Field"
+        android:hint="Логин"/>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:id="@+id/registration_email_til"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="E-mail"/>
-    </android.support.design.widget.TextInputLayout>
+        style="@style/Field"
+        android:hint="E-mail"/>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:id="@+id/registration_name_til"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Имя"/>
-    </android.support.design.widget.TextInputLayout>
+        style="@style/Field"
+        android:hint="Имя"/>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:id="@+id/registration_password_til"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Пароль"/>
-    </android.support.design.widget.TextInputLayout>
+        style="@style/Field"
+        android:hint="Пароль"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
         <Button
-            style="?borderlessButtonStyle"
             android:id="@+id/sign_up_positive_btn"
+            style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ок"/>
 
         <Button
-            style="?borderlessButtonStyle"
             android:id="@+id/sign_up_negative_btn"
+            style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="отмена"/>

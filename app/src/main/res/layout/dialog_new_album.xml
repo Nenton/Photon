@@ -9,16 +9,16 @@
     android:paddingTop="@dimen/spacing_normal_16">
 
     <EditText
-        android:id="@+id/sign_in_email_til"
+        android:id="@+id/add_album_name_ET"
         style="@style/Field"
-        android:hint="E-mail"
-        android:inputType="textEmailAddress"/>
+        android:hint="Имя"/>
 
     <EditText
-        android:id="@+id/sing_in_password_til"
+        android:id="@+id/add_album_description_ET"
         style="@style/Field"
-        android:hint="Пароль"
-        android:inputType="textPassword"/>
+        android:minLines="3"
+        android:gravity="top"
+        android:hint="Описание"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,14 +27,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/sign_in_positive_btn"
-            style="?borderlessButtonStyle"
+            android:id="@+id/add_album_ok_btn"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ок"/>
 
         <Button
-            android:id="@+id/sign_in_negative_btn"
+            android:id="@+id/add_album_cancel_btn"
             style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

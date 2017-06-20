@@ -58,11 +58,19 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
         holder.mNameAlbum.setText(album.getTitle());
         holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
 
-        picasso.load(album.getPreview())
-                .fit()
-                .centerCrop()
-                .transform(new AlbumTransform())
-                .into(holder.mPhoto);
+        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
+            picasso.load(album.getPhotocards().get(0).getPhoto())
+                    .fit()
+                    .centerCrop()
+                    .transform(new AlbumTransform())
+                    .into(holder.mPhoto);
+        } else {
+            picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg")
+                    .fit()
+                    .centerCrop()
+                    .transform(new AlbumTransform())
+                    .into(holder.mPhoto);
+        }
 
         holder.mPhoto.setOnClickListener(v -> {
             mPresenter.clickOnAlbum(album);

@@ -28,6 +28,12 @@ public class Album {
     @SerializedName("favorits")
     @Expose
     private int favorits;
+    @SerializedName("active")
+    @Expose
+    private boolean active;
+    @SerializedName("isFavorite")
+    @Expose
+    private boolean isFavorite;
     @SerializedName("photocards")
     @Expose
     private List<Photocard> photocards = null;
@@ -58,5 +64,13 @@ public class Album {
 
     public List<Photocard> getPhotocards() {
         return photocards;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 }
