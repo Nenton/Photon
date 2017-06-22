@@ -97,6 +97,10 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         return mPhotocards.size();
     }
 
+    public void reload() {
+        mPhotocards.clear();
+    }
+
     public class MainViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_photo)
         FrameLayout mView;

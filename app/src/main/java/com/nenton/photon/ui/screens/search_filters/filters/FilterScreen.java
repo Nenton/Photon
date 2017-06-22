@@ -72,7 +72,12 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         @Override
         protected void initDagger(MortarScope scope) {
             ((Component) scope.getService(DaggerService.SERVICE_NAME)).inject(this);
-            getView().initView();
+            SearchEnum searchEnum = mRootPresenter.getSearchEnum();
+            if (searchEnum == SearchEnum.FILTER){
+                getView().initView(mRootPresenter.getSearchFilterQuery());
+            } else {
+                getView().initView();
+            }
         }
 
         public void clickOnSearch() {

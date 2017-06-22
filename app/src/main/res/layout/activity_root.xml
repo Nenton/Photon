@@ -5,16 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.nenton.photon.ui.activities.RootActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.nenton.photon.ui.activities.RootActivity">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -30,27 +27,27 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
         </android.support.design.widget.AppBarLayout>
 
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/white"
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:layout_behavior=".ui.behaviors.BottomNavigationBehavior"
+            app:menu="@menu/menu_bottom_navigation"/>
+
         <View
             android:id="@+id/popup_menu"
             android:layout_width="match_parent"
             android:layout_height="0dp"/>
 
         <FrameLayout
-            android:layout_marginTop="?attr/actionBarSize"
             android:id="@+id/root_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@color/bottom_navigation_item_background_colors"
-            app:itemTextColor="@color/bottom_navigation_item_background_colors"
-            app:layout_behavior=".utils.BottomNavigationBehavior"
-            app:menu="@menu/menu_bottom_navigation"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

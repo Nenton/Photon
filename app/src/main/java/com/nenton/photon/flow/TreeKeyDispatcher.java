@@ -24,6 +24,7 @@ import java.util.Map;
 import flow.Direction;
 import flow.Dispatcher;
 import flow.KeyChanger;
+import flow.MultiKey;
 import flow.State;
 import flow.Traversal;
 import flow.TraversalCallback;
@@ -59,6 +60,10 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         if (inKey instanceof TreeKey) {
             // TODO: 27.11.2016 implement treeKey case
         }
+
+        if (inKey instanceof MultiKey) {
+            // TODO: 27.11.2016 implement treeKey case
+        }
         Context flowContext = traversal.createContext(inKey, mActivity);
         Context mortarContext = ScreenScoper.getScreenScope((AbstractScreen) inKey).createContext(flowContext);
         contexts = Collections.singletonMap(inKey, mortarContext);
@@ -91,20 +96,12 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
             incomingState.restore(newView);
 
             mRootFrame.addView(newView);
-            ViewHelper.waitForMeasure(newView, new ViewHelper.OnMeasureCallback() {
-                @Override
-                public void onMeasure(View view, int width, int height) {
-                    runAnimation(mRootFrame, oldView, newView, direction, new TraversalCallback() {
-                        @Override
-                        public void onTraversalCompleted() {
-                            if ((outKey) != null && !(inKey instanceof TreeKey)) {
-                                ((AbstractScreen) outKey).unregisterScope();
-                            }
-                            callback.onTraversalCompleted();
-                        }
-                    });
+            ViewHelper.waitForMeasure(newView, (view, width, height) -> runAnimation(mRootFrame, oldView, newView, direction, () -> {
+                if ((outKey) != null && !(inKey instanceof TreeKey)) {
+                    ((AbstractScreen) outKey).unregisterScope();
                 }
-            });
+                callback.onTraversalCompleted();
+            }));
         }
     }
 

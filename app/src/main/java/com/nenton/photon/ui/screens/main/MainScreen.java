@@ -84,18 +84,21 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                 case SEARCH:
                     builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_primary_24dp, item -> {
                         Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                        ((RootActivity) getRootView()).hideSnackbar();
                         return true;
                     }));
                     break;
                 case FILTER:
                     builder.addAction(new MenuItemHolder("Фильтер", R.drawable.ic_style_accent_24dp, item -> {
                         Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                        ((RootActivity) getRootView()).hideSnackbar();
                         return true;
                     }));
                     break;
                 case NONE:
                     builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
                         Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                        ((RootActivity) getRootView()).hideSnackbar();
                         return true;
                     }));
                     break;
@@ -148,15 +151,33 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
+            initView();
+        }
+
+        private void initView() {
             switch (mRootPresenter.getSearchEnum()) {
                 case SEARCH:
+                    mCompSubs.clear();
                     mCompSubs.add(subscribeOnSearchRealmObs());
+                    ((RootActivity) getRootView()).showSearchSetting("Поиск", () -> {
+                        getView().reloadAdapter();
+                        initActionBar();
+                        initView();
+                    });
                     break;
                 case FILTER:
+                    mCompSubs.clear();
                     mCompSubs.add(subscribeOnSearchFilterRealmObs());
+                    ((RootActivity) getRootView()).showFilterSetting("Фильтер", () -> {
+                        getView().reloadAdapter();
+                        initActionBar();
+                        initView();
+                    });
                     break;
                 case NONE:
                 default:
+                    mCompSubs.clear();
+                    getView().reloadAdapter();
                     mCompSubs.add(subscribeOnProductRealmObs());
             }
         }

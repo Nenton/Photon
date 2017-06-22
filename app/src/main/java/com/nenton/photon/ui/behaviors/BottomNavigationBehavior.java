@@ -1,4 +1,4 @@
-package com.nenton.photon.utils;
+package com.nenton.photon.ui.behaviors;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,10 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -21,42 +24,39 @@ import android.view.animation.Interpolator;
 
 public final class BottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
     private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
-    private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
-    private boolean isTablet;
-//    private int mTabLayoutId;
+    private int mTabLayoutId;
     private boolean hidden = false;
-    private ViewPropertyAnimatorCompat mOffsetValueAnimator;
-    private ViewGroup mTabLayout;
+    private ViewPropertyAnimatorCompat mTranslationAnimator;
+    private TabLayout mTabLayout;
     private View mTabsHolder;
     private int mSnackbarHeight = -1;
     private boolean scrollingEnabled = true;
-    private boolean hideAlongSnackbar = false;
-    int[] attrsArray = new int[] {
-            android.R.attr.id };
+    private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
+    int[] attrsArray = new int[]{
+            android.R.attr.id, android.R.attr.elevation};
+
     public BottomNavigationBehavior() {
         super();
     }
 
     public BottomNavigationBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                attrsArray);
+        TypedArray a = context.obtainStyledAttributes(attrs, attrsArray);
+        mTabLayoutId = a.getResourceId(0, View.NO_ID);
         a.recycle();
     }
 
-    public static <V extends View> BottomNavigationBehavior<V> from(@NonNull V view) {
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if (!(params instanceof CoordinatorLayout.LayoutParams)) {
-            throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
+    @Override
+    public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
+        boolean layoutChild = super.onLayoutChild(parent, child, layoutDirection);
+        if (mTabLayout == null && mTabLayoutId != View.NO_ID) {
+//            mTabLayout = findTabLayout(child);
+            getTabsHolder();
         }
-        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams) params)
-                .getBehavior();
-        if (!(behavior instanceof BottomNavigationBehavior)) {
-            throw new IllegalArgumentException(
-                    "The view is not associated with BottomNavigationBehavior");
-        }
-        return (BottomNavigationBehavior<V>) behavior;
+        return layoutChild;
     }
+
+
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
@@ -70,16 +70,11 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         super.onDependentViewRemoved(parent, child, dependency);
     }
 
-    private void updateScrollingForSnackbar(View dependency, V child, boolean enabled) {
-        if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+    private void updateScrollingForSnackbar(View dependency, View child, boolean enabled) {
+        if (dependency instanceof Snackbar.SnackbarLayout) {
             scrollingEnabled = enabled;
-            if (!hideAlongSnackbar && ViewCompat.getTranslationY(child) != 0) {
+            if (ViewCompat.getTranslationY(child) != 0) {
                 ViewCompat.setTranslationY(child, 0);
-                hidden = false;
-                hideAlongSnackbar = true;
-            }else if(hideAlongSnackbar){
-                hidden = true;
-                animateOffset(child, -child.getHeight());
             }
         }
     }
@@ -89,16 +84,11 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         updateScrollingForSnackbar(dependency, child, false);
         return super.onDependentViewChanged(parent, child, dependency);
     }
+//    private TabLayout findTabLayout(View child) {
+//        if (mTabLayoutId == 0) return null;
+//        return (TabLayout) child.findViewById(mTabLayoutId);
+//    }
 
-    @Override
-    public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
-        boolean layoutChild = super.onLayoutChild(parent, child, layoutDirection);
-        if (mTabLayout == null) {
-            getTabsHolder();
-        }
-
-        return layoutChild;
-    }
 
 
     @Override
@@ -110,8 +100,9 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         handleDirection(child, scrollDirection);
     }
 
-    private void handleDirection(V child, @ScrollDirection int scrollDirection) {
-        if (!scrollingEnabled) return;
+
+    private void handleDirection(V child, int scrollDirection) {
+        if(!scrollingEnabled) return;
         if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
             hidden = false;
             animateOffset(child, 0);
@@ -129,24 +120,24 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
     private void animateOffset(final V child, final int offset) {
         ensureOrCancelAnimator(child);
-        mOffsetValueAnimator.translationY(offset).start();
+        mTranslationAnimator.translationY(offset).start();
         animateTabsHolder(offset);
     }
 
     private void animateTabsHolder(int offset) {
         if (mTabsHolder != null) {
             offset = offset > 0 ? 0 : 1;
-            ViewCompat.animate(mTabsHolder).alpha(offset).setDuration(200).start();
+            ViewCompat.animate(mTabsHolder).alpha(offset).setDuration(300).start();
         }
     }
 
     private void ensureOrCancelAnimator(V child) {
-        if (mOffsetValueAnimator == null) {
-            mOffsetValueAnimator = ViewCompat.animate(child);
-            mOffsetValueAnimator.setDuration(100);
-            mOffsetValueAnimator.setInterpolator(INTERPOLATOR);
+        if (mTranslationAnimator == null) {
+            mTranslationAnimator = ViewCompat.animate(child);
+            mTranslationAnimator.setDuration(300);
+            mTranslationAnimator.setInterpolator(INTERPOLATOR);
         } else {
-            mOffsetValueAnimator.cancel();
+            mTranslationAnimator.cancel();
         }
     }
 
@@ -156,21 +147,27 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
         }
     }
 
-    public boolean isScrollingEnabled() {
-        return scrollingEnabled;
-    }
-
-    public void setScrollingEnabled(boolean scrollingEnabled) {
-        this.scrollingEnabled = scrollingEnabled;
-    }
-
-    public void setHidden(V view, boolean bottomLayoutHidden) {
-        if (!bottomLayoutHidden && hidden) {
-            animateOffset(view, 0);
-        } else if (bottomLayoutHidden && !hidden) {
-            animateOffset(view, -view.getHeight());
+    public static <V extends View> BottomNavigationBehavior<V> from(V view) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (!(params instanceof CoordinatorLayout.LayoutParams)) {
+            throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
         }
-        hidden = bottomLayoutHidden;
+        CoordinatorLayout.Behavior behavior = ((CoordinatorLayout.LayoutParams) params)
+                .getBehavior();
+        if (!(behavior instanceof BottomNavigationBehavior)) {
+            throw new IllegalArgumentException(
+                    "The view is not associated with AHBottomNavigationBehavior");
+        }
+        return (BottomNavigationBehavior<V>) behavior;
+    }
+
+    public void setTabLayoutId(int tabId) {
+        this.mTabLayoutId = tabId;
+    }
+
+    public void resetOffset(V view) {
+        Log.d("AHBottomNavigation", "restoreBottomNavigation");
+        animateOffset(view, 0);
     }
 
     private interface BottomNavigationWithSnackbar {
@@ -181,16 +178,15 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
         @Override
         public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
-            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+            if (dependency instanceof Snackbar.SnackbarLayout) {
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }
 
                 int targetPadding = child.getMeasuredHeight();
 
-                int shadow = (int) ViewCompat.getElevation(child);
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
-                layoutParams.bottomMargin = targetPadding - shadow;
+                layoutParams.bottomMargin = targetPadding;
                 child.bringToFront();
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     child.getParent().requestLayout();
@@ -205,7 +201,7 @@ public final class BottomNavigationBehavior<V extends View> extends VerticalScro
 
         @Override
         public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
-            if (!isTablet && dependency instanceof Snackbar.SnackbarLayout) {
+            if (dependency instanceof Snackbar.SnackbarLayout) {
                 if (mSnackbarHeight == -1) {
                     mSnackbarHeight = dependency.getHeight();
                 }

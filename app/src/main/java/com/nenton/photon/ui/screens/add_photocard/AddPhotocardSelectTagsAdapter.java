@@ -4,22 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.realm.AlbumRealm;
-import com.nenton.photon.data.storage.realm.StringRealm;
-import com.nenton.photon.di.DaggerService;
-import com.nenton.photon.ui.custom_views.ImageViewSquare;
-import com.nenton.photon.utils.AlbumTransform;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,14 +21,14 @@ import butterknife.ButterKnife;
 
 public class AddPhotocardSelectTagsAdapter extends RecyclerView.Adapter<AddPhotocardSelectTagsAdapter.ViewHolder> {
 
-    private List<String> mStringRealms = new ArrayList<>();
+    private List<String> mStrings = new ArrayList<>();
 
     public List<String> getStrings() {
-        return mStringRealms;
+        return mStrings;
     }
 
     public void addTag(String albumRealm) {
-        mStringRealms.add(albumRealm);
+        mStrings.add(albumRealm.substring(1));
         notifyDataSetChanged();
     }
 
@@ -49,19 +40,19 @@ public class AddPhotocardSelectTagsAdapter extends RecyclerView.Adapter<AddPhoto
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String albumRealm = mStringRealms.get(position);
+        String albumRealm = mStrings.get(position);
 
-        holder.mTag.setText(albumRealm);
+        holder.mTag.setText("#" + albumRealm);
 
         holder.mImageButton.setOnClickListener(v -> {
-            mStringRealms.remove(albumRealm);
+            mStrings.remove(albumRealm);
             notifyDataSetChanged();
         });
     }
 
     @Override
     public int getItemCount() {
-        return mStringRealms.size();
+        return mStrings.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

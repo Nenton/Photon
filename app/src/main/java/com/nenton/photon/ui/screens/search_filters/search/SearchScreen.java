@@ -11,6 +11,7 @@ import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
+import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.main.MainScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
@@ -104,6 +105,10 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
             mRootPresenter.setSearchQuery(mSearchFilterQuery);
             mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
             Flow.get(getView().getContext()).set(new MainScreen());
+        }
+
+        public void goBack() {
+            ((RootActivity) getRootView()).onBackPressed();
         }
     }
 }

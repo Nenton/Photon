@@ -1,11 +1,12 @@
 package com.nenton.photon.ui.screens.photocard;
 
-import android.graphics.Bitmap;
+import android.app.DownloadManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.network.req.PhotoIdReq;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
@@ -20,23 +21,24 @@ import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.author.AuthorScreen;
-import com.nenton.photon.utils.BasicImageDownloader;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import dagger.Provides;
 import flow.Flow;
+import flow.MultiKey;
 import mortar.MortarScope;
 import rx.Subscriber;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Created by serge_000 on 06.06.2017.
  */
 @Screen(R.layout.screen_photocard)
-public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> {
+public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> implements MultiKey{
 
     private PhotocardRealm mPhotocard;
 
@@ -50,6 +52,18 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
                 .rootComponent(parentComponent)
                 .module(new Module())
                 .build();
+    }
+
+    @Override
+    public String getScopeName() {
+        return getClass().getName() + mPhotocard.getId();
+//        return super.getScopeName();
+    }
+
+    @NonNull
+    @Override
+    public List<Object> getKeys() {
+        return Collections.singletonList(mPhotocard.getId());
     }
 
     @dagger.Module
@@ -118,37 +132,14 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         }
 
         private void downloadPhoto() {
-            BasicImageDownloader downloader = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
-                @Override
-                public void onError(BasicImageDownloader.ImageError error) {
-                }
+            DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
 
-                @Override
-                public void onProgressChange(int percent) {
-                }
+            r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
+            r.allowScanningByMediaScanner();
+            r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                @Override
-                public void onComplete(Bitmap result) {
-                    File filepath = Environment.getExternalStorageDirectory();
-                    File dir = new File(filepath.getAbsolutePath() + "/saveImage");
-                    dir.mkdirs();
-                    File file = new File(dir, mPhotocard.getTitle() + ".png");
-
-                    BasicImageDownloader.writeToDisk(file,
-                            result,
-                            new BasicImageDownloader.OnBitmapSaveListener() {
-                                @Override
-                                public void onBitmapSaved() {
-                                    getRootView().showMessage("Загрузка завершена");
-                                }
-
-                                @Override
-                                public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
-                                }
-                            }, Bitmap.CompressFormat.PNG, true);
-                }
-            });
-            downloader.download(mPhotocard.getPhoto(), false);
+            DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
+            dm.enqueue(r);
         }
 
         private void sharePhoto() {

@@ -88,6 +88,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
             mPicasso.load(userRealm.getAvatar())
                     .fit()
                     .centerCrop()
+                    .transform(new AvatarTransform())
                     .into(mAvatar);
         } else {
             mPicasso.load(R.color.black)

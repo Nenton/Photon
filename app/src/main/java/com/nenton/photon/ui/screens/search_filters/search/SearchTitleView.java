@@ -6,14 +6,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.WordsLayoutManager;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.utils.TextWatcherEditText;
 
 import java.util.List;
 
@@ -31,12 +35,15 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
     @BindView(R.id.tags_RV)
     RecyclerView mRecyclerViewTags;
     @BindView(R.id.search_view)
-    SearchView mSearchView;
+    EditText mSearchView;
+    @BindView(R.id.reboot_settings_search)
+    ImageButton mRebootBtn;
+    @BindView(R.id.back_and_check)
+    ImageButton mBackCheckBtn;
 
-    @OnClick(R.id.search_btn)
-    public void clickSearch(){
-        mPresenter.clickOnSearch(mSearchView.getQuery(), mTagsAdapter.getStringSet());
-        adapter.addString(mSearchView.getQuery().toString());
+    @OnClick(R.id.reboot_settings_search)
+    public void clickSearch() {
+        mSearchView.setText("");
     }
 
     private TagsAdapter mTagsAdapter = new TagsAdapter();
@@ -57,7 +64,6 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
     }
 
     void initView(List<String> strings) {
-//        initAdapter();
         mRecyclerViewTags.setLayoutManager(new WordsLayoutManager(getContext()));
         mRecyclerViewTags.setAdapter(mTagsAdapter);
 
@@ -66,39 +72,31 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         mSearchRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mSearchRV.setAdapter(adapter);
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.addTextChangedListener(new TextWatcherEditText() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_check_black_24dp));
+                    mBackCheckBtn.setOnClickListener(v -> {
+                        mPresenter.clickOnSearch(mSearchView.getText(), mTagsAdapter.getStringSet());
+                        adapter.addString(mSearchView.getText().toString());
+                    });
+                } else {
+                    mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_custom_back_arrow_black_24dp));
+                    mBackCheckBtn.setOnClickListener(v -> mPresenter.goBack());
+                }
+                adapter.getFilter().filter(s.toString());
             }
         });
+        adapter.getFilter().filter("");
+        mBackCheckBtn.setOnClickListener(v -> mPresenter.goBack());
     }
-//
-//    private void initAdapter() {
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//        mTagsAdapter.addString("ыпыап");
-//    }
 
     public TagsAdapter getAdapter() {
         return mTagsAdapter;
     }
 
     public void setTextSearchViewByQueryString(String s) {
-        mSearchView.setQuery(s,false);
+        mSearchView.setText(s);
     }
 }

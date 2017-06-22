@@ -34,6 +34,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 import dagger.Provides;
+import flow.Flow;
 import mortar.MortarScope;
 import rx.Observable;
 import rx.Subscription;
@@ -52,6 +53,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 .rootComponent(parentComponent)
                 .module(new Module())
                 .build();
+
     }
 
     @dagger.Module

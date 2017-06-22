@@ -22,6 +22,7 @@ import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
@@ -195,15 +196,17 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
 
         private void initPropertyView() {
             UserInfoDto userInfo = mModel.getUserInfo();
-            mCompSubs.add(mModel.getUser(userInfo.getId())
-                    .subscribe(userRealm -> {
-                        getView().showView(userRealm);
-                    }, throwable -> {
-                        getRootView().showMessage("Ошибка");
-                    }));
-            mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(s -> {
-                getView().getTagsSuggestionAdapter().addTag(s);
-            }, throwable -> {
+            mCompSubs.add(mModel.getUser(userInfo.getId()).subscribe(new ViewSubscriber<UserRealm>() {
+                @Override
+                public void onNext(UserRealm userRealm) {
+                    getView().showView(userRealm);
+                }
+            }));
+            mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
+                @Override
+                public void onNext(String s) {
+                    getView().getTagsSuggestionAdapter().addTag(s);
+                }
             }));
         }
 

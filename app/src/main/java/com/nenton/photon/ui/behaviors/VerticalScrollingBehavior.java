@@ -1,4 +1,4 @@
-package com.nenton.photon.utils;
+package com.nenton.photon.ui.behaviors;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -16,7 +16,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 
 public abstract class VerticalScrollingBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
-
     private int mTotalDyUnconsumed = 0;
     private int mTotalDy = 0;
     @ScrollDirection

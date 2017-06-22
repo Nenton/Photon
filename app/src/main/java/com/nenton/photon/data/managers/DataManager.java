@@ -372,7 +372,7 @@ public class DataManager {
                             return Observable.error(new ApiError(response.code()));
                     }
                 })
-                .doOnNext(o -> getRealmManager().deletePhotocard(photoId));
+                .doOnNext(o -> getRealmManager().deleteFromRealm(PhotocardRealm.class, photoId));
     }
 
     public Observable<Album> getAlbumListObs(String userId, int limit, int offset) {

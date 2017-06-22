@@ -88,4 +88,8 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
     public MainAdapter getAdapter() {
         return mMainAdapter;
     }
+
+    public void reloadAdapter() {
+        mMainAdapter.reload();
+    }
 }

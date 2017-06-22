@@ -33,7 +33,7 @@ public class DialogSign {
         login_ti.addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().length() > 2) {
+                if (s.toString().length() > 2 && s.toString().matches(ConstantsManager.REG_EXP_LOGIN)) {
                     login_ti.setTextColor(context.getResources().getColor(R.color.colorAccent));
                     login_ti.setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
                     login_ti.setHint("Логин");
@@ -96,7 +96,8 @@ public class DialogSign {
             String name = name_ti.getText().toString();
             String password = password_ti.getText().toString();
 
-            if (login.length() > 3 && email.matches(ConstantsManager.REG_EXP_EMAIL) && name.length() > 2 &&
+            if (login.length() > 3 && login.matches(ConstantsManager.REG_EXP_LOGIN)
+                    && email.matches(ConstantsManager.REG_EXP_EMAIL) && name.length() > 2 &&
                     password.matches(ConstantsManager.REG_EXP_PASSWORD) && password.length() > 7) {
                 listener.action(new UserCreateReq(name, login, email, password));
             }

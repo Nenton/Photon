@@ -4,38 +4,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/search_wrap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/search_wrap"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <android.support.v7.widget.SearchView
+            android:layout_height="@dimen/spacing_big_48"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <EditText
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/darkGrey"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/search_rv"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:layout_toLeftOf="@+id/back_and_check"
+                android:hint="Поиск"
+                android:inputType="text"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/darkGrey"/>
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/back_and_check"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical|right"
+                android:layout_toLeftOf="@+id/reboot_settings_search"
+                android:layout_marginRight="@dimen/spacing_normal_16"
+                android:background="@drawable/ic_custom_back_arrow_black_24dp"/>
+
+            <ImageButton
+                android:id="@+id/reboot_settings_search"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical|right"
+                android:background="@drawable/ic_custom_cancel_black_24dp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darkGrey"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/search_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darkGrey"/>
+
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -64,12 +91,5 @@
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
-
-        <Button
-            android:id="@+id/search_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
+    </LinearLayout>
 </com.nenton.photon.ui.screens.search_filters.search.SearchTitleView>

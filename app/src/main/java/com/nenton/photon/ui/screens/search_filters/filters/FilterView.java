@@ -2,7 +2,9 @@ package com.nenton.photon.ui.screens.search_filters.filters;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nenton.photon.R;
@@ -38,6 +40,8 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
     RadioGroup mDir;
     @BindView(R.id.radio_group_light_source)
     RadioGroup mLightSource;
+    @BindView(R.id.search_filters_btn)
+    Button mButton;
 
     public FilterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,14 +49,32 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
 
     @OnClick(R.id.search_filters_btn)
     void goSearchOnFilters(){
-        List<String> mNuancesString = new ArrayList<>();
-        for (CheckBox checkBox : mNuances) {
-            if (checkBox.isChecked()){
-                mNuancesString.add(((String) checkBox.getTag()));
+        if (mButton.getText().equals("Найти")){
+            List<String> mNuancesString = new ArrayList<>();
+            for (CheckBox checkBox : mNuances) {
+                if (checkBox.isChecked()){
+                    mNuancesString.add(((String) checkBox.getTag()));
+                }
             }
+            mPresenter.getSearchFilterQuery().setNuances(mNuancesString);
+            mPresenter.clickOnSearch();
+        } else if (mButton.getText().equals("Сбросить фильтры")){
+            reloadQuery();
+            mButton.setText("Найти");
         }
-        mPresenter.getSearchFilterQuery().setNuances(mNuancesString);
-        mPresenter.clickOnSearch();
+
+    }
+
+    private void reloadQuery() {
+        mDish.check(-1);
+        mDecor.check(-1);
+        mTemperature.check(-1);
+        mLight.check(-1);
+        mDir.check(-1);
+        mLightSource.check(-1);
+        for (CheckBox box: mNuances) {
+            box.setChecked(false);
+        }
     }
 
     @Override
@@ -65,30 +87,50 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
         DaggerService.<FilterScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    public void initView() {
+    public void initView(SearchFilterQuery query) {
+        mButton.setText("Сбросить фильтры");
+        initRadioGroup();
+        if (query.getDish() != null)((RadioButton) mDish.findViewWithTag(query.getDish())).setChecked(true);
+        if (query.getDecor() != null)((RadioButton) mDecor.findViewWithTag(query.getDecor())).setChecked(true);
+        if (query.getTemperature() != null)((RadioButton) mTemperature.findViewWithTag(query.getTemperature())).setChecked(true);
+        if (query.getLight() != null)((RadioButton) mLight.findViewWithTag(query.getLight())).setChecked(true);
+        if (query.getLightDirection() != null)((RadioButton) mDir.findViewWithTag(query.getLightDirection())).setChecked(true);
+        if (query.getLightSource() != null)((RadioButton) mLightSource.findViewWithTag(query.getLightSource())).setChecked(true);
+        if (query.getNuances() != null){
+            for (String s : query.getNuances()) {
+                ((CheckBox) findViewWithTag(s)).setChecked(true);
+            }
+        }
+    }
+
+    private void initRadioGroup(){
         mDish.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setDish((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setDish((String) findViewById(checkedId).getTag());
         });
 
         mDecor.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setDecor((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setDecor((String) findViewById(checkedId).getTag());
         });
 
         mTemperature.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setTemperature((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setTemperature((String) findViewById(checkedId).getTag());
         });
 
         mLight.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setLight((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setLight((String) findViewById(checkedId).getTag());
         });
 
         mDir.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setLightDirection((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setLightDirection((String) findViewById(checkedId).getTag());
         });
 
         mLightSource.setOnCheckedChangeListener((group, checkedId) -> {
-            mPresenter.getSearchFilterQuery().setLightSource((String) findViewById(checkedId).getTag());
+            if (checkedId != RadioGroup.NO_ID) mPresenter.getSearchFilterQuery().setLightSource((String) findViewById(checkedId).getTag());
         });
+    }
 
+    public void initView() {
+        mButton.setText("Найти");
+        initRadioGroup();
     }
 }

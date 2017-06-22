@@ -225,8 +225,4 @@ public class RealmManager {
     public void saveAlbumToRealm(String id, AlbumEditReq albumCreateReq) {
 
     }
-
-    public void deleteAlbum(String id) {
-
-    }
 }
