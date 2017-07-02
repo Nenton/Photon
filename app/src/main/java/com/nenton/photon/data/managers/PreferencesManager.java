@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.nenton.photon.data.network.req.UserEditReq;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 
 import java.util.ArrayList;
@@ -68,6 +69,14 @@ public class PreferencesManager {
         editor.putString(PROFILE_LOGIN, infoDto.getLogin());
         editor.putString(PROFILE_AVATAR_KEY, infoDto.getAvatar());
         editor.putString(PROFILE_AUTH_TOKEN_KEY, token);
+        editor.apply();
+    }
+
+    public void saveUserInfo(UserEditReq userEditReq) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(PROFILE_NAME, userEditReq.getName());
+        editor.putString(PROFILE_LOGIN, userEditReq.getLogin());
+        editor.putString(PROFILE_AVATAR_KEY, userEditReq.getAvatar());
         editor.apply();
     }
 

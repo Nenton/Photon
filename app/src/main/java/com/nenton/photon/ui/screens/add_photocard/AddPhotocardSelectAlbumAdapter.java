@@ -12,7 +12,10 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.nenton.photon.utils.AlbumTransform;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,19 +72,38 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         holder.mNameAlbum.setText(albumRealm.getTitle());
         holder.mCountPhotocards.setText(String.valueOf(albumRealm.getPhotocards().size()));
 
+        RequestCreator load;
+
         if (albumRealm.getPhotocards().size() != 0) {
-            mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto())
-                    .fit()
-                    .centerCrop()
-                    .transform(new AlbumTransform())
-                    .into(holder.mView);
+            load = mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto());
         } else {
-            mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg")
-                    .fit()
-                    .centerCrop()
-                    .transform(new AlbumTransform())
-                    .into(holder.mView);
+            load = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
         }
+
+        load.networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(250, 250)
+                .centerCrop()
+                .transform(new AlbumTransform())
+                .into(holder.mView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        RequestCreator creator;
+                        if (albumRealm.getPhotocards().size() != 0) {
+                            creator = mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto());
+                        } else {
+                            creator = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
+                        }
+                        creator.resize(250, 250)
+                                .centerCrop()
+                                .transform(new AlbumTransform())
+                                .into(holder.mView);
+                    }
+                });
 
         if (position == positionOnSelectItem) {
             holder.mCheckBox.setChecked(true);

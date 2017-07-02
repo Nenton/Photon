@@ -3,8 +3,6 @@ package com.nenton.photon.ui.screens.album;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.network.req.AlbumEditReq;
-import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
@@ -23,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import dagger.Provides;
 import flow.Flow;
 import mortar.MortarScope;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by serge_000 on 06.06.2017.
@@ -30,10 +29,10 @@ import mortar.MortarScope;
 @Screen(R.layout.screen_album)
 public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
-    private String id;
+    private AlbumRealm mAlbum;
 
-    public AlbumScreen(String id) {
-        this.id = id;
+    public AlbumScreen(AlbumRealm album) {
+        this.mAlbum = album;
     }
 
     @Override
@@ -75,26 +74,34 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     public class AlbumPresenter extends AbstractPresenter<AlbumView, MainModel> {
 
+        private boolean isCurAlbumUser = false;
+
         @Override
         protected void initActionBar() {
-            mRootPresenter.newActionBarBuilder()
+            RootPresenter.ActionBarBuilder builder = mRootPresenter.newActionBarBuilder()
                     .setTitle("Альбом")
-                    .setBackArrow(true)
-                    .addAction(new MenuItemHolder("Меню", R.drawable.ic_custom_menu_black_24dp, item -> {
-                        getRootView().showSettings();
-                        return true;
-                    }))
-                    .build();
+                    .setBackArrow(true);
+            if (isCurAlbumUser) {
+                builder.addAction(new MenuItemHolder("Меню", R.drawable.ic_custom_menu_black_24dp, item -> {
+                    getRootView().showSettings();
+                    return true;
+                }));
+            }
+            builder.build();
         }
 
         @Override
         protected void initMenuPopup() {
-            mRootPresenter.newMenuPopupBuilder()
-                    .setIdMenuRes(R.menu.album_settings_menu)
-                    .addMenuPopup(new PopupMenuItem(R.id.edit_album_dial, this::editAlbum))
-                    .addMenuPopup(new PopupMenuItem(R.id.delete_album_dial, this::showDeleteAlbum))
-                    .addMenuPopup(new PopupMenuItem(R.id.upload_photo_album_dial, this::addPhotoToAlbum))
-                    .build();
+            if (isCurAlbumUser) {
+                mRootPresenter.newMenuPopupBuilder()
+                        .setIdMenuRes(R.menu.album_settings_menu)
+                        .addMenuPopup(new PopupMenuItem(R.id.edit_album_dial, this::editAlbum))
+                        .addMenuPopup(new PopupMenuItem(R.id.delete_album_dial, this::showDeleteAlbum))
+                        .addMenuPopup(new PopupMenuItem(R.id.upload_photo_album_dial, this::addPhotoToAlbum))
+                        .build();
+            } else {
+                mRootPresenter.newMenuPopupBuilder().build();
+            }
         }
 
         @Override
@@ -104,12 +111,22 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         protected void onLoad(Bundle savedInstanceState) {
-            super.onLoad(savedInstanceState);
+            mCompSubs = new CompositeSubscription();
+            mCompSubs.add(mModel.isAlbumFromUser(mAlbum.getOwner()).subscribe(new ViewSubscriber<Boolean>() {
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    isCurAlbumUser = aBoolean;
+                    initActionBar();
+                    initMenuPopup();
+                }
+            }));
             initView();
+            initActionBar();
+            initMenuPopup();
         }
 
-        private void initView(){
-            mCompSubs.add(mModel.getAlbumFromRealm(id).subscribe(new ViewSubscriber<AlbumRealm>() {
+        private void initView() {
+            mCompSubs.add(mModel.getAlbumFromRealm(mAlbum.getId(), mAlbum.getOwner()).subscribe(new ViewSubscriber<AlbumRealm>() {
                 @Override
                 public void onNext(AlbumRealm albumRealm) {
                     getView().initView(albumRealm);
@@ -122,12 +139,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         public void editAlbumObs(String name, String description) {
-            mCompSubs.add(mModel.editAlbumObs(id, new AlbumEditReq(name, description)).subscribe(new ViewSubscriber<Album>() {
-                @Override
-                public void onNext(Album album) {
-                    initView();
-                }
-            }));
+            mModel.editAlbum(mAlbum, name, description);
         }
 
         public void showDeleteAlbum() {
@@ -135,12 +147,12 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         public void deleteAlbum() {
-            mCompSubs.add(mModel.deleteAlbumObs(id).subscribe(new ViewSubscriber<Void>() {
-                @Override
-                public void onNext(Void o) {
+            mModel.deleteAlbumObs(mAlbum.getId(), () -> {
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
                     ((RootActivity) getRootView()).onBackPressed();
-                }
-            }));
+                });
+            });
+
         }
 
         public void addPhotoToAlbum() {

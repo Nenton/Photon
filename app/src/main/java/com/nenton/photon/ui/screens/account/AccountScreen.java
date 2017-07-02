@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.birbit.android.jobqueue.AsyncAddCallback;
 import com.nenton.photon.R;
 import com.nenton.photon.data.network.req.AlbumCreateReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
@@ -16,6 +17,7 @@ import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.UserEditRes;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
@@ -131,12 +133,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
 
 
         public void editUserInfo(String name, String login) {
-            mCompSubs.add(mModel.editUserInfoObs(name, login).subscribe(new ViewSubscriber<UserEditRes>() {
-                @Override
-                public void onNext(UserEditRes userEditRes) {
-                    loadUserInfo();
-                }
-            }));
+            mModel.editUserInfoObs(name, login, this::loadUserInfo);
         }
 
         @Override
@@ -198,12 +195,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                     mModel.uploadPhotoToNetwork(mAvatarUri, file).subscribe(new ViewSubscriber<String>() {
                         @Override
                         public void onNext(String s) {
-                            mModel.editUserInfoAvatarObs(s).subscribe(new ViewSubscriber<UserEditRes>() {
-                                @Override
-                                public void onNext(UserEditRes userEditRes) {
-                                    loadUserInfo();
-                                }
-                            });
+                            mModel.editUserInfoAvatarObs(s, () -> loadUserInfo());
                         }
                     });
                 }
@@ -214,17 +206,14 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         //endregion
 
-
         private void showAddAlbum() {
             getView().showDialogAddAlbum();
         }
 
         void addAlbum(String name, String description) {
-            mCompSubs.add(mModel.createAlbumObs(new AlbumCreateReq(name, description)).subscribe(new ViewSubscriber<Album>() {
-                @Override
-                public void onNext(Album album) {
-                    loadUserInfo();
-                }
+            mModel.createAlbumObs(name, description, () -> ((RootActivity) getRootView()).runOnUiThread(() -> {
+                loadUserInfo();
+                getView().cancelAddAlbum();
             }));
         }
 

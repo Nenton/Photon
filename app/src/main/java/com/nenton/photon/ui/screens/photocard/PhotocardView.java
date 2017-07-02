@@ -15,6 +15,8 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoTransform;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -45,7 +47,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     ImageView mAvatar;
 
     @OnClick(R.id.avatar_photocard_IV)
-    public void clickOnAuthor(){
+    public void clickOnAuthor() {
         mPresenter.clickOnAuthor();
     }
 
@@ -69,17 +71,55 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     public void initView(PhotocardRealm photocardRealm, UserInfoDto infoDto) {
         mName.setText(photocardRealm.getTitle());
 
-        mPicasso.load(photocardRealm.getPhoto())
-                .fit()
-                .centerCrop()
-                .transform(new PhotoTransform())
-                .into(mPhoto);
-
         mPicasso.load(infoDto.getAvatar())
                 .fit()
                 .centerCrop()
                 .transform(new AvatarTransform())
                 .into(mAvatar);
+
+        mPicasso.load(photocardRealm.getPhoto())
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(500,500)
+                .centerCrop()
+                .transform(new PhotoTransform())
+
+                .into(mPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPicasso.load(photocardRealm.getPhoto())
+                                .resize(500,500)
+                                .centerCrop()
+                                .transform(new PhotoTransform())
+                                .into(mPhoto);
+                    }
+                });
+
+        mPicasso.load(infoDto.getAvatar())
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(200,200)
+                .centerCrop()
+                .transform(new AvatarTransform())
+
+                .into(mAvatar, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPicasso.load(infoDto.getAvatar())
+                                .resize(200,200)
+                                .centerCrop()
+                                .transform(new AvatarTransform())
+                                .into(mAvatar);
+                    }
+                });
 
         mFullName.setText(infoDto.getName() + " " + infoDto.getLogin());
         mAlbumCount.setText(String.valueOf(infoDto.getCountAlbum()));

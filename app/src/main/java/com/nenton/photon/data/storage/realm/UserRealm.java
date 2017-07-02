@@ -1,8 +1,11 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.req.UserEditReq;
 import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.SignInRes;
 import com.nenton.photon.data.network.res.UserInfo;
+
+import java.io.Serializable;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -12,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by serge on 01.06.2017.
  */
 
-public class UserRealm extends RealmObject {
+public class UserRealm extends RealmObject implements Serializable{
 
     @PrimaryKey
     private String id;
@@ -66,5 +69,11 @@ public class UserRealm extends RealmObject {
 
     public RealmList<AlbumRealm> getAlbums() {
         return albums;
+    }
+
+    public void setUserInfo(UserEditReq userEditReq) {
+        this.name = userEditReq.getName();
+        this.login = userEditReq.getLogin();
+        this.avatar = userEditReq.getAvatar();
     }
 }

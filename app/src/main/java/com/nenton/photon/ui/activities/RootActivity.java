@@ -91,7 +91,6 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
         BundleServiceRunner.getBundleServiceRunner(this).onCreate(savedInstanceState);

@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.WordsLayoutManager;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
@@ -20,6 +22,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.utils.TextWatcherEditText;
 
 import java.util.List;
@@ -51,6 +54,12 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     EditText mAddTags;
     @BindView(R.id.add_name_photocard)
     EditText mNamePhotocard;
+    @BindView(R.id.cancel_name_tag)
+    ImageButton mCancelTag;
+    @BindView(R.id.check_add_tag)
+    ImageButton mCheckTag;
+    @BindView(R.id.add_album_from_add_photocard)
+    Button mButton;
 
     @BindViews({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     List<CheckBox> mNuances;
@@ -123,9 +132,15 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mAddTags.addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    mCheckTag.setVisibility(GONE);
+                } else {
+                    mCheckTag.setVisibility(VISIBLE);
+                }
                 mTagsSuggestionAdapter.getFilter().filter(s.toString());
             }
         });
+        mCheckTag.setVisibility(GONE);
     }
 
     @Nullable
@@ -201,6 +216,33 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     @OnClick(R.id.save_photocard_btn)
     public void clickOnSavePhotocard() {
         mPresenter.savePhotocard();
+    }
+
+    @OnClick(R.id.cancel_add_photocard_btn)
+    public void cancelCreate() {
+        mPresenter.cancelCreate();
+    }
+
+    @OnClick(R.id.check_add_tag)
+    public void checkTag() {
+        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
+        mAddTags.setText("");
+    }
+
+    @OnClick(R.id.cancel_name_tag)
+    public void cancelTag() {
+        mAddTags.setText("");
+    }
+
+    @OnClick(R.id.add_album_from_add_photocard)
+    public void addAlbum() {
+        DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
+            mPresenter.addAlbum(name, description);
+        }).show();
+    }
+
+    public void goneAddAlbum() {
+        mButton.setVisibility(GONE);
     }
 
     //endregion

@@ -25,11 +25,6 @@ public abstract class AbstractModel {
         component.inject(this);
     }
 
-    public AbstractModel(DataManager dataManager, JobManager jobManager) {
-        mDataManager = dataManager;
-        mJobManager = jobManager;
-    }
-
     private ModelComponent createDaggerModelComponent() {
         return DaggerModelComponent.builder()
                 .modelModule(new ModelModule())

@@ -1,12 +1,14 @@
 package com.nenton.photon.ui.screens.photocard;
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.managers.DataManager;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
@@ -38,7 +40,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
  * Created by serge_000 on 06.06.2017.
  */
 @Screen(R.layout.screen_photocard)
-public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> implements MultiKey{
+public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> {
 
     private PhotocardRealm mPhotocard;
 
@@ -55,15 +57,12 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
     }
 
     @Override
-    public String getScopeName() {
-        return getClass().getName() + mPhotocard.getId();
-//        return super.getScopeName();
-    }
-
-    @NonNull
-    @Override
-    public List<Object> getKeys() {
-        return Collections.singletonList(mPhotocard.getId());
+    public boolean equals(Object o) {
+        if (o instanceof PhotocardScreen) {
+            return super.equals(o) && ((PhotocardScreen) o).mPhotocard.getId().equals(this.mPhotocard.getId());
+        } else {
+            return super.equals(o);
+        }
     }
 
     @dagger.Module
@@ -143,17 +142,17 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         }
 
         private void sharePhoto() {
-            getRootView().showMessage("Пока не реализовано");
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, mPhotocard.getPhoto());
+            shareIntent.setType("image/jpeg");
+            RootActivity rootView = (RootActivity) getRootView();
+            rootView.startActivity(Intent.createChooser(shareIntent, rootView.getResources().getText(R.string.app_name)));
         }
 
         private void addToFavourite() {
             if (mModel.isSignIn()) {
-                mCompSubs.add(mModel.addToFav(mPhotocard.getId()).subscribe(new ViewSubscriber<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-
-                    }
-                }));
+                mModel.addToFav(mPhotocard.getId(), () -> ((RootActivity) getRootView()).runOnUiThread(() -> getRootView().showMessage("Фотокарточка добавлена в избранное")));
             }
         }
 

@@ -1,21 +1,17 @@
 package com.nenton.photon.ui.screens.main;
 
-import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
-import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
-import com.nenton.photon.utils.AvatarTransform;
+
 import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -28,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import flow.Flow;
 
 /**
  * Created by serge on 04.06.2017.
@@ -67,7 +62,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
         mPicasso.load(photocard.getPhoto())
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(400,400)
+                .resize(500,500)
                 .centerCrop()
                 .transform(new PhotoTransform())
 
@@ -80,7 +75,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
-                                .resize(400,400)
+                                .resize(500,500)
                                 .centerCrop()
                                 .transform(new PhotoTransform())
                                 .into(holder.mPhoto);

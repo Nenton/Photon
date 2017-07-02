@@ -9,7 +9,10 @@ import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +57,23 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     public void onBindViewHolder(AlbumAdapter.AccountViewHolder holder, int position) {
         PhotocardRealm mPhoto = mAlbums.get(position);
 
-            picasso.load(mPhoto.getPhoto())
-                    .fit()
-                    .centerCrop()
-                    .into(holder.mPhoto);
+        picasso.load(mPhoto.getPhoto()).networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(250, 250)
+                .centerCrop()
+                .into(holder.mPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        picasso.load(mPhoto.getPhoto())
+                                .resize(250, 250)
+                                .centerCrop()
+                                .into(holder.mPhoto);
+                    }
+                });
 
         holder.mPhoto.setOnClickListener(v -> {
             mPresenter.clickOnPhotocard(mPhoto);

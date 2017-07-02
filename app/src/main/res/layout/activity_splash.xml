@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash"
+    tools:context="com.nenton.photon.ui.activities.SplashActivity">
+
+    <TextView
+        android:id="@+id/app_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Фотон"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:fontFamily="@string/roboto_medium"
+        android:layout_above="@+id/description_splash"
+        android:layout_marginBottom="@dimen/spacing_medial_24"/>
+    <TextView
+        android:id="@+id/description_splash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Онлайн-галерея фуд-фотографии.\nДля вдохновения и обучения"
+        android:textAlignment="center"
+        android:textSize="@dimen/font_medium_16"
+        android:fontFamily="@string/roboto_regular"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="@dimen/spacing_small_8"
+        android:layout_above="@+id/progress_bar_splash"
+        android:layout_marginBottom="@dimen/spacing_large_56"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_splash"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminateDrawable="@drawable/load_circle"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

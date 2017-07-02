@@ -44,6 +44,6 @@ public class AlbumTransform implements Transformation {
 
     @Override
     public String key() {
-        return "Gradient";
+        return "GradientAlbum";
     }
 }

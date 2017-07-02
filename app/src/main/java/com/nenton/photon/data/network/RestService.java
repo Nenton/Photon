@@ -81,7 +81,7 @@ public interface RestService {
 
     // edit photocard
     @PUT("user/{userId}/photocard/{id}")
-    Observable<Response<IdRes>> editPhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
+    Observable<Response<Photocard>> editPhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id, @Body PhotocardReq photocard);
 
     // delete photocard
     @DELETE("user/{userId}/photocard/{id}")
@@ -121,7 +121,7 @@ public interface RestService {
 
     // delete album
     @DELETE("user/{userId}/album/{id}")
-    Observable<Response<Void>> deleteAlbumObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
+    Observable<Response<Object>> deleteAlbumObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
 
     //endregion
 }

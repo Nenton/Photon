@@ -49,6 +49,6 @@ public class AvatarTransform implements Transformation {
 
     @Override
     public String key() {
-        return "Circle";
+        return "Avatar";
     }
 }

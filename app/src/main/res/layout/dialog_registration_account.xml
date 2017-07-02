@@ -8,25 +8,45 @@
     android:paddingRight="@dimen/spacing_normal_16"
     android:paddingTop="@dimen/spacing_normal_16">
 
-    <EditText
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/registration_login_til"
-        style="@style/Field"
-        android:hint="Логин"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
+        <EditText
+            style="@style/Field"
+            android:hint="Логин"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/registration_email_til"
-        style="@style/Field"
-        android:hint="E-mail"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
+        <EditText
+            style="@style/Field"
+            android:hint="E-mail"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/registration_name_til"
-        style="@style/Field"
-        android:hint="Имя"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
+        <EditText
+            style="@style/Field"
+            android:hint="Имя"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/registration_password_til"
-        style="@style/Field"
-        android:hint="Пароль"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/Field"
+            android:hint="Пароль"/>
+    </android.support.design.widget.TextInputLayout>
 
 
     <LinearLayout

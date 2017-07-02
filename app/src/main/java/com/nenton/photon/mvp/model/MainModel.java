@@ -1,23 +1,27 @@
 package com.nenton.photon.mvp.model;
 
+import com.birbit.android.jobqueue.AsyncAddCallback;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
-import com.nenton.photon.data.network.req.AlbumCreateReq;
-import com.nenton.photon.data.network.req.AlbumEditReq;
 import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserEditReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
-import com.nenton.photon.data.network.res.Album;
-import com.nenton.photon.data.network.res.IdRes;
-import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.network.res.SignInRes;
-import com.nenton.photon.data.network.res.UserEditRes;
+import com.nenton.photon.data.network.res.SignUpRes;
+import com.nenton.photon.data.storage.dto.FiltersDto;
 import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
-import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
+import com.nenton.photon.jobs.AddPhotocardToFavJob;
+import com.nenton.photon.jobs.CreateAlbumJob;
+import com.nenton.photon.jobs.CreatePhotocardJob;
+import com.nenton.photon.jobs.DeleteAlbumJob;
+import com.nenton.photon.jobs.DeletePhotocardJob;
+import com.nenton.photon.jobs.EditAlbumJob;
+import com.nenton.photon.jobs.EditPhotocardJob;
+import com.nenton.photon.jobs.EditUserInfoJob;
 import com.nenton.photon.utils.SearchFilterQuery;
 import com.nenton.photon.utils.SearchQuery;
 
@@ -36,50 +40,19 @@ import rx.schedulers.Schedulers;
 
 public class MainModel extends AbstractModel {
 
+    //region ========================= Getters =========================
+
     @RxLogObservable
     public Observable<PhotocardRealm> getPhotocardObs() {
-        Observable<PhotocardRealm> disk = fromDisk();
-        Observable<PhotocardRealm> network = fromNetwork();
+        Observable<PhotocardRealm> disk = mDataManager.getPhotocardFromRealm();
+        Observable<PhotocardRealm> network = mDataManager.getPhotocardObsFromNetwork();
 
         return Observable.mergeDelayError(disk, network)
                 .distinct(PhotocardRealm::getId);
     }
 
-    @RxLogObservable
-    public Observable<PhotocardRealm> fromNetwork() {
-        return mDataManager.getPhotocardObsFromNetwork();
-    }
-
-    @RxLogObservable
-    public Observable<PhotocardRealm> fromDisk() {
-        return mDataManager.getPhotocardFromRealm();
-    }
-
-    @RxLogObservable
-    public Observable<PhotocardRealm> searchPhoto(SearchQuery sq) {
-        return mDataManager.getSearchFromRealm(sq);
-    }
-
-    @RxLogObservable
-    public Observable<PhotocardRealm> searchOnFilterPhoto(SearchFilterQuery sfq) {
-        return mDataManager.getSearchFilterFromRealm(sfq);
-    }
-
-    @RxLogObservable
-    public Observable<SignInRes> signIn(UserLoginReq loginReq) {
-        return mDataManager.singIn(loginReq);
-    }
-
-    public Observable<SignUpRes> signUp(UserCreateReq createReq) {
-        return mDataManager.singUp(createReq);
-    }
-
     public UserInfoDto getUserInfo() {
         return mDataManager.getUserInfo();
-    }
-
-    public boolean isSignIn() {
-        return mDataManager.isSignIn();
     }
 
     @RxLogObservable
@@ -91,16 +64,8 @@ public class MainModel extends AbstractModel {
                 .distinct(UserRealm::getId);
     }
 
-    public void unAuth() {
-        mDataManager.getPreferencesManager().removeUserInfo();
-    }
-
     public List<String> getStrings() {
         return mDataManager.getPreferencesManager().getSearchStrings();
-    }
-
-    public void saveSearchString(String s) {
-        mDataManager.getPreferencesManager().saveSearchString(s);
     }
 
     @RxLogObservable
@@ -112,6 +77,56 @@ public class MainModel extends AbstractModel {
                 .distinct(String::toString);
     }
 
+    public Observable<AlbumRealm> getAlbumFromRealm(String id, String owner) {
+        Observable<AlbumRealm> disk = mDataManager.getAlbumById(id);
+        Observable<AlbumRealm> network = mDataManager.getAlbumObs(owner, id);
+
+        return Observable.mergeDelayError(disk, network)
+                .distinct(AlbumRealm::getId);
+    }
+
+    //endregion
+
+    //region ========================= Edits =========================
+
+    public void editAlbum(AlbumRealm album, String name, String description) {
+        EditAlbumJob editAlbumJob = new EditAlbumJob(album, name, description);
+        mJobManager.addJobInBackground(editAlbumJob);
+    }
+
+    public void editPhotocards(PhotocardRealm photocardRealm, String idAlbum, PhotocardReq photocardReq) {
+        EditPhotocardJob editPhotocardJob = new EditPhotocardJob(photocardRealm, idAlbum, photocardReq);
+        mJobManager.addJobInBackground(editPhotocardJob);
+    }
+
+    public void editUserInfoAvatarObs(String s, AsyncAddCallback asyncAddCallback) {
+        EditUserInfoJob editUserInfoJob = new EditUserInfoJob(new UserEditReq(mDataManager.getPreferencesManager().getUserName(), mDataManager.getPreferencesManager().getUserLogin(), s));
+        mJobManager.addJobInBackground(editUserInfoJob, asyncAddCallback);
+//        return mDataManager.editUserInfoObs(new UserEditReq(mDataManager.getPreferencesManager().getUserName(), mDataManager.getPreferencesManager().getUserLogin(), s));
+    }
+
+    public void editUserInfoObs(String name, String login, AsyncAddCallback asyncAddCallback) {
+        EditUserInfoJob editUserInfoJob = new EditUserInfoJob(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
+        mJobManager.addJobInBackground(editUserInfoJob, asyncAddCallback);
+//        return mDataManager.editUserInfoObs(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
+    }
+
+    //endregion
+
+    //region ========================= Creates =========================
+
+    public Observable<Boolean> addViewsToPhotocard(String photoId) {
+        return mDataManager.addViewsToPhotocard(photoId);
+    }
+
+    public void createAlbumObs(String name, String description, AsyncAddCallback callback) {
+        CreateAlbumJob createAlbumJob = new CreateAlbumJob(name, description);
+        mJobManager.addJobInBackground(createAlbumJob, callback);
+    }
+
+    public void saveSearchString(String s) {
+        mDataManager.getPreferencesManager().saveSearchString(s);
+    }
 
     public Observable<String> uploadPhotoToNetwork(String avatarUri, File file) {
         if (avatarUri != null) {
@@ -125,49 +140,74 @@ public class MainModel extends AbstractModel {
         }
     }
 
-    public Observable<String> createPhotocard(PhotocardReq photocardReq) {
-        return mDataManager.createPhotocard(mDataManager.getPreferencesManager().getUserId(), photocardReq);
+    public void createPhotocard(String idAlbum, String namePhotocard, String url, List<String> tags, FiltersDto filters) {
+        CreatePhotocardJob createPhotocardJob = new CreatePhotocardJob(idAlbum, namePhotocard, url, tags, filters);
+        mJobManager.addJobInBackground(createPhotocardJob);
     }
 
-    public void savePhotoToRealm(PhotocardDto photocardDto) {
-        photocardDto.setOwner(mDataManager.getPreferencesManager().getUserId());
-        mDataManager.getRealmManager().saveCreatePhotocard(photocardDto);
+    public void addToFav(String id, AsyncAddCallback callback) {
+        AddPhotocardToFavJob favJob = new AddPhotocardToFavJob(id);
+        mJobManager.addJobInBackground(favJob, callback);
     }
 
-    public Observable<Boolean> addToFav(String photocardId) {
-        return mDataManager.addToFav(photocardId);
-    }
+    //endregion
+
+    //region ========================= Deletes =========================
 
     public Observable<Boolean> deleteFromFav(String photocardId) {
         return mDataManager.deleteFromFav(photocardId);
     }
 
-    public Observable<Boolean> addViewsToPhotocard(String photoId) {
-        return mDataManager.addViewsToPhotocard(photoId);
+    public void deleteAlbumObs(String idAlbum,AsyncAddCallback callback) {
+        DeleteAlbumJob deleteAlbumJob = new DeleteAlbumJob(idAlbum);
+        mJobManager.addJobInBackground(deleteAlbumJob, callback);
     }
 
-
-    public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {
-        return mDataManager.createAlbumObs(albumCreateReq);
+    public void deletePhotocard(String idPhoto) {
+        DeletePhotocardJob deletePhotocardJob = new DeletePhotocardJob(idPhoto);
+        mJobManager.addJobInBackground(deletePhotocardJob);
     }
 
-    public Observable<Void> deleteAlbumObs(String idAlbum) {
-        return mDataManager.deleteAlbumObs(idAlbum);
+    //endregion
+
+    //region ========================= Search =========================
+
+    @RxLogObservable
+    public Observable<PhotocardRealm> searchPhoto(SearchQuery sq) {
+        return mDataManager.getSearchFromRealm(sq);
     }
 
-    public Observable<Album> editAlbumObs(String id, AlbumEditReq albumEditReq) {
-        return mDataManager.editAlbumObs(id, albumEditReq);
+    @RxLogObservable
+    public Observable<PhotocardRealm> searchOnFilterPhoto(SearchFilterQuery sfq) {
+        return mDataManager.getSearchFilterFromRealm(sfq);
     }
 
-    public Observable<AlbumRealm> getAlbumFromRealm(String id){
-        return mDataManager.getAlbumById(id);
+    //endregion
+
+    @RxLogObservable
+    public Observable<SignInRes> signIn(UserLoginReq loginReq) {
+        return mDataManager.singIn(loginReq);
     }
 
-    public Observable<UserEditRes> editUserInfoAvatarObs(String s) {
-        return mDataManager.editUserInfoObs(new UserEditReq(mDataManager.getPreferencesManager().getUserName(),mDataManager.getPreferencesManager().getUserLogin(),s));
+    public Observable<SignUpRes> signUp(UserCreateReq createReq) {
+        return mDataManager.singUp(createReq);
     }
 
-    public Observable<UserEditRes> editUserInfoObs(String name, String login) {
-        return mDataManager.editUserInfoObs(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
+    public boolean isSignIn() {
+        return mDataManager.isSignIn();
     }
+
+    public void unAuth() {
+        mDataManager.getPreferencesManager().removeUserInfo();
+    }
+
+    public Observable<Boolean> isAlbumFromUser(String owner) {
+        return mDataManager.isAlbumFromUser(owner);
+    }
+
+    //region ========================= JobQ =========================
+
+
+
+    //endregion
 }

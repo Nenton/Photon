@@ -202,7 +202,6 @@ public class RealmManager {
         PhotocardRealm photocardRealm = new PhotocardRealm(photocardDto);
         realm.executeTransaction(realm1 -> realm1.insertOrUpdate(photocardRealm));
         realm.close();
-
     }
 
     public Observable<PhotocardRealm> getPhotoById(String photoId) {
@@ -215,14 +214,18 @@ public class RealmManager {
     }
 
     public void savePhotocardResponseToRealm(String id, PhotocardReq photocardReq) {
-
-    }
-
-    public void deletePhotocard(String photoId) {
-
+        Realm realm = Realm.getDefaultInstance();
+        PhotocardRealm first = getQueryRealmInstance().where(PhotocardRealm.class).equalTo("id", id).findFirst();
+        PhotocardRealm photocardRealm = new PhotocardRealm(id, photocardReq, first);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(photocardRealm));
+        realm.close();
     }
 
     public void saveAlbumToRealm(String id, AlbumEditReq albumCreateReq) {
-
+        Realm realm = Realm.getDefaultInstance();
+        AlbumRealm first = getQueryRealmInstance().where(AlbumRealm.class).equalTo("id", id).findFirst();
+        AlbumRealm albumRealm = new AlbumRealm(id, albumCreateReq, first);
+        realm.executeTransaction(realm1 -> realm1.insertOrUpdate(albumRealm));
+        realm.close();
     }
 }

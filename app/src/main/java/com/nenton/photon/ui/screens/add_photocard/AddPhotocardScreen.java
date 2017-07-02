@@ -1,27 +1,16 @@
 package com.nenton.photon.ui.screens.add_photocard;
 
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 
-import com.nenton.photon.BuildConfig;
 import com.nenton.photon.R;
-import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.data.storage.dto.FiltersDto;
-import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
-import com.nenton.photon.data.storage.realm.PhotocardRealm;
-import com.nenton.photon.data.storage.realm.StringRealm;
+import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
@@ -42,9 +31,6 @@ import java.util.List;
 import dagger.Provides;
 import flow.Flow;
 import mortar.MortarScope;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscription;
 
@@ -109,12 +95,15 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
 
         @Override
         protected void initActionBar() {
-            mRootPresenter.newActionBarBuilder().setVisibleToolbar(false).build();
+            mRootPresenter.newActionBarBuilder()
+                    .setTitle("Добавление фотокарточки")
+                    .build();
         }
 
         @Override
         protected void initMenuPopup() {
-
+            mRootPresenter.newMenuPopupBuilder()
+                    .build();
         }
 
         @Override
@@ -178,13 +167,13 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                     handleActivityResult(activityResultDto);
                 }
             });
-
         }
 
         private void handleActivityResult(ActivityResultDto activityResultDto) {
             if (activityResultDto.getRequestCode() == ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE && activityResultDto.getIntent() != null) {
                 mAvatarUri = activityResultDto.getIntent().getData().toString();
                 initPropertyView();
+                initAdapterSuggestionTags();
                 getView().showPropertyPanel();
             } else {
                 getRootView().showMessage("Что-то пошло не так");
@@ -193,15 +182,20 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
 
         //endregion
 
-
         private void initPropertyView() {
             UserInfoDto userInfo = mModel.getUserInfo();
             mCompSubs.add(mModel.getUser(userInfo.getId()).subscribe(new ViewSubscriber<UserRealm>() {
                 @Override
                 public void onNext(UserRealm userRealm) {
                     getView().showView(userRealm);
+                    if (!userRealm.getAlbums().isEmpty()) {
+                        getView().goneAddAlbum();
+                    }
                 }
             }));
+        }
+
+        private void initAdapterSuggestionTags() {
             mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
                 @Override
                 public void onNext(String s) {
@@ -244,18 +238,26 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 UriHelper uriHelper = new UriHelper();
                 File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
                 mModel.uploadPhotoToNetwork(mAvatarUri, file).subscribe(url -> {
-                    PhotocardReq photocardReq = new PhotocardReq(idAlbum, namePhotocard, url, tags, filters);
-                    mModel.createPhotocard(photocardReq).subscribe(id -> {
-                        mModel.savePhotoToRealm(new PhotocardDto(id, namePhotocard, url, tags, filters));
-                        Flow.get(getView().getContext()).set(new AccountScreen());
-                    }, throwable -> {
-                        getRootView().showMessage("Не получилось загрузить фотокарточку");
-                    });
+                    mModel.createPhotocard(idAlbum, namePhotocard, url, tags, filters);
+                    Flow.get(getView().getContext()).set(new AccountScreen());
                 }, throwable -> {
                     getRootView().showMessage("Не получилось загрузить фото");
                 });
-
             }
+        }
+
+        public void cancelCreate() {
+            mAvatarUri = null;
+            getView().showPhotoPanel();
+        }
+
+        public void addAlbum(String name, String description) {
+            mModel.createAlbumObs(name, description, () -> {
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
+                    initPropertyView();
+                    getView().goneAddAlbum();
+                });
+            });
         }
     }
 }

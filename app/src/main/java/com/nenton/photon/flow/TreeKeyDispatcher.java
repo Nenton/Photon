@@ -15,7 +15,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mortar.ScreenScoper;
+import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.utils.ViewHelper;
 
 import java.util.Collections;
@@ -29,6 +33,7 @@ import flow.State;
 import flow.Traversal;
 import flow.TraversalCallback;
 import flow.TreeKey;
+import mortar.MortarScope;
 
 public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
 
@@ -68,6 +73,23 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         Context mortarContext = ScreenScoper.getScreenScope((AbstractScreen) inKey).createContext(flowContext);
         contexts = Collections.singletonMap(inKey, mortarContext);
         changeKey(outState, inState, traversal.direction, contexts, callback);
+    }
+
+    public static Context createProductContext(PhotocardRealm product, Context parentContext) {
+        MortarScope parentScope = MortarScope.getScope(parentContext);
+        MortarScope childScope = null;
+        PhotocardScreen screen = new PhotocardScreen(product);
+        String scopeName = String.format("%s_%s", screen.getScopeName(), product.getId());
+
+        if (parentScope.findChild(scopeName) == null) {
+            childScope = parentScope.buildChild()
+                    .withService(DaggerService.SERVICE_NAME,
+                            screen.createScreenComponent(DaggerService.<RootActivity.RootComponent>getDaggerComponent(parentContext)))
+                    .build(scopeName);
+        } else {
+            childScope = parentScope.findChild(scopeName);
+        }
+        return childScope.createContext(parentContext);
     }
 
 

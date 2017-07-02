@@ -8,17 +8,28 @@
     android:paddingRight="@dimen/spacing_normal_16"
     android:paddingTop="@dimen/spacing_normal_16">
 
-    <EditText
-        android:id="@+id/add_album_name_ET"
-        style="@style/Field"
-        android:hint="Имя"/>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/add_album_name_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/add_album_description_ET"
-        style="@style/Field"
-        android:minLines="3"
-        android:gravity="top"
-        android:hint="Описание"/>
+        <EditText
+            style="@style/Field"
+            android:hint="Имя"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/add_album_description_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/Field"
+            android:gravity="top"
+            android:hint="Описание"
+            android:minLines="3"/>
+    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

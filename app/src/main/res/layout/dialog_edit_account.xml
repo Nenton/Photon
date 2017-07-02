@@ -8,15 +8,25 @@
     android:paddingRight="@dimen/spacing_normal_16"
     android:paddingTop="@dimen/spacing_normal_16">
 
-    <EditText
-        android:id="@+id/edit_login_et"
-        style="@style/Field"
-        android:hint="Логин"/>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edit_login_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/edit_name_et"
-        style="@style/Field"
-        android:hint="Имя"/>
+        <EditText
+            style="@style/Field"
+            android:hint="Логин"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edit_name_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/Field"
+            android:hint="Имя"/>
+    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

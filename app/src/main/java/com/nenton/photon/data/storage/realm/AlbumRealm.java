@@ -1,8 +1,12 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.req.AlbumCreateReq;
+import com.nenton.photon.data.network.req.AlbumEditReq;
 import com.nenton.photon.data.network.res.Album;
 import com.nenton.photon.data.network.res.Photocard;
 import com.nenton.photon.data.network.res.SignInRes;
+
+import java.io.Serializable;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -12,14 +16,13 @@ import io.realm.annotations.PrimaryKey;
  * Created by serge on 01.06.2017.
  */
 
-public class AlbumRealm extends RealmObject {
+public class AlbumRealm extends RealmObject implements Serializable{
     @PrimaryKey
     private String id;
     private String owner;
     private String title;
     private String description;
     private boolean isFavorite;
-    private boolean active;
     private int views;
     private int favorits;
     private RealmList<PhotocardRealm> photocards = new RealmList<>();
@@ -36,7 +39,6 @@ public class AlbumRealm extends RealmObject {
         this.id = album.getId();
         this.owner = album.getOwner();
         this.title = album.getTitle();
-        this.active = album.isActive();
         this.isFavorite = album.isFavorite();
         this.description = album.getDescription();
         this.views = album.getViews();
@@ -44,18 +46,41 @@ public class AlbumRealm extends RealmObject {
 
         photocards = new RealmList<>();
         for (Photocard photocard : album.getPhotocards()) {
-            if (photocard.isActive()){
+            if (photocard.isActive()) {
                 photocards.add(new PhotocardRealm(photocard));
             }
         }
     }
 
-    public boolean isFavorite() {
-        return isFavorite;
+    public AlbumRealm(String id, AlbumEditReq albumCreateReq, AlbumRealm first) {
+        this.id = id;
+        this.owner = first.getOwner();
+        this.title = albumCreateReq.getTitle();
+        this.isFavorite = first.isFavorite();
+        this.description = albumCreateReq.getDescription();
+        this.views = first.getViews();
+        this.favorits = first.getFavorits();
+
+        photocards = new RealmList<>();
+        for (PhotocardRealm photocard : first.getPhotocards()) {
+            photocards.add(photocard);
+        }
     }
 
-    public boolean isActive() {
-        return active;
+    public AlbumRealm(String id, String name, String description, String userId) {
+        this.id = id;
+        this.description = description;
+        this.title = name;
+        this.owner = userId;
+        this.isFavorite = false;
+        this.views = 0;
+        this.favorits = 0;
+
+        photocards = new RealmList<>();
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 
     public String getId() {
@@ -86,4 +111,11 @@ public class AlbumRealm extends RealmObject {
         return photocards;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

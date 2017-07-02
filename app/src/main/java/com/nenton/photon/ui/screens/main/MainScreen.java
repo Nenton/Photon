@@ -155,6 +155,7 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         private void initView() {
+            System.out.println(Flow.getKey(getView()).toString());
             switch (mRootPresenter.getSearchEnum()) {
                 case SEARCH:
                     mCompSubs.clear();

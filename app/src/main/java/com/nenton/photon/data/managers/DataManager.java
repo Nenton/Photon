@@ -111,7 +111,7 @@ public class DataManager {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(photocard -> {
-                    if (!photocard.isActive()){
+                    if (!photocard.isActive()) {
                         mRealmManager.deleteFromRealm(PhotocardRealm.class, photocard.getId());
                     }
                 })
@@ -125,7 +125,7 @@ public class DataManager {
                                 .map(retryCount -> ((long) (AppConfig.RETRY_REQUEST_BASE_DELAY * Math.pow(Math.E, retryCount))))
                                 .doOnNext(delay -> Log.e(TAG, "LOCAL UPDATE delay: " + delay))
                                 .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
-                .flatMap(productRes -> Observable.empty());
+                .flatMap(productRes -> Observable.just(null));
     }
 
     @RxLogObservable
@@ -258,8 +258,8 @@ public class DataManager {
                 .subscribeOn(Schedulers.newThread());
     }
 
-    public Observable<String> createPhotocard(String userId, PhotocardReq photocardReq) {
-        return mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), userId, photocardReq)
+    public Observable<String> createPhotocard(PhotocardReq photocardReq) {
+        return mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardReq)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(photoResResponse -> {
@@ -340,8 +340,8 @@ public class DataManager {
                 .flatMap(photocard -> Observable.just(new PhotocardRealm(photocard)));
     }
 
-    public Observable<String> editPhotocardObs(String userId, String photoId, PhotocardReq photocardReq) {
-        return mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), userId, photoId, photocardReq)
+    public Observable<Photocard> editPhotocardObs(String photoId, PhotocardReq photocardReq) {
+        return mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId, photocardReq)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -353,26 +353,23 @@ public class DataManager {
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(idRes -> getRealmManager().savePhotocardResponseToRealm(idRes.getId(), photocardReq))
-                .flatMap(idRes -> Observable.just(idRes.getId()));
+                });
     }
 
-    public Observable<Object> deletePhotocardObs(String userId, String photoId) {
-        return mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), userId, photoId)
+    public Observable<Object> deletePhotocardObs(String photoId) {
+        return mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
                     switch (response.code()) {
-                        case 200:
-                            return Observable.empty();
+                        case 204:
+                            return Observable.just(response.body());
                         case 403:
                             return Observable.error(new AccessError());
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(o -> getRealmManager().deleteFromRealm(PhotocardRealm.class, photoId));
+                });
     }
 
     public Observable<Album> getAlbumListObs(String userId, int limit, int offset) {
@@ -393,7 +390,7 @@ public class DataManager {
                 .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album));
     }
 
-    public Observable<Album> getAlbumObs(String userId, String id) {
+    public Observable<AlbumRealm> getAlbumObs(String userId, String id) {
         return mRestService.getAlbumObs(userId, id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -407,7 +404,8 @@ public class DataManager {
                             return Observable.error(new ApiError(response.code()));
                     }
                 })
-                .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album));
+                .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album))
+                .flatMap(album -> Observable.empty());
     }
 
     public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {
@@ -423,8 +421,7 @@ public class DataManager {
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album));
+                });
     }
 
     public Observable<Album> editAlbumObs(String id, AlbumEditReq albumEditReq) {
@@ -444,7 +441,7 @@ public class DataManager {
                 .doOnNext(idRes -> getRealmManager().saveAlbumToRealm(idRes.getId(), albumEditReq));
     }
 
-    public Observable<Void> deleteAlbumObs(String id) {
+    public Observable<Object> deleteAlbumObs(String id) {
         return mRestService.deleteAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -457,11 +454,14 @@ public class DataManager {
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(o -> getRealmManager().deleteFromRealm(AlbumRealm.class, id));
+                });
     }
 
     public Observable<AlbumRealm> getAlbumById(String id) {
         return mRealmManager.getAlbumById(id);
+    }
+
+    public Observable<Boolean> isAlbumFromUser(String owner) {
+        return Observable.just(owner.equals(getPreferencesManager().getUserId()));
     }
 }

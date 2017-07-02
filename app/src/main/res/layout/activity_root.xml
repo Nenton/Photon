@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@android:color/white"
+            app:elevation="@dimen/spacing_normal_16"
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
             app:layout_behavior=".ui.behaviors.BottomNavigationBehavior"
@@ -47,6 +48,7 @@
             android:id="@+id/root_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/white"
             android:layout_marginTop="?attr/actionBarSize"/>
 
     </android.support.design.widget.CoordinatorLayout>

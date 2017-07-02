@@ -1,5 +1,7 @@
 package com.nenton.photon.data.network.req;
 
+import com.nenton.photon.data.storage.realm.AlbumRealm;
+
 import java.util.List;
 
 /**
@@ -7,11 +9,24 @@ import java.util.List;
  */
 
 public class AlbumEditReq {
-    public String title;
-    public String description;
+    private String title;
+    private String description;
 
     public AlbumEditReq(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    public AlbumEditReq(AlbumRealm album) {
+        this.title = album.getTitle();
+        this.description = album.getDescription();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

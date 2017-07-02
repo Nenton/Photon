@@ -1,10 +1,12 @@
 package com.nenton.photon.data.storage.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by serge on 19.06.2017.
  */
 
-public class FiltersDto {
+public class FiltersDto implements Serializable{
     private String dish;
     private String nuances;
     private String decor;

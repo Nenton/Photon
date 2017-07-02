@@ -44,6 +44,6 @@ public class PhotoTransform implements Transformation {
 
     @Override
     public String key() {
-        return "Gradient";
+        return "GradientPhoto";
     }
 }

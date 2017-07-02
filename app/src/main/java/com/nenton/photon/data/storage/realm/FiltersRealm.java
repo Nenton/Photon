@@ -1,5 +1,6 @@
 package com.nenton.photon.data.storage.realm;
 
+import com.nenton.photon.data.network.req.PhotocardReq;
 import com.nenton.photon.data.network.res.Filters;
 import com.nenton.photon.data.storage.dto.FiltersDto;
 
@@ -38,6 +39,17 @@ public class FiltersRealm extends RealmObject {
     }
 
     public FiltersRealm(String id, FiltersDto filters) {
+        this.id = id;
+        this.dish = filters.getDish();
+        this.nuances = filters.getNuances();
+        this.decor = filters.getDecor();
+        this.temperature = filters.getTemperature();
+        this.light = filters.getLight();
+        this.lightDirection = filters.getLightDirection();
+        this.lightSource = filters.getLightSource();
+    }
+
+    public FiltersRealm(String id, PhotocardReq.Filters filters) {
         this.id = id;
         this.dish = filters.getDish();
         this.nuances = filters.getNuances();
