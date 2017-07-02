@@ -17,11 +17,6 @@ public class AlbumEditReq {
         this.description = description;
     }
 
-    public AlbumEditReq(AlbumRealm album) {
-        this.title = album.getTitle();
-        this.description = album.getDescription();
-    }
-
     public String getTitle() {
         return title;
     }

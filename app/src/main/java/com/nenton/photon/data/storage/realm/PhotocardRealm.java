@@ -102,8 +102,8 @@ public class PhotocardRealm extends RealmObject implements Serializable{
         }
     }
 
-    public PhotocardRealm(String userId, String namePhotocard, String url, List<String> tags, FiltersDto filters) {
-        this.id = String.valueOf(this.hashCode());
+    public PhotocardRealm(String userId, String id, String namePhotocard, String url, List<String> tags, FiltersDto filters) {
+        this.id = id;
         this.owner = userId;
         this.title = namePhotocard;
         this.photo = url;

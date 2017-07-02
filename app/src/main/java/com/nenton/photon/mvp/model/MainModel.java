@@ -22,6 +22,7 @@ import com.nenton.photon.jobs.DeletePhotocardJob;
 import com.nenton.photon.jobs.EditAlbumJob;
 import com.nenton.photon.jobs.EditPhotocardJob;
 import com.nenton.photon.jobs.EditUserInfoJob;
+import com.nenton.photon.jobs.UploadUserAvatarJob;
 import com.nenton.photon.utils.SearchFilterQuery;
 import com.nenton.photon.utils.SearchQuery;
 
@@ -89,26 +90,24 @@ public class MainModel extends AbstractModel {
 
     //region ========================= Edits =========================
 
-    public void editAlbum(AlbumRealm album, String name, String description) {
-        EditAlbumJob editAlbumJob = new EditAlbumJob(album, name, description);
-        mJobManager.addJobInBackground(editAlbumJob);
+    public void editAlbum(String albumId, String name, String description, AsyncAddCallback callback) {
+        EditAlbumJob editAlbumJob = new EditAlbumJob(albumId, name, description);
+        mJobManager.addJobInBackground(editAlbumJob, callback);
     }
 
-    public void editPhotocards(PhotocardRealm photocardRealm, String idAlbum, PhotocardReq photocardReq) {
-        EditPhotocardJob editPhotocardJob = new EditPhotocardJob(photocardRealm, idAlbum, photocardReq);
-        mJobManager.addJobInBackground(editPhotocardJob);
+    public void editPhotocards(String photocardId, String idAlbum, PhotocardReq photocardReq, AsyncAddCallback callback) {
+        EditPhotocardJob editPhotocardJob = new EditPhotocardJob(photocardId, idAlbum, photocardReq);
+        mJobManager.addJobInBackground(editPhotocardJob, callback);
     }
 
-    public void editUserInfoAvatarObs(String s, AsyncAddCallback asyncAddCallback) {
+    public void editUserInfoAvatarObs(String s, AsyncAddCallback callback) {
         EditUserInfoJob editUserInfoJob = new EditUserInfoJob(new UserEditReq(mDataManager.getPreferencesManager().getUserName(), mDataManager.getPreferencesManager().getUserLogin(), s));
-        mJobManager.addJobInBackground(editUserInfoJob, asyncAddCallback);
-//        return mDataManager.editUserInfoObs(new UserEditReq(mDataManager.getPreferencesManager().getUserName(), mDataManager.getPreferencesManager().getUserLogin(), s));
+        mJobManager.addJobInBackground(editUserInfoJob, callback);
     }
 
     public void editUserInfoObs(String name, String login, AsyncAddCallback asyncAddCallback) {
         EditUserInfoJob editUserInfoJob = new EditUserInfoJob(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
         mJobManager.addJobInBackground(editUserInfoJob, asyncAddCallback);
-//        return mDataManager.editUserInfoObs(new UserEditReq(name, login, mDataManager.getPreferencesManager().getUserAvatar()));
     }
 
     //endregion
@@ -133,16 +132,21 @@ public class MainModel extends AbstractModel {
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
 
-            return mDataManager.uploadPhoto(mDataManager.getUserInfo().getId(), part);
+            return mDataManager.uploadPhoto(part);
 
         } else {
             return Observable.empty();
         }
     }
 
-    public void createPhotocard(String idAlbum, String namePhotocard, String url, List<String> tags, FiltersDto filters) {
-        CreatePhotocardJob createPhotocardJob = new CreatePhotocardJob(idAlbum, namePhotocard, url, tags, filters);
-        mJobManager.addJobInBackground(createPhotocardJob);
+    public void uploadUserAvatar(String avatarUri, File file, AsyncAddCallback callback) {
+        UploadUserAvatarJob uploadUserAvatarJob = new UploadUserAvatarJob(avatarUri, file);
+        mJobManager.addJobInBackground(uploadUserAvatarJob, callback);
+    }
+
+    public void createPhotocard(String idAlbum, String namePhotocard, File file, String uri, List<String> tags, FiltersDto filters, AsyncAddCallback callback) {
+        CreatePhotocardJob createPhotocardJob = new CreatePhotocardJob(idAlbum, namePhotocard, file, uri, tags, filters);
+        mJobManager.addJobInBackground(createPhotocardJob, callback);
     }
 
     public void addToFav(String id, AsyncAddCallback callback) {
@@ -163,9 +167,9 @@ public class MainModel extends AbstractModel {
         mJobManager.addJobInBackground(deleteAlbumJob, callback);
     }
 
-    public void deletePhotocard(String idPhoto) {
+    public void deletePhotocard(String idPhoto, AsyncAddCallback callback) {
         DeletePhotocardJob deletePhotocardJob = new DeletePhotocardJob(idPhoto);
-        mJobManager.addJobInBackground(deletePhotocardJob);
+        mJobManager.addJobInBackground(deletePhotocardJob, callback);
     }
 
     //endregion

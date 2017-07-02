@@ -241,8 +241,8 @@ public class DataManager {
                 .doOnNext(userEditRes -> getPreferencesManager().editUserInfo(new UserInfoDto(userEditRes)));
     }
 
-    public Observable<String> uploadPhoto(String userId, MultipartBody.Part file) {
-        return mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), userId, file)
+    public Observable<String> uploadPhoto(MultipartBody.Part file) {
+        return mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), file)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(photoResResponse -> {

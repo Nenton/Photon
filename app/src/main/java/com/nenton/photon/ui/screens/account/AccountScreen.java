@@ -192,12 +192,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 if (mAvatarUri != null) {
                     UriHelper uriHelper = new UriHelper();
                     File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
-                    mModel.uploadPhotoToNetwork(mAvatarUri, file).subscribe(new ViewSubscriber<String>() {
-                        @Override
-                        public void onNext(String s) {
-                            mModel.editUserInfoAvatarObs(s, () -> loadUserInfo());
-                        }
-                    });
+                    mModel.uploadUserAvatar(mAvatarUri, file, () -> ((RootActivity) getRootView()).runOnUiThread(this::loadUserInfo));
                 }
             } else {
                 getRootView().showMessage("Что-то пошло не так");

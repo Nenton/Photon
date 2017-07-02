@@ -22,16 +22,16 @@ import io.realm.Realm;
 public class EditAlbumJob extends Job {
 
     private static final String TAG = "EditAlbumJob";
-    private final AlbumRealm mAlbum;
+    private final String mAlbumId;
     private final String mName;
     private final String mDescription;
 
-    public EditAlbumJob(AlbumRealm album, String name, String description) {
+    public EditAlbumJob(String albumId, String name, String description) {
         super(new Params(JobPriority.MID)
                 .requireNetwork()
                 .persist()
                 .groupBy("Photocard"));
-        this.mAlbum = album;
+        this.mAlbumId = albumId;
         this.mName = name;
         this.mDescription = description;
     }
@@ -41,24 +41,23 @@ public class EditAlbumJob extends Job {
         Log.e(TAG, " onAdded: ");
         Realm realm = Realm.getDefaultInstance();
         UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", DataManager.getInstance().getPreferencesManager().getUserId()).findFirst();
-
+        AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mAlbumId).findFirst();
         realm.executeTransaction(realm1 -> {
-            mAlbum.deleteFromRealm();
-            mAlbum.setTitle(mName);
-            mAlbum.setDescription(mDescription);
-            userRealm.getAlbums().add(mAlbum);
+            albumRealm.deleteFromRealm();
+            albumRealm.setTitle(mName);
+            albumRealm.setDescription(mDescription);
+            userRealm.getAlbums().add(albumRealm);
         });
-        realm.insertOrUpdate(mAlbum);
         realm.close();
     }
 
     @Override
     public void onRun() throws Throwable {
         Log.e(TAG, " onRun: ");
-        DataManager.getInstance().editAlbumObs(mAlbum.getId(), new AlbumEditReq(mAlbum))
+        DataManager.getInstance().editAlbumObs(mAlbumId, new AlbumEditReq(mName, mDescription))
                 .subscribe(album -> {
                     Realm realm = Realm.getDefaultInstance();
-                    AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mAlbum.getId()).findFirst();
+                    AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mAlbumId).findFirst();
                     UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", DataManager.getInstance().getPreferencesManager().getUserId()).findFirst();
                     AlbumRealm albumNetwork = new AlbumRealm(album);
                     realm.executeTransaction(realm1 -> {

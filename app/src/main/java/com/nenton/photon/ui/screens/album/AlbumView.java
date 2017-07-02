@@ -3,11 +3,8 @@ package com.nenton.photon.ui.screens.album;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,8 +14,6 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
-import com.nenton.photon.ui.screens.account.AccountAdapter;
-import com.nenton.photon.ui.screens.account.AccountScreen;
 
 import butterknife.BindView;
 
@@ -81,13 +76,13 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         if (dialogEditAlbum == null) {
             dialogEditAlbum = DialogsAlbum.editAlbum(getContext(), (name, description) -> {
                 mPresenter.editAlbumObs(name, description);
-                cancelAddAlbum();
+                cancelEditAlbum();
             });
         }
         dialogEditAlbum.show();
     }
 
-    public void cancelAddAlbum() {
+    public void cancelEditAlbum() {
         if (dialogEditAlbum != null) {
             dialogEditAlbum.cancel();
             dialogEditAlbum = null;

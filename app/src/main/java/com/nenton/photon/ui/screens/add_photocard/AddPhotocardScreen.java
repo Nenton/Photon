@@ -237,11 +237,8 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             if (mAvatarUri != null) {
                 UriHelper uriHelper = new UriHelper();
                 File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
-                mModel.uploadPhotoToNetwork(mAvatarUri, file).subscribe(url -> {
-                    mModel.createPhotocard(idAlbum, namePhotocard, url, tags, filters);
-                    Flow.get(getView().getContext()).set(new AccountScreen());
-                }, throwable -> {
-                    getRootView().showMessage("Не получилось загрузить фото");
+                mModel.createPhotocard(idAlbum, namePhotocard, file, mAvatarUri, tags, filters, () -> {
+                    ((RootActivity) getRootView()).runOnUiThread(() -> Flow.get(getView().getContext()).set(new AccountScreen()));
                 });
             }
         }

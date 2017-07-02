@@ -22,16 +22,16 @@ import io.realm.Realm;
 public class EditPhotocardJob extends Job {
 
     private static final String TAG = "EditPhotocardJob";
-    private final PhotocardRealm mPhotoRealm;
+    private final String mPhotoId;
     private final PhotocardReq mPhotoReq;
     private final String mIdAlbum;
 
-    public EditPhotocardJob(PhotocardRealm photocardRealm, String idAlbum, PhotocardReq photocardReq) {
+    public EditPhotocardJob(String photocardId, String idAlbum, PhotocardReq photocardReq) {
         super(new Params(JobPriority.MID)
                 .requireNetwork()
                 .persist()
                 .groupBy("Photocard"));
-        this.mPhotoRealm = photocardRealm;
+        this.mPhotoId = photocardId;
         this.mPhotoReq = photocardReq;
         this.mIdAlbum = idAlbum;
     }
@@ -40,10 +40,11 @@ public class EditPhotocardJob extends Job {
     public void onAdded() {
         Log.e(TAG, " onAdded: ");
         Realm realm = Realm.getDefaultInstance();
-        PhotocardRealm photocardRealm = new PhotocardRealm(mPhotoRealm, mPhotoReq);
+        PhotocardRealm photoStorage = realm.where(PhotocardRealm.class).equalTo("id", mPhotoId).findFirst();
+        PhotocardRealm photocardRealm = new PhotocardRealm(photoStorage, mPhotoReq);
         AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mIdAlbum).findFirst();
         realm.executeTransaction(realm1 -> {
-            mPhotoRealm.deleteFromRealm();
+            photoStorage.deleteFromRealm();
             albumRealm.getPhotocards().add(photocardRealm);
         });
         realm.close();
@@ -52,11 +53,11 @@ public class EditPhotocardJob extends Job {
     @Override
     public void onRun() throws Throwable {
         Log.e(TAG, " onRun: ");
-        DataManager.getInstance().editPhotocardObs(mPhotoRealm.getId(), mPhotoReq)
+        DataManager.getInstance().editPhotocardObs(mPhotoId, mPhotoReq)
                 .subscribe(photocard -> {
                     Realm realm = Realm.getDefaultInstance();
                     AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mIdAlbum).findFirst();
-                    PhotocardRealm photocardRealm = realm.where(PhotocardRealm.class).equalTo("id", mPhotoRealm.getId()).findFirst();
+                    PhotocardRealm photocardRealm = realm.where(PhotocardRealm.class).equalTo("id", mPhotoId).findFirst();
 
                     realm.executeTransaction(realm1 -> {
                         photocardRealm.deleteFromRealm();

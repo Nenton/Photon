@@ -139,7 +139,12 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         public void editAlbumObs(String name, String description) {
-            mModel.editAlbum(mAlbum, name, description);
+            mModel.editAlbum(mAlbum.getId(), name, description, () -> {
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
+                    getView().cancelEditAlbum();
+                    initView();
+                });
+            });
         }
 
         public void showDeleteAlbum() {

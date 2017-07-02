@@ -19,15 +19,11 @@ public class PhotocardReq implements Serializable{
     private List<String> tags = null;
     private Filters filters;
 
-    public PhotocardReq(PhotocardRealm photocardRealm) {
-        this.title = photocardRealm.getTitle();
-        this.photo = photocardRealm.getPhoto();
-        this.filters = new Filters(photocardRealm.getFilters());
-        this.tags = new ArrayList<>();
-
-        for (StringRealm stringRealm : photocardRealm.getTags()) {
-            tags.add(stringRealm.getString());
-        }
+    public PhotocardReq(String namePhoto, String url, List<String> tags, FiltersDto filters) {
+        this.title = namePhoto;
+        this.photo = url;
+        this.filters = new Filters(filters);
+        this.tags = tags;
     }
 
     public String getTitle() {
@@ -46,7 +42,7 @@ public class PhotocardReq implements Serializable{
         return filters;
     }
 
-    public class Filters {
+    public class Filters implements Serializable{
         private String dish;
         private String nuances;
         private String decor;
@@ -55,7 +51,7 @@ public class PhotocardReq implements Serializable{
         private String lightDirection;
         private String lightSource;
 
-        public Filters(FiltersRealm filters) {
+        public Filters(FiltersDto filters) {
             this.dish = filters.getDish();
             this.nuances = filters.getNuances();
             this.decor = filters.getDecor();
