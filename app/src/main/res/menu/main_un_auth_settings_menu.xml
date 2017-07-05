@@ -2,5 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/exit_dial"
+        android:icon="@drawable/ic_power_disable_black_24dp"
         android:title="Выйти"/>
 </menu>

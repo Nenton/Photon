@@ -97,7 +97,6 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
                         .setIdMenuRes(R.menu.album_settings_menu)
                         .addMenuPopup(new PopupMenuItem(R.id.edit_album_dial, this::editAlbum))
                         .addMenuPopup(new PopupMenuItem(R.id.delete_album_dial, this::showDeleteAlbum))
-                        .addMenuPopup(new PopupMenuItem(R.id.upload_photo_album_dial, this::addPhotoToAlbum))
                         .build();
             } else {
                 mRootPresenter.newMenuPopupBuilder().build();
@@ -157,10 +156,6 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
                     ((RootActivity) getRootView()).onBackPressed();
                 });
             });
-
-        }
-
-        public void addPhotoToAlbum() {
 
         }
 

@@ -66,7 +66,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
     public void showDeleteAlbum() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setTitle("Удаление альбома")
-                .setMessage("Вы точно хотите удалить альбом?")
+                .setMessage("Вы действительно хотите удалить этот альбом?")
                 .setPositiveButton("Да", (dialog, which) -> mPresenter.deleteAlbum())
                 .setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
         builder.create().show();

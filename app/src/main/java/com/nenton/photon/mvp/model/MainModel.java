@@ -58,7 +58,7 @@ public class MainModel extends AbstractModel {
 
     @RxLogObservable
     public Observable<UserRealm> getUser(String id) {
-        Observable<UserRealm> disk = mDataManager.getUserById(id).subscribeOn(Schedulers.io());
+        Observable<UserRealm> disk = mDataManager.getUserById(id);
         Observable<UserRealm> network = mDataManager.getUserFromNetwork(id);
 
         return Observable.mergeDelayError(disk, network)

@@ -206,12 +206,12 @@ public class DataManager {
     public Observable<UserRealm> getUserFromNetwork(String id) {
         return mRestService.getUserInfoObs(id)
                 .compose(((RestCallTransformer<UserInfo>) mRestCallTransformer))
-                .observeOn(Schedulers.io())
                 .flatMap(userInfo -> Observable.just(new UserRealm(userInfo, id)))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(userRealm -> {
                     mRealmManager.saveUserInfo(userRealm);
                 })
-                .subscribeOn(Schedulers.newThread())
                 .retryWhen(errorObservable ->
                         errorObservable
                                 .zipWith(Observable.range(1, AppConfig.RETRY_REQUEST_COUNT), (throwable, retryCount) -> retryCount)
@@ -219,8 +219,8 @@ public class DataManager {
                                 .map(retryCount -> ((long) (AppConfig.RETRY_REQUEST_BASE_DELAY * Math.pow(Math.E, retryCount))))
                                 .doOnNext(delay -> Log.e(TAG, "LOCAL UPDATE delay: " + delay))
                                 .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(Observable::just);
+
+                .flatMap(userRealm -> Observable.empty());
     }
 
     public Observable<UserEditRes> editUserInfoObs(UserEditReq userEditReq) {

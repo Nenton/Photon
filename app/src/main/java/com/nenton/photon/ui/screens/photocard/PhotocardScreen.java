@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 
 import com.nenton.photon.R;
-import com.nenton.photon.data.managers.DataManager;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
@@ -25,12 +23,8 @@ import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.author.AuthorScreen;
 import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
-import java.util.List;
-
 import dagger.Provides;
 import flow.Flow;
-import flow.MultiKey;
 import mortar.MortarScope;
 import rx.Subscriber;
 
@@ -112,9 +106,9 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         protected void initMenuPopup() {
             mRootPresenter.newMenuPopupBuilder()
                     .setIdMenuRes(R.menu.photocard_settings_menu)
-                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_dial, this::addToFavourite))
-                    .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, this::sharePhoto))
-                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_delete_dial, this::deleteFromFav))
+                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_dial, this::addToFavouriteDialog))
+                    .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, this::sharePhotoDialog))
+//                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_delete_dial, this::deleteFromFav))
                     .addMenuPopup(new PopupMenuItem(R.id.download_photo_dial, this::downloadPhoto))
                     .build();
         }
@@ -141,7 +135,12 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             dm.enqueue(r);
         }
 
-        private void sharePhoto() {
+
+        private void sharePhotoDialog() {
+            getView().showDialogSharePhoto();
+        }
+
+        void sharePhoto() {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_STREAM, mPhotocard.getPhoto());
@@ -150,10 +149,14 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             rootView.startActivity(Intent.createChooser(shareIntent, rootView.getResources().getText(R.string.app_name)));
         }
 
-        private void addToFavourite() {
+        private void addToFavouriteDialog() {
             if (mModel.isSignIn()) {
-                mModel.addToFav(mPhotocard.getId(), () -> ((RootActivity) getRootView()).runOnUiThread(() -> getRootView().showMessage("Фотокарточка добавлена в избранное")));
+                getView().showDialogAddFav();
             }
+        }
+
+        public void addTofav() {
+            mModel.addToFav(mPhotocard.getId(), () -> ((RootActivity) getRootView()).runOnUiThread(() -> getRootView().showMessage("Фотокарточка добавлена в избранное")));
         }
 
         @Override
@@ -178,6 +181,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         public void clickOnAuthor() {
             Flow.get(getView().getContext()).set(new AuthorScreen(mPhotocard.getOwner()));
         }
+
 
         private class RealmSubscriber extends Subscriber<UserRealm> {
 

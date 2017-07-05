@@ -1,5 +1,6 @@
 package com.nenton.photon.ui.screens.add_photocard;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by serge on 18.06.2017.
@@ -34,6 +34,7 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
 
     private int positionOnSelectItem = 0;
     private List<AlbumRealm> mAlbumRealmList = new ArrayList<>();
+    private Context mContext;
 
     public void addAlbum(AlbumRealm albumRealm) {
         mAlbumRealmList.add(albumRealm);
@@ -55,6 +56,7 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_add_album_to_photo, parent, false);
         return new ViewHolder(view);
     }
@@ -72,15 +74,11 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         holder.mNameAlbum.setText(albumRealm.getTitle());
         holder.mCountPhotocards.setText(String.valueOf(albumRealm.getPhotocards().size()));
 
-        RequestCreator load;
-
-        if (albumRealm.getPhotocards().size() != 0) {
-            load = mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto());
-        } else {
-            load = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-        }
-
-        load.networkPolicy(NetworkPolicy.OFFLINE)
+        mPicasso.with(mContext)
+                .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
+                .placeholder(R.drawable.placeholder_album)
+                .error(R.drawable.placeholder_album)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
                 .centerCrop()
                 .transform(new AlbumTransform())
@@ -92,13 +90,11 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
 
                     @Override
                     public void onError() {
-                        RequestCreator creator;
-                        if (albumRealm.getPhotocards().size() != 0) {
-                            creator = mPicasso.load(albumRealm.getPhotocards().get(0).getPhoto());
-                        } else {
-                            creator = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-                        }
-                        creator.resize(250, 250)
+                        mPicasso.with(mContext)
+                                .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
+                                .placeholder(R.drawable.placeholder_album)
+                                .error(R.drawable.placeholder_album)
+                                .resize(250, 250)
                                 .centerCrop()
                                 .transform(new AlbumTransform())
                                 .into(holder.mView);

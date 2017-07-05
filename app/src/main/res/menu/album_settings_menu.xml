@@ -2,11 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/edit_album_dial"
-        android:title="Редактировать альбом"/>
+        android:icon="@drawable/ic_custom_edit_black_24dp"
+        android:title="Изменить"/>
     <item
         android:id="@+id/delete_album_dial"
-        android:title="Удалить альбом"/>
-    <item
-        android:id="@+id/upload_photo_album_dial"
-        android:title="Добавить фото" />
+        android:icon="@drawable/ic_custom_delete_black_24dp"
+        android:title="Удалить"/>
 </menu>

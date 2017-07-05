@@ -1,5 +1,6 @@
 package com.nenton.photon.ui.screens.author;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
     AuthorScreen.AuthorPresenter mPresenter;
 
     private List<AlbumRealm> mAlbums = new ArrayList<>();
+    private Context mContext;
 
     public void addAlbum(AlbumRealm album){
         mAlbums.add(album);
@@ -50,6 +52,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
 
     @Override
     public AuthorAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_author_album, parent, false);
         return new AccountViewHolder(convertView);
     }
@@ -61,15 +64,11 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
         holder.mNameAlbum.setText(album.getTitle());
         holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
 
-        RequestCreator load;
-
-        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
-            load = picasso.load(album.getPhotocards().get(0).getPhoto());
-        } else {
-            load = picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-        }
-
-        load.networkPolicy(NetworkPolicy.OFFLINE)
+        picasso.with(mContext)
+                .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
+                .placeholder(R.drawable.placeholder_album)
+                .error(R.drawable.placeholder_album)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(500, 500)
                 .centerCrop()
                 .transform(new AlbumTransform())
@@ -81,13 +80,11 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
 
                     @Override
                     public void onError() {
-                        RequestCreator creator;
-                        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
-                            creator = picasso.load(album.getPhotocards().get(0).getPhoto());
-                        } else {
-                            creator = picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-                        }
-                        creator.resize(500, 500)
+                        picasso.with(mContext)
+                                .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
+                                .placeholder(R.drawable.placeholder_album)
+                                .error(R.drawable.placeholder_album)
+                                .resize(500, 500)
                                 .centerCrop()
                                 .transform(new AlbumTransform())
                                 .into(holder.mPhoto);

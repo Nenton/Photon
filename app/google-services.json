@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "242208421567",
+    "firebase_url": "https://photon-19fa5.firebaseio.com",
+    "project_id": "photon-19fa5",
+    "storage_bucket": "photon-19fa5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242208421567:android:3544f0916b5419f1",
+        "android_client_info": {
+          "package_name": "com.nenton.photon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242208421567-3i8t28mq0alfdl1cfm6gdg761o7q687a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr0wvVgSMWJLNNWzcNoR51wpdmWILDJsg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

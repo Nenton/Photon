@@ -97,6 +97,10 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 mRootPresenter.newActionBarBuilder()
                         .setTitle("Профиль")
                         .setBackArrow(false)
+                        .addAction(new MenuItemHolder("Добавить альбом", R.drawable.ic_custom_add_black_24dp, item -> {
+                            showAddAlbum();
+                            return true;
+                        }))
                         .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_menu_black_24dp, item -> {
                             getRootView().showSettings();
                             return true;
@@ -114,7 +118,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         protected void initMenuPopup() {
             mRootPresenter.newMenuPopupBuilder()
                     .setIdMenuRes(R.menu.account_settings_menu)
-                    .addMenuPopup(new PopupMenuItem(R.id.add_album_dial, this::showAddAlbum))
+//                    .addMenuPopup(new PopupMenuItem(R.id.add_album_dial, this::showAddAlbum))
                     .addMenuPopup(new PopupMenuItem(R.id.edit_user_dial, this::showEditUser))
                     .addMenuPopup(new PopupMenuItem(R.id.upload_avatar_dial, this::uploadAvatar))
                     .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, this::exitAccount))

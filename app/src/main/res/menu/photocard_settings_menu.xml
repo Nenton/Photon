@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/fav_photo_dial"
+        android:icon="@drawable/ic_fav_current_black_24dp"
         android:title="В избранное"/>
     <item
-        android:id="@+id/fav_photo_delete_dial"
-        android:title="Убрать с избранного"/>
-    <item
         android:id="@+id/share_photo_dial"
+        android:icon="@drawable/ic_share_current_black_24dp"
         android:title="Поделиться"/>
     <item
         android:id="@+id/download_photo_dial"
+        android:icon="@drawable/ic_download_photo_24dp"
         android:title="Скачать" />
 </menu>

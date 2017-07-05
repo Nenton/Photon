@@ -41,7 +41,6 @@
         android:id="@+id/check_album_add"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/stroke_tags"
+        android:background="@drawable/check_album_selector"
         android:button="@null"/>
-
 </FrameLayout>

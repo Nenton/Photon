@@ -18,6 +18,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -29,6 +31,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
+import com.nenton.photon.BuildConfig;
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.ActivityResultDto;
 import com.nenton.photon.di.DaggerService;
@@ -49,6 +53,8 @@ import com.nenton.photon.ui.screens.main.MainScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +66,8 @@ import flow.Flow;
 import mortar.MortarScope;
 import mortar.bundler.BundleServiceRunner;
 import rx.subjects.PublishSubject;
+
+import static com.nenton.photon.utils.App.getContext;
 
 public class RootActivity extends AppCompatActivity implements IRootView, IActionBarView {
 
@@ -215,7 +223,14 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
 
     @Override
     public void showError(Throwable e) {
-
+        FirebaseCrash.log("ROOT VIEW EXCEPTION");
+        FirebaseCrash.report(e);
+        if (BuildConfig.DEBUG) {
+            showMessage(e.getMessage());
+            e.printStackTrace();
+        } else {
+            showMessage("Что-то пошло не так. Попробуйте повторить позже");
+        }
     }
 
     @Override
@@ -347,6 +362,23 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     public void showSettings() {
         if (mMenuPopups != null && !mMenuPopups.isEmpty()) {
             PopupMenu menu = new PopupMenu(this, mView, Gravity.RIGHT);
+
+            try {
+                Field[] fields = menu.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    if ("mPopup".equals(field.getName())) {
+                        field.setAccessible(true);
+                        Object menuPopupHelper = field.get(menu);
+                        Class<?> classPopupHelper = Class.forName(menuPopupHelper.getClass().getName());
+                        Method setForceIcons = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
+                        setForceIcons.invoke(menuPopupHelper, true);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                showError(e);
+            }
+
             menu.inflate(mMenuIdRes);
             menu.setOnMenuItemClickListener(item -> {
                 for (PopupMenuItem menuPopup : mMenuPopups) {

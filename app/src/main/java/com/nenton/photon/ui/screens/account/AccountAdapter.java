@@ -71,15 +71,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         holder.mFavCount.setText(String.valueOf(album.getFavorits()));
         holder.mSeaCount.setText(String.valueOf(album.getViews()));
 
-        RequestCreator load;
-
-        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
-            load = picasso.load(album.getPhotocards().get(0).getPhoto());
-        } else {
-            load = picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-        }
-
-        load.networkPolicy(NetworkPolicy.OFFLINE)
+        picasso.with(context)
+                .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
+                .placeholder(R.drawable.placeholder_album)
+                .error(R.drawable.placeholder_album)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(500, 500)
                 .centerCrop()
                 .transform(new AlbumTransform())
@@ -91,13 +87,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
                     @Override
                     public void onError() {
-                        RequestCreator creator;
-                        if (!album.getPhotocards().isEmpty() && album.getPhotocards().get(0).getPhoto() != null && !album.getPhotocards().get(0).getPhoto().isEmpty()) {
-                            creator = picasso.load(album.getPhotocards().get(0).getPhoto());
-                        } else {
-                            creator = picasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-                        }
-                        creator.resize(500, 500)
+                        picasso.with(context)
+                                .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
+                                .placeholder(R.drawable.placeholder_album)
+                                .error(R.drawable.placeholder_album)
+                                .resize(500, 500)
                                 .centerCrop()
                                 .transform(new AlbumTransform())
                                 .into(holder.mPhoto);

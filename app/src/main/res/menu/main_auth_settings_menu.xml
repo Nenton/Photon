@@ -2,8 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/enter_dial"
+        android:icon="@drawable/ic_account_black_24dp"
         android:title="Войти"/>
     <item
         android:id="@+id/registration_dial"
+        android:icon="@drawable/ic_sign_black_24dp"
         android:title="Зарегистрироваться" />
 </menu>

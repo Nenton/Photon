@@ -3,6 +3,7 @@ package com.nenton.photon.mvp.presenters;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.nenton.photon.mvp.model.AbstractModel;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IRootView;
@@ -53,11 +54,8 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
         super.dropView(view);
     }
 
-
     protected abstract void initActionBar();
-
     protected abstract void initMenuPopup();
-
     protected abstract void initDagger(MortarScope scope);
 
 
