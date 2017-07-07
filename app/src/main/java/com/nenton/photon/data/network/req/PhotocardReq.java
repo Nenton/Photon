@@ -16,14 +16,20 @@ import java.util.List;
 public class PhotocardReq implements Serializable{
     private String title;
     private String photo;
+    private String album;
     private List<String> tags = null;
     private Filters filters;
 
-    public PhotocardReq(String namePhoto, String url, List<String> tags, FiltersDto filters) {
+    public PhotocardReq(String namePhoto, String url, String album, List<String> tags, FiltersDto filters) {
         this.title = namePhoto;
         this.photo = url;
+        this.album = album;
         this.filters = new Filters(filters);
         this.tags = tags;
+    }
+
+    public String getAlbum() {
+        return album;
     }
 
     public String getTitle() {

@@ -63,6 +63,8 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
 
         holder.mNameAlbum.setText(album.getTitle());
         holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
+        holder.mFav.setText(String.valueOf(album.getFavorits()));
+        holder.mSee.setText(String.valueOf(album.getViews()));
 
         picasso.with(mContext)
                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
@@ -108,6 +110,10 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
         TextView mNameAlbum;
         @BindView(R.id.album_author_count_TV)
         TextView mCountPhoto;
+        @BindView(R.id.fav_photo_TV)
+        TextView mFav;
+        @BindView(R.id.sea_photo_TV)
+        TextView mSee;
 
         public AccountViewHolder(View itemView) {
             super(itemView);

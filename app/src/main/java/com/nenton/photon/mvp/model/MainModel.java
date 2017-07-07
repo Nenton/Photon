@@ -58,8 +58,8 @@ public class MainModel extends AbstractModel {
 
     @RxLogObservable
     public Observable<UserRealm> getUser(String id) {
-        Observable<UserRealm> disk = mDataManager.getUserById(id);
         Observable<UserRealm> network = mDataManager.getUserFromNetwork(id);
+        Observable<UserRealm> disk = mDataManager.getUserById(id);
 
         return Observable.mergeDelayError(disk, network)
                 .distinct(UserRealm::getId);
@@ -207,6 +207,14 @@ public class MainModel extends AbstractModel {
 
     public Observable<Boolean> isAlbumFromUser(String owner) {
         return mDataManager.isAlbumFromUser(owner);
+    }
+
+    public boolean haveAlbumUser() {
+        return mDataManager.haveAlbumUser();
+    }
+
+    public Observable<AlbumRealm> getAlbumFromTitleDesc(String title, String description) {
+        return mDataManager.getAlbumFromTitleDesc(title, description);
     }
 
     //region ========================= JobQ =========================

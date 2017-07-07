@@ -33,6 +33,12 @@ public class DeleteAlbumJob extends Job {
     @Override
     public void onAdded() {
         Log.e(TAG, " onAdded: ");
+        Realm realm = Realm.getDefaultInstance();
+        AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mIdAlbum).findFirst();
+        realm.executeTransaction(realm1 -> {
+            albumRealm.deleteFromRealm();
+        });
+        realm.close();
     }
 
     @Override
@@ -40,12 +46,7 @@ public class DeleteAlbumJob extends Job {
         Log.e(TAG, " onRun: ");
         DataManager.getInstance().deleteAlbumObs(mIdAlbum)
                 .subscribe(aVoid -> {
-                    Realm realm = Realm.getDefaultInstance();
-                    AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mIdAlbum).findFirst();
-                    realm.executeTransaction(realm1 -> {
-                        albumRealm.deleteFromRealm();
-                    });
-                    realm.close();
+
                 });
     }
 

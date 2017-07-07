@@ -2,11 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/edit_user_dial"
-        android:title="Редактировать профиль"/>
+        android:icon="@drawable/ic_custom_edit_black_24dp"
+        android:title="Изменить профиль"/>
     <item
         android:id="@+id/upload_avatar_dial"
+        android:icon="@drawable/ic_account_black_24dp"
         android:title="Изменить аватар" />
     <item
         android:id="@+id/exit_account_dial"
+        android:icon="@drawable/ic_power_disable_black_24dp"
         android:title="Выход" />
 </menu>

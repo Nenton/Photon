@@ -162,5 +162,38 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         public void clickOnPhotocard(PhotocardRealm mPhoto) {
             Flow.get(getView().getContext()).set(new PhotocardScreen(mPhoto));
         }
+
+        public void editPhoto() {
+
+        }
+
+        public void showDeletePhoto(String id, int adapterPosition) {
+            if (getView() != null){
+                getView().showDeletePhoto(id, adapterPosition);
+            }
+        }
+
+
+        public void deletePhotocard(String id) {
+            mModel.deletePhotocard(id, () -> {
+
+            });
+        }
+
+        public void updateLongTapAdapter(int posLongTap) {
+            if (getView() != null){
+                getView().updateLongTap(posLongTap);
+            }
+        }
+
+        public boolean isAlbumOnUser() {
+            final boolean[] b = new boolean[1];
+            mModel.isAlbumFromUser(mAlbum.getOwner()).subscribe(aBoolean -> {
+                b[0] = aBoolean;
+            });
+//            return b[0];
+            return true;
+        }
+
     }
 }

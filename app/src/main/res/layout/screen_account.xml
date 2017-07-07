@@ -33,6 +33,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/spacing_normal_16"
                     android:orientation="vertical">
 
@@ -42,6 +43,7 @@
                         tools:text="rufus21"/>
 
                     <LinearLayout
+                        android:id="@+id/info_counts_wrap"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -49,8 +51,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginRight="@dimen/spacing_normal_16">
+                            android:layout_marginRight="@dimen/spacing_normal_16"
+                            android:orientation="vertical">
 
                             <TextView
                                 style="@style/TextCountTitle"
@@ -84,12 +86,18 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/account_photocard_RV"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/show_not_album"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="У вас нет альбомов.\nДобавьте новый, чтобы \nсохранять карточки"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/no_user_wrap"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/blackHalfTransparent"/>
+    <item android:drawable="@color/blackTransparent"/>
     <item
         android:drawable="@drawable/ic_camera_black_24dp"
         android:gravity="center"

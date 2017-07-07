@@ -8,6 +8,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.WordsLayoutManager;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -78,6 +79,7 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
                 if (!s.toString().isEmpty()) {
                     mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_check_black_24dp));
                     mBackCheckBtn.setOnClickListener(v -> {
+                        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mSearchView.getWindowToken(),0);
                         mPresenter.clickOnSearch(mSearchView.getText(), mTagsAdapter.getStringSet());
                         adapter.addString(mSearchView.getText().toString());
                     });

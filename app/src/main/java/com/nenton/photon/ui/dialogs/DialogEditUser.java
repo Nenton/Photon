@@ -69,7 +69,7 @@ public class DialogEditUser {
         });
 
 
-        AlertDialog dialog = builder.setTitle("Регистрация")
+        AlertDialog dialog = builder.setTitle("Редактирование профиля")
                 .setView(view)
                 .create();
 

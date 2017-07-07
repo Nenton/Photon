@@ -11,13 +11,13 @@
         android:layout_height="match_parent"
         tools:background="@color/colorAccent"/>
 
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="bottom"
-        android:src="@drawable/ic_share_24dp"
-        android:layout_marginBottom="@dimen/spacing_normal_16"
-        android:layout_marginLeft="@dimen/spacing_normal_16"/>
+    <!--<ImageView-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:src="@drawable/ic_share_24dp"-->
+        <!--android:layout_marginBottom="@dimen/spacing_normal_16"-->
+        <!--android:layout_marginLeft="@dimen/spacing_normal_16"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,6 +43,28 @@
             android:id="@+id/album_author_count_TV"
             style="@style/TextNameAlbum"
             tools:text="3"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/TextIconItemWrap">
+
+        <ImageView
+            style="@style/IconItem"
+            android:src="@drawable/ic_custom_favorites_white_24dp"/>
+
+        <TextView
+            android:id="@+id/fav_photo_TV"
+            style="@style/TextIconItem"
+            tools:text="57"/>
+
+        <ImageView
+            style="@style/IconItem"
+            android:src="@drawable/ic_custom_views_white_24dp"/>
+
+        <TextView
+            android:id="@+id/sea_photo_TV"
+            style="@style/TextIconItem"
+            tools:text="71"/>
     </LinearLayout>
 
 

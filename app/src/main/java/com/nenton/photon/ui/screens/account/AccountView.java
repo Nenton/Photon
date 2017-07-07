@@ -60,6 +60,10 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
     TextView mAlbumCount;
     @BindView(R.id.account_photocard_count)
     TextView mPhotocardCount;
+    @BindView(R.id.info_counts_wrap)
+    LinearLayout mInfoCountsWrap;
+    @BindView(R.id.show_not_album)
+    TextView mNotAlbum;
 
     private AlertDialog dialogSignIn = null;
     private AlertDialog dialogSignUp = null;
@@ -121,18 +125,23 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
                 });
 
         mLogin.setText(userRealm.getLogin());
-        mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
-
-        int countPhotocard = 0;
 
         mAccountAdapter.reloadAdapter();
 
-        for (AlbumRealm albumRealm : userRealm.getAlbums()) {
-            countPhotocard += albumRealm.getPhotocards().size();
-            mAccountAdapter.addAlbum(albumRealm);
+        if (!userRealm.getAlbums().isEmpty()) {
+            mInfoCountsWrap.setVisibility(VISIBLE);
+            mNotAlbum.setVisibility(GONE);
+            int countPhotocard = 0;
+            for (AlbumRealm albumRealm : userRealm.getAlbums()) {
+                countPhotocard += albumRealm.getPhotocards().size();
+                mAccountAdapter.addAlbum(albumRealm);
+            }
+            mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
+            mPhotocardCount.setText(String.valueOf(countPhotocard));
+        } else {
+            mInfoCountsWrap.setVisibility(GONE);
+            mNotAlbum.setVisibility(VISIBLE);
         }
-
-        mPhotocardCount.setText(String.valueOf(countPhotocard));
 
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(manager);
@@ -214,6 +223,20 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
             dialogEditUserInfo.cancel();
             dialogEditUserInfo = null;
         }
+    }
+
+    public void showExit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Выход из профиля")
+                .setMessage("Вы действительной хотите выйти?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    mPresenter.exitAccount();
+                })
+                .setNegativeButton("Отмена", (dialog, which) -> {
+                    dialog.cancel();
+                })
+                .create()
+                .show();
     }
     //endregion
 }

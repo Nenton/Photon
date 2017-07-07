@@ -59,7 +59,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         mCountPhoto.setText(String.valueOf(mAlbum.getPhotocards().size()));
         mDescription.setText(mAlbum.getDescription());
         for (PhotocardRealm photo : mAlbum.getPhotocards()) {
-            mAccountAdapter.addAlbum(photo);
+            mAccountAdapter.addPhotocard(photo);
         }
     }
 
@@ -89,4 +89,19 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         }
     }
 
+    public void updateLongTap(int posLongTap) {
+        mRecycleView.getLayoutManager().findViewByPosition(posLongTap).findViewById(R.id.long_tap_photo).setVisibility(GONE);
+    }
+
+    public void showDeletePhoto(String id, int adapterPosition) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setTitle("Удаление фотокарточки")
+                .setMessage("Вы действительно хотите удалить эту фотокарточку?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    mAccountAdapter.deletePhotocard(adapterPosition);
+                    mPresenter.deletePhotocard(id);
+                })
+                .setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
+        builder.create().show();
+    }
 }

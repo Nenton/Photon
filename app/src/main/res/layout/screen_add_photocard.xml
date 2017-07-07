@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -155,7 +155,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:visibility="gone">
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -169,7 +169,54 @@
             android:id="@+id/add_photo_from_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Выбрать фото "/>
+            android:text="Выбрать фото"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/show_not_album"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Для загрузки необходим хотя бы 1 альбом"
+            android:fontFamily="@string/roboto_regular"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/create_album"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Создать альбом"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/show_not_is_sign"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Для загрузки фотокарточки авторизуйтесь"
+            android:fontFamily="@string/roboto_regular"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/go_account_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Авторизация"/>
+
+    </LinearLayout>
+
 </com.nenton.photon.ui.screens.add_photocard.AddPhotocardView>

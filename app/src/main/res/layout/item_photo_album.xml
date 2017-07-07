@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.nenton.photon.ui.custom_views.ImageViewSquare
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/photo_card_album_IV"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-</com.nenton.photon.ui.custom_views.ImageViewSquare>
+    <com.nenton.photon.ui.custom_views.ImageViewSquare
+        android:id="@+id/photo_card_album_IV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/long_tap_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@color/blackTransparent"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/edit_long_tap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/spacing_small_8"
+                android:background="@drawable/ic_custom_edit_white_24dp"/>
+
+            <ImageButton
+                android:id="@+id/delete_long_tap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_small_8"
+                android:background="@drawable/ic_custom_delete_white_24dp"/>
+        </LinearLayout>
+
+</FrameLayout>

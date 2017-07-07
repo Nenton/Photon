@@ -228,4 +228,28 @@ public class RealmManager {
         realm.executeTransaction(realm1 -> realm1.insertOrUpdate(albumRealm));
         realm.close();
     }
+
+    public boolean haveAlbumUser(String userId) {
+        Realm realm = Realm.getDefaultInstance();
+        UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", userId).findFirst();
+        realm.close();
+        return userRealm != null && !userRealm.getAlbums().isEmpty();
+    }
+
+    public Observable<AlbumRealm> getAlbumByTitleDesc(String title, String description, String userId) {
+        AlbumRealm albumRealm = getQueryRealmInstance()
+                .where(AlbumRealm.class)
+                .equalTo("owner", userId)
+                .equalTo("title", title)
+                .equalTo("description", description)
+                .findFirstAsync();
+        if (albumRealm != null) {
+            return albumRealm.<AlbumRealm>asObservable()
+                    .filter(albumRealm1 -> albumRealm1.isLoaded())
+                    .first();
+        } else {
+            return Observable.error(new Throwable());
+        }
+    }
+
 }

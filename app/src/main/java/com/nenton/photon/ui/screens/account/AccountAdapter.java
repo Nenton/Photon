@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
@@ -35,6 +36,9 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
     @Inject
     Picasso picasso;
+
+    @Inject
+    AccountScreen.AccountPresenter mPresenter;
 
     private List<AlbumRealm> mAlbums = new ArrayList<>();
     private Context context;
@@ -68,8 +72,16 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
         holder.mNameAlbum.setText(album.getTitle());
         holder.mCountPhoto.setText(String.valueOf(album.getPhotocards().size()));
-        holder.mFavCount.setText(String.valueOf(album.getFavorits()));
-        holder.mSeaCount.setText(String.valueOf(album.getViews()));
+        if (album.getPhotocards().isEmpty()){
+            holder.mCountsWrap.setVisibility(View.GONE);
+        } else {
+            holder.mFavCount.setText(String.valueOf(album.getFavorits()));
+            holder.mSeaCount.setText(String.valueOf(album.getViews()));
+        }
+        String title = album.getTitle();
+        String description = album.getDescription();
+
+        boolean hashId = album.getId().equals(String.valueOf(album.getTitle().hashCode() + album.getDescription().hashCode()));
 
         picasso.with(context)
                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
@@ -99,7 +111,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
                 });
 
         holder.mView.setOnClickListener(v -> {
-            Flow.get(context).set(new AlbumScreen(album));
+            if (hashId) {
+                mPresenter.clickOnAlbum(title, description);
+            } else {
+                mPresenter.clickOnAlbum(album);
+            }
         });
     }
 
@@ -121,6 +137,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         TextView mFavCount;
         @BindView(R.id.sea_photo_TV)
         TextView mSeaCount;
+        @BindView(R.id.counts_wrap)
+        LinearLayout mCountsWrap;
 
         public AccountViewHolder(View itemView) {
             super(itemView);

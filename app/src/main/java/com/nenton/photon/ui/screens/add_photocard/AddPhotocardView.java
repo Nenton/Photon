@@ -49,6 +49,11 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     NestedScrollView mPropertyPanel;
     @BindView(R.id.add_photo_panel)
     LinearLayout mAddPhotoPanel;
+    @BindView(R.id.show_not_album)
+    LinearLayout mNotAlbum;
+    @BindView(R.id.show_not_is_sign)
+    LinearLayout mNotIsSign;
+
 
     @BindView(R.id.add_tag_et)
     EditText mAddTags;
@@ -90,11 +95,15 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     public void showPhotoPanel() {
         mAddPhotoPanel.setVisibility(VISIBLE);
         mPropertyPanel.setVisibility(GONE);
+        mNotIsSign.setVisibility(GONE);
+        mNotAlbum.setVisibility(GONE);
     }
 
     public void showPropertyPanel() {
         mAddPhotoPanel.setVisibility(GONE);
         mPropertyPanel.setVisibility(VISIBLE);
+        mNotIsSign.setVisibility(GONE);
+        mNotAlbum.setVisibility(GONE);
     }
 
     public AddPhotocardSelectAlbumAdapter getAdapter() {
@@ -206,6 +215,16 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
 
+
+    public void goneAddAlbum() {
+        mButton.setVisibility(GONE);
+    }
+
+    public void showAddAlbum() {
+        mNotIsSign.setVisibility(GONE);
+        mNotAlbum.setVisibility(VISIBLE);
+    }
+
     //region ========================= Events =========================
 
     @OnClick(R.id.add_photo_from_gallery)
@@ -241,8 +260,16 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         }).show();
     }
 
-    public void goneAddAlbum() {
-        mButton.setVisibility(GONE);
+    @OnClick(R.id.create_album)
+    public void addAlbumFrom() {
+        DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
+            mPresenter.addAlbumFrom(name, description);
+        }).show();
+    }
+
+    @OnClick(R.id.go_account_btn)
+    public void goAccount() {
+        mPresenter.goAccount();
     }
 
     //endregion

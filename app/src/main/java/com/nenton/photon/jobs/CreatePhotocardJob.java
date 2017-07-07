@@ -71,7 +71,7 @@ public class CreatePhotocardJob extends Job {
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), mFile);
         MultipartBody.Part part = MultipartBody.Part.createFormData("image", mFile.getName(), requestBody);
         DataManager.getInstance().uploadPhoto(part).subscribe(uri -> {
-            DataManager.getInstance().createPhotocard(new PhotocardReq(mNamePhoto, uri, mTags, mFilters))
+            DataManager.getInstance().createPhotocard(new PhotocardReq(mNamePhoto, uri, mIdAlbum, mTags, mFilters))
                     .subscribe(s -> {
                         Realm realm = Realm.getDefaultInstance();
                         PhotocardRealm photocardStorage = realm.where(PhotocardRealm.class).equalTo("id", mIdPhoto).findFirst();

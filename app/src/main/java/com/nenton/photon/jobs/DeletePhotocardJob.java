@@ -33,6 +33,12 @@ public class DeletePhotocardJob extends Job {
     @Override
     public void onAdded() {
         Log.e(TAG, " onAdded: ");
+        Realm realm = Realm.getDefaultInstance();
+        PhotocardRealm photocardRealm = realm.where(PhotocardRealm.class).equalTo("id", mIdPhotocard).findFirst();
+        realm.executeTransaction(realm1 -> {
+            photocardRealm.deleteFromRealm();
+        });
+        realm.close();
     }
 
     @Override
@@ -40,12 +46,7 @@ public class DeletePhotocardJob extends Job {
         Log.e(TAG, " onRun: ");
         DataManager.getInstance().deletePhotocardObs(mIdPhotocard)
                 .subscribe(o -> {
-                    Realm realm = Realm.getDefaultInstance();
-                    PhotocardRealm photocardRealm = realm.where(PhotocardRealm.class).equalTo("id", mIdPhotocard).findFirst();
-                    realm.executeTransaction(realm1 -> {
-                        photocardRealm.deleteFromRealm();
-                    });
-                    realm.close();
+
                 });
     }
 

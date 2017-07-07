@@ -63,6 +63,7 @@ public class EditPhotocardJob extends Job {
                         photocardRealm.deleteFromRealm();
                         albumRealm.getPhotocards().add(new PhotocardRealm(photocard));
                     });
+                    realm.close();
                 });
     }
 

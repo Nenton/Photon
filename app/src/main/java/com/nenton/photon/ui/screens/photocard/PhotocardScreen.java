@@ -182,7 +182,6 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             Flow.get(getView().getContext()).set(new AuthorScreen(mPhotocard.getOwner()));
         }
 
-
         private class RealmSubscriber extends Subscriber<UserRealm> {
 
             @Override

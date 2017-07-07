@@ -206,9 +206,9 @@ public class DataManager {
     public Observable<UserRealm> getUserFromNetwork(String id) {
         return mRestService.getUserInfoObs(id)
                 .compose(((RestCallTransformer<UserInfo>) mRestCallTransformer))
-                .flatMap(userInfo -> Observable.just(new UserRealm(userInfo, id)))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .flatMap(userInfo -> Observable.just(new UserRealm(userInfo, id)))
                 .doOnNext(userRealm -> {
                     mRealmManager.saveUserInfo(userRealm);
                 })
@@ -218,16 +218,14 @@ public class DataManager {
                                 .doOnNext(retryCount -> Log.e(TAG, "LOCAL UPDATE request retry count: " + retryCount + " " + new Date()))
                                 .map(retryCount -> ((long) (AppConfig.RETRY_REQUEST_BASE_DELAY * Math.pow(Math.E, retryCount))))
                                 .doOnNext(delay -> Log.e(TAG, "LOCAL UPDATE delay: " + delay))
-                                .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
-
-                .flatMap(userRealm -> Observable.empty());
+                                .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)));
     }
 
     public Observable<UserEditRes> editUserInfoObs(UserEditReq userEditReq) {
         return mRestService.editUserInfoObs(getPreferencesManager().getAuthToken(),
                 getPreferencesManager().getUserId(), userEditReq)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 202:
@@ -244,7 +242,7 @@ public class DataManager {
     public Observable<String> uploadPhoto(MultipartBody.Part file) {
         return mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), file)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
                     switch (photoResResponse.code()) {
                         case 201:
@@ -261,7 +259,7 @@ public class DataManager {
     public Observable<String> createPhotocard(PhotocardReq photocardReq) {
         return mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardReq)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
                     switch (photoResResponse.code()) {
                         case 201:
@@ -276,8 +274,8 @@ public class DataManager {
 
     public Observable<Boolean> addToFav(String photocardId) {
         return mRestService.addPhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
                     switch (photoResResponse.code()) {
                         case 201:
@@ -343,7 +341,7 @@ public class DataManager {
     public Observable<Photocard> editPhotocardObs(String photoId, PhotocardReq photocardReq) {
         return mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId, photocardReq)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 202:
@@ -359,7 +357,7 @@ public class DataManager {
     public Observable<Object> deletePhotocardObs(String photoId) {
         return mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 204:
@@ -411,7 +409,7 @@ public class DataManager {
     public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {
         return mRestService.createAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), albumCreateReq)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 201:
@@ -427,7 +425,7 @@ public class DataManager {
     public Observable<Album> editAlbumObs(String id, AlbumEditReq albumEditReq) {
         return mRestService.editAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id, albumEditReq)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 202:
@@ -444,7 +442,7 @@ public class DataManager {
     public Observable<Object> deleteAlbumObs(String id) {
         return mRestService.deleteAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     switch (response.code()) {
                         case 204:
@@ -463,5 +461,13 @@ public class DataManager {
 
     public Observable<Boolean> isAlbumFromUser(String owner) {
         return Observable.just(owner.equals(getPreferencesManager().getUserId()));
+    }
+
+    public boolean haveAlbumUser() {
+        return mRealmManager.haveAlbumUser(getPreferencesManager().getUserId());
+    }
+
+    public Observable<AlbumRealm> getAlbumFromTitleDesc(String title, String description) {
+        return mRealmManager.getAlbumByTitleDesc(title, description, getPreferencesManager().getUserId());
     }
 }

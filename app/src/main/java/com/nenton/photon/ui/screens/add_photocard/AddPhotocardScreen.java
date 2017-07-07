@@ -114,8 +114,15 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
-            getView().showPhotoPanel();
+
+            if (mModel.isSignIn()){
+                if (mModel.haveAlbumUser()){
+                    getView().initView();
+                    getView().showPhotoPanel();
+                } else {
+                    getView().showAddAlbum();
+                }
+            }
         }
 
         @Override
@@ -204,15 +211,15 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             }));
         }
 
-        public void clickAlbum(int positionOnSelectItem) {
+        void clickAlbum(int positionOnSelectItem) {
             getView().checkedCurrentAlbum(positionOnSelectItem);
         }
 
-        public void clickOnSuggestTag(String albumRealm) {
+        void clickOnSuggestTag(String albumRealm) {
             getView().addTag(albumRealm);
         }
 
-        public void savePhotocard() {
+        void savePhotocard() {
             FiltersDto filters = getView().getFilters();
             String namePhotocard = getView().getNamePhotocard();
             List<String> tags = getView().getTags();
@@ -243,12 +250,12 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             }
         }
 
-        public void cancelCreate() {
+        void cancelCreate() {
             mAvatarUri = null;
             getView().showPhotoPanel();
         }
 
-        public void addAlbum(String name, String description) {
+        void addAlbum(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
                 ((RootActivity) getRootView()).runOnUiThread(() -> {
                     initPropertyView();
@@ -256,5 +263,19 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 });
             });
         }
+
+        public void addAlbumFrom(String name, String description) {
+            mModel.createAlbumObs(name, description, () -> {
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
+                    getView().initView();
+                    getView().showPhotoPanel();
+                });
+            });
+        }
+
+        void goAccount() {
+            Flow.get(getView().getContext()).set(new AccountScreen());
+        }
+
     }
 }

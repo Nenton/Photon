@@ -29,6 +29,7 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.album.AlbumScreen;
 import com.nenton.photon.utils.ConstantsManager;
 import com.nenton.photon.utils.UriHelper;
 import com.squareup.picasso.Picasso;
@@ -98,7 +99,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                         .setTitle("Профиль")
                         .setBackArrow(false)
                         .addAction(new MenuItemHolder("Добавить альбом", R.drawable.ic_custom_add_black_24dp, item -> {
-                            showAddAlbum();
+                            getView().showDialogAddAlbum();
                             return true;
                         }))
                         .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_menu_black_24dp, item -> {
@@ -118,23 +119,19 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         protected void initMenuPopup() {
             mRootPresenter.newMenuPopupBuilder()
                     .setIdMenuRes(R.menu.account_settings_menu)
-//                    .addMenuPopup(new PopupMenuItem(R.id.add_album_dial, this::showAddAlbum))
-                    .addMenuPopup(new PopupMenuItem(R.id.edit_user_dial, this::showEditUser))
+                    .addMenuPopup(new PopupMenuItem(R.id.edit_user_dial, () -> {
+                        getView().showDialogEditUserInfo();
+                    }))
                     .addMenuPopup(new PopupMenuItem(R.id.upload_avatar_dial, this::uploadAvatar))
-                    .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, this::exitAccount))
+                    .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, () -> getView().showExit()))
                     .build();
         }
 
-        private void showEditUser() {
-            getView().showDialogEditUserInfo();
-        }
-
-        private void exitAccount() {
+        public void exitAccount() {
             mModel.unAuth();
             initActionBar();
             loadUserInfo();
         }
-
 
         public void editUserInfo(String name, String login) {
             mModel.editUserInfoObs(name, login, this::loadUserInfo);
@@ -205,10 +202,6 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         //endregion
 
-        private void showAddAlbum() {
-            getView().showDialogAddAlbum();
-        }
-
         void addAlbum(String name, String description) {
             mModel.createAlbumObs(name, description, () -> ((RootActivity) getRootView()).runOnUiThread(() -> {
                 loadUserInfo();
@@ -268,6 +261,19 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                     getView().cancelSignUp();
                 }
             }));
+        }
+
+        public void clickOnAlbum(String title, String decription) {
+            mModel.getAlbumFromTitleDesc(title, decription).subscribe(new ViewSubscriber<AlbumRealm>() {
+                @Override
+                public void onNext(AlbumRealm albumRealm) {
+                    Flow.get(getView().getContext()).set(new AlbumScreen(albumRealm));
+                }
+            });
+        }
+
+        public void clickOnAlbum(AlbumRealm album) {
+            Flow.get(getView().getContext()).set(new AlbumScreen(album));
         }
     }
 }
