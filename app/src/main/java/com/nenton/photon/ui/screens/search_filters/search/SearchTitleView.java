@@ -18,6 +18,7 @@ import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.ISearchView;
 import com.nenton.photon.utils.TextWatcherEditText;
 
 import java.util.List;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
  * Created by serge on 05.06.2017.
  */
 
-public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> {
+public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> implements ISearchView {
 
     @BindView(R.id.search_rv)
     RecyclerView mSearchRV;
@@ -64,7 +65,8 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         DaggerService.<SearchScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    void initView(List<String> strings) {
+    @Override
+    public void initView(List<String> strings) {
         mRecyclerViewTags.setLayoutManager(new WordsLayoutManager(getContext()));
         mRecyclerViewTags.setAdapter(mTagsAdapter);
 
@@ -98,6 +100,7 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         return mTagsAdapter;
     }
 
+    @Override
     public void setTextSearchViewByQueryString(String s) {
         mSearchView.setText(s);
     }

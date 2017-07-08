@@ -53,7 +53,7 @@
         <RadioButton
             android:id="@+id/ic_desserts"
             style="@style/RadioButton"
-            android:drawableTop="@drawable/ic_dish_desserts"
+            android:drawableTop="@drawable/ic_dish_desserts_black"
             android:tag="@string/dish_desserts"
             android:text="Десерты"/>
 

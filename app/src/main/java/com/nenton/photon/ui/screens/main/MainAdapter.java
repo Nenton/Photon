@@ -1,9 +1,12 @@
 package com.nenton.photon.ui.screens.main;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -30,14 +33,17 @@ import butterknife.ButterKnife;
  */
 
 class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
-    private final List<PhotocardRealm> mPhotocards = new ArrayList<>();
 
     @Inject
     Picasso mPicasso;
     @Inject
     MainScreen.MainPresenter mPresenter;
 
-    void addPhoto(PhotocardRealm photocard){
+    private final List<PhotocardRealm> mPhotocards = new ArrayList<>();
+    private int lastPosition = -1;
+    private Context mContext;
+
+    void addPhoto(PhotocardRealm photocard) {
         mPhotocards.add(photocard);
         notifyDataSetChanged();
     }
@@ -50,6 +56,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     @Override
     public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_main, parent, false);
         return new MainViewHolder(convertView);
     }
@@ -62,7 +69,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
         mPicasso.load(photocard.getPhoto())
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(500,500)
+                .resize(500, 500)
                 .centerCrop()
                 .transform(new PhotoTransform())
 
@@ -75,7 +82,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
-                                .resize(500,500)
+                                .resize(500, 500)
                                 .centerCrop()
                                 .transform(new PhotoTransform())
                                 .into(holder.mPhoto);
@@ -85,6 +92,12 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         holder.mView.setOnClickListener(v -> {
             mPresenter.clickOnPhoto(photocard);
         });
+        setAnimation(holder.itemView);
+    }
+
+    private void setAnimation(View viewToAnimate) {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+        viewToAnimate.startAnimation(animation);
     }
 
     @Override
@@ -96,7 +109,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         mPhotocards.clear();
     }
 
-    public class MainViewHolder extends RecyclerView.ViewHolder{
+    public class MainViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_photo)
         FrameLayout mView;
         @BindView(R.id.photo_card_IV)
@@ -105,6 +118,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         TextView mTextFav;
         @BindView(R.id.sea_photo_count_TV)
         TextView mTextSea;
+
         public MainViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

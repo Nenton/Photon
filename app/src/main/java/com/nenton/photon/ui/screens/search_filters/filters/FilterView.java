@@ -1,7 +1,10 @@
 package com.nenton.photon.ui.screens.search_filters.filters;
 
 import android.content.Context;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
@@ -10,6 +13,7 @@ import android.widget.RadioGroup;
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IFilterView;
 import com.nenton.photon.utils.SearchFilterQuery;
 
 import java.util.ArrayList;
@@ -23,7 +27,7 @@ import butterknife.OnClick;
  * Created by serge on 05.06.2017.
  */
 
-public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
+public class FilterView extends AbstractView<FilterScreen.FilterPresenter> implements IFilterView {
 
     @BindViews({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     List<CheckBox> mNuances;
@@ -87,6 +91,7 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
         DaggerService.<FilterScreen.Component>getDaggerComponent(context).inject(this);
     }
 
+    @Override
     public void initView(SearchFilterQuery query) {
         mButton.setText("Сбросить фильтры");
         initRadioGroup();
@@ -129,6 +134,7 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> {
         });
     }
 
+    @Override
     public void initView() {
         mButton.setText("Найти");
         initRadioGroup();

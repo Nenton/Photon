@@ -18,6 +18,7 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IPhotocardView;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoBigTransform;
 import com.nenton.photon.utils.PhotoTransform;
@@ -34,7 +35,7 @@ import butterknife.OnClick;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresenter> {
+public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresenter> implements IPhotocardView {
     private PhotocardAdapter mAdapter = new PhotocardAdapter();
 
     @BindView(R.id.photocard_RV)
@@ -53,6 +54,8 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     ImageView mAvatar;
     @BindView(R.id.nestedScroll)
     NestedScrollView mNested;
+    @BindView(R.id.fav_icon)
+    ImageView mFavIcon;
 
     @OnClick(R.id.avatar_photocard_IV)
     public void clickOnAuthor() {
@@ -100,15 +103,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 //        }
 //    }
 
+    @Override
     public void initView(PhotocardRealm photocardRealm, UserInfoDto infoDto) {
 
         mName.setText(photocardRealm.getTitle());
-
-        mPicasso.load(infoDto.getAvatar())
-                .fit()
-                .centerCrop()
-                .transform(new AvatarTransform())
-                .into(mAvatar);
 
         mPicasso.load(photocardRealm.getPhoto())
                 .networkPolicy(NetworkPolicy.OFFLINE)
@@ -132,7 +130,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                     }
                 });
 
-        mPicasso.load(infoDto.getAvatar())
+        mPicasso.with(getContext())
+                .load(infoDto.getAvatar())
+                .error(R.drawable.ic_account_black_24dp)
+                .placeholder(R.drawable.ic_account_black_24dp)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(200, 200)
                 .centerCrop()
@@ -146,7 +147,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 
                     @Override
                     public void onError() {
-                        mPicasso.load(infoDto.getAvatar())
+                        mPicasso.with(getContext())
+                                .load(infoDto.getAvatar())
+                                .error(R.drawable.ic_account_black_24dp)
+                                .placeholder(R.drawable.ic_account_black_24dp)
                                 .resize(200, 200)
                                 .centerCrop()
                                 .transform(new AvatarTransform())
@@ -165,6 +169,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
     public void showDialogAddFav() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Добавить в избранное")
@@ -179,6 +184,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                 .show();
     }
 
+    @Override
     public void showDialogSharePhoto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Платный контент")
@@ -191,5 +197,13 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                 })
                 .create()
                 .show();
+    }
+
+    public void showFavIcon(boolean b) {
+        if (b) {
+            mFavIcon.setVisibility(VISIBLE);
+        } else {
+            mFavIcon.setVisibility(GONE);
+        }
     }
 }

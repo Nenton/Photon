@@ -25,6 +25,7 @@ import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IEditPhotocardView;
 import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectAlbumAdapter;
 import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectTagsAdapter;
 import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSuggestionTagsAdapter;
@@ -42,7 +43,7 @@ import butterknife.OnClick;
  * Created by serge on 07.07.2017.
  */
 
-public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhotocardPresenter> {
+public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhotocardPresenter> implements IEditPhotocardView {
 
     @BindView(R.id.edit_album_for_photocard_rv)
     RecyclerView mAlbums;
@@ -76,26 +77,6 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
     @BindView(R.id.radio_group_light_source)
     RadioGroup mLightSource;
 
-    @OnClick(R.id.save_edit_photocard_btn)
-    void clickOnSave() {
-        mPresenter.savePhotocard();
-    }
-
-    @OnClick(R.id.cancel_edit_photocard_btn)
-    void clickOnCancel() {
-        mPresenter.clickOnCancel();
-    }
-
-    @OnClick(R.id.check_edit_tag)
-    public void checkTag() {
-        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
-        mAddTags.setText("");
-    }
-
-    @OnClick(R.id.cancel_name_tag)
-    public void cancelTag() {
-        mAddTags.setText("");
-    }
 
     @Inject
     EditPhotocardSelectTagsAdapter mTagsSelectedAdapter;
@@ -130,6 +111,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         mAvailableTags.setAdapter(mTagsSuggestionAdapter);
     }
 
+    @Override
     public void showView(PhotocardRealm photocardRealm) {
         mNamePhotocard.setText(photocardRealm.getTitle());
         ((RadioButton) findViewWithTag(photocardRealm.getFilters().getDish())).setChecked(true);
@@ -151,6 +133,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
+    @Override
     @Nullable
     public FiltersDto getFilters() {
         String dish = mDish.getCheckedRadioButtonId() != -1 ? (String) findViewById(mDish.getCheckedRadioButtonId()).getTag() : "";
@@ -178,6 +161,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
+    @Override
     @Nullable
     public String getNamePhotocard() {
         if (mNamePhotocard.getText().toString().isEmpty()) {
@@ -187,6 +171,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
+    @Override
     @Nullable
     public List<String> getTags() {
         if (mTagsSelectedAdapter.getStrings().size() == 0) {
@@ -196,6 +181,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
+    @Override
     @Nullable
     public String getIdAlbum() {
         if (((CheckBox) mAlbums.getLayoutManager().findViewByPosition(mAdapter.getPositionOnSelectItem()).findViewById(R.id.check_album_add)).isChecked()) {
@@ -205,8 +191,10 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
-    public void addTag(String albumRealm) {
-        mTagsSelectedAdapter.addTag(albumRealm);
+    @Override
+    public void addTag(String string) {
+        mTagsSelectedAdapter.addTag(string);
+        mTagsSuggestionAdapter.deleteString(string);
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
 
@@ -214,6 +202,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         ((CheckBox) mAlbums.getLayoutManager().findViewByPosition(positionOnSelectItem).findViewById(R.id.check_album_add)).setChecked(false);
     }
 
+    @Override
     public void initAlbums(UserRealm userRealm) {
         for (AlbumRealm albumRealm : userRealm.getAlbums()) {
             mAdapter.addAlbum(albumRealm);
@@ -232,4 +221,38 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         });
         mCheckTag.setVisibility(GONE);
     }
+
+    public void removeTag(String string) {
+        mTagsSuggestionAdapter.addTag(string);
+    }
+
+    //region ========================= Events =========================
+
+    @OnClick(R.id.save_edit_photocard_btn)
+    void clickOnSave() {
+        mPresenter.savePhotocard();
+    }
+
+    @OnClick(R.id.cancel_edit_photocard_btn)
+    void clickOnCancel() {
+        mPresenter.cancelEdit();
+    }
+
+    @OnClick(R.id.check_edit_tag)
+    public void checkTag() {
+        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
+        mAddTags.setText("");
+    }
+
+    @OnClick(R.id.cancel_name_tag)
+    public void cancelTag() {
+        mAddTags.setText("");
+    }
+
+    @OnClick(R.id.cancel_name)
+    public void cancelName() {
+        mNamePhotocard.setText("");
+    }
+
+    //endregion
 }

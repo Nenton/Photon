@@ -23,8 +23,10 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
+import com.nenton.photon.mvp.model.AccountModel;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IAccountPresenter;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
@@ -63,8 +65,8 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
     public class Module {
         @Provides
         @DaggerScope(AccountScreen.class)
-        MainModel providePhotoModel() {
-            return new MainModel();
+        AccountModel provideAccountModel() {
+            return new AccountModel();
         }
 
         @Provides
@@ -88,9 +90,9 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         RootPresenter getRootPresenter();
     }
 
-    public class AccountPresenter extends AbstractPresenter<AccountView, MainModel> {
+    public class AccountPresenter extends AbstractPresenter<AccountView, AccountModel> implements IAccountPresenter {
 
-        Subscription subscribe;
+        private Subscription subscribe;
 
         @Override
         protected void initActionBar() {
@@ -99,11 +101,15 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                         .setTitle("Профиль")
                         .setBackArrow(false)
                         .addAction(new MenuItemHolder("Добавить альбом", R.drawable.ic_custom_add_black_24dp, item -> {
-                            getView().showDialogAddAlbum();
+                            if (getView() != null) {
+                                getView().showDialogAddAlbum();
+                            }
                             return true;
                         }))
                         .addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_menu_black_24dp, item -> {
-                            getRootView().showSettings();
+                            if (getRootView() != null) {
+                                getRootView().showSettings();
+                            }
                             return true;
                         }))
                         .build();
@@ -120,19 +126,27 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             mRootPresenter.newMenuPopupBuilder()
                     .setIdMenuRes(R.menu.account_settings_menu)
                     .addMenuPopup(new PopupMenuItem(R.id.edit_user_dial, () -> {
-                        getView().showDialogEditUserInfo();
+                        if (getView() != null) {
+                            getView().showDialogEditUserInfo(mModel.getUserInfo().getLogin(), mModel.getUserInfo().getName());
+                        }
                     }))
                     .addMenuPopup(new PopupMenuItem(R.id.upload_avatar_dial, this::uploadAvatar))
-                    .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, () -> getView().showExit()))
+                    .addMenuPopup(new PopupMenuItem(R.id.exit_account_dial, () -> {
+                        if (getView() != null) {
+                            getView().showExit();
+                        }
+                    }))
                     .build();
         }
 
+        @Override
         public void exitAccount() {
             mModel.unAuth();
             initActionBar();
             loadUserInfo();
         }
 
+        @Override
         public void editUserInfo(String name, String login) {
             mModel.editUserInfoObs(name, login, this::loadUserInfo);
         }
@@ -171,7 +185,9 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
             }
-            ((RootActivity) getRootView()).startActivityForResult(intent, ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE);
+            if (getRootView() != null) {
+                ((RootActivity) getRootView()).startActivityForResult(intent, ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE);
+            }
         }
 
         private void subscribeOnActivityResult() {
@@ -190,23 +206,36 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         private void handleActivityResult(ActivityResultDto activityResultDto) {
             if (activityResultDto.getRequestCode() == ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE && activityResultDto.getIntent() != null) {
                 String mAvatarUri = activityResultDto.getIntent().getData().toString();
-                if (mAvatarUri != null) {
+                if (mAvatarUri != null && getView() != null) {
                     UriHelper uriHelper = new UriHelper();
                     File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
-                    mModel.uploadUserAvatar(mAvatarUri, file, () -> ((RootActivity) getRootView()).runOnUiThread(this::loadUserInfo));
+                    mModel.uploadUserAvatar(mAvatarUri, file, () -> {
+                        if(getRootView() != null){
+                            ((RootActivity) getRootView()).runOnUiThread(this::loadUserInfo);
+                        }
+                    });
                 }
             } else {
-                getRootView().showMessage("Что-то пошло не так");
+                if (getRootView() != null){
+                    getRootView().showMessage("Что-то пошло не так");
+                }
             }
         }
 
         //endregion
 
-        void addAlbum(String name, String description) {
-            mModel.createAlbumObs(name, description, () -> ((RootActivity) getRootView()).runOnUiThread(() -> {
-                loadUserInfo();
-                getView().cancelAddAlbum();
-            }));
+        @Override
+        public void addAlbum(String name, String description) {
+            mModel.createAlbumObs(name, description, () -> {
+                if (getRootView() != null){
+                    ((RootActivity) getRootView()).runOnUiThread(() -> {
+                        loadUserInfo();
+                        if (getView() != null) {
+                            getView().cancelAddAlbum();
+                        }
+                    });
+                }
+            });
         }
 
         @Override
@@ -220,45 +249,60 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             loadUserInfo();
         }
 
-        private void loadUserInfo() {
+        @Override
+        public void loadUserInfo() {
             if (mModel.isSignIn()) {
                 UserInfoDto userInfo = mModel.getUserInfo();
                 mCompSubs.add(mModel.getUser(userInfo.getId())
                         .subscribe(new ViewSubscriber<UserRealm>() {
                             @Override
                             public void onNext(UserRealm userRealm) {
-                                getView().showAuthState(userRealm);
+                                if (getView() != null) {
+                                    getView().showAuthState(userRealm);
+                                }
                             }
                         }));
             } else {
-                getView().showUnAuthState();
+                if (getView() != null) {
+                    getView().showUnAuthState();
+                }
             }
         }
 
         void clickOnSignIn() {
-            getView().signIn();
+            if (getView() != null) {
+                getView().signIn();
+            }
         }
 
         void clickOnSignUp() {
-            getView().signUp();
+            if (getView() != null) {
+                getView().signUp();
+            }
         }
 
-        void signIn(UserLoginReq loginReq) {
+        @Override
+        public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq).subscribe(new ViewSubscriber<SignInRes>() {
                 @Override
                 public void onNext(SignInRes signInRes) {
                     loadUserInfo();
-                    getView().cancelSignIn();
+                    if (getView() != null) {
+                        getView().cancelSignIn();
+                    }
                     initActionBar();
                 }
             }));
         }
 
-        void signUp(UserCreateReq createReq) {
+        @Override
+        public void signUp(UserCreateReq createReq) {
             mCompSubs.add(mModel.signUp(createReq).subscribe(new ViewSubscriber<SignUpRes>() {
                 @Override
                 public void onNext(SignUpRes signUpRes) {
-                    getView().cancelSignUp();
+                    if (getView() != null) {
+                        getView().cancelSignUp();
+                    }
                 }
             }));
 
@@ -268,13 +312,17 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             mModel.getAlbumFromTitleDesc(title, decription).subscribe(new ViewSubscriber<AlbumRealm>() {
                 @Override
                 public void onNext(AlbumRealm albumRealm) {
-                    Flow.get(getView().getContext()).set(new AlbumScreen(albumRealm));
+                    if (getView() != null) {
+                        Flow.get(getView().getContext()).set(new AlbumScreen(albumRealm));
+                    }
                 }
             });
         }
 
-        public void clickOnAlbum(AlbumRealm album) {
-            Flow.get(getView().getContext()).set(new AlbumScreen(album));
+        public void clickOnAlbum(AlbumRealm albumRealm) {
+            if (getView() != null) {
+                Flow.get(getView().getContext()).set(new AlbumScreen(albumRealm));
+            }
         }
     }
 }

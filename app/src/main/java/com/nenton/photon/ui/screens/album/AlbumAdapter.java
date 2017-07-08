@@ -1,9 +1,12 @@
 package com.nenton.photon.ui.screens.album;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -39,6 +42,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
     private List<PhotocardRealm> mPhotocards = new ArrayList<>();
     private int posLongTap = -1;
+    private Context mContext;
 
     public void addPhotocard(PhotocardRealm album) {
         mPhotocards.add(album);
@@ -52,6 +56,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
     @Override
     public AlbumAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_album, parent, false);
         return new AccountViewHolder(convertView);
     }
@@ -83,8 +88,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
                                 .into(holder.mPhoto);
                     }
                 });
+        setAnimation(holder.itemView);
     }
 
+    private void setAnimation(View viewToAnimate) {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+        viewToAnimate.startAnimation(animation);
+    }
     @Override
     public int getItemCount() {
         return mPhotocards.size();

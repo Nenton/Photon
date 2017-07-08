@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.nenton.photon.BuildConfig;
@@ -133,6 +135,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         });
     }
 
+    @Override
     public void changeOnBottom(@IdRes int id){
         mBottomNavigationView.setSelectedItemId(id);
     }
@@ -179,9 +182,11 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+//        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
     public void showSearchSetting(String message, SnackBarAction action) {
         snackbar = Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Отменить", v -> {
@@ -198,6 +203,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         snackbar.show();
     }
 
+    @Override
     public void showFilterSetting(String message, SnackBarAction action) {
         snackbar = Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Отменить", v -> {
@@ -215,6 +221,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
 
     }
 
+    @Override
     public void hideSnackbar() {
         if (snackbar != null) {
             snackbar.dismiss();
@@ -247,7 +254,6 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     public void hideLoad() {
 
     }
-
 
     @Override
     public void setVisibleToolbar(boolean visible) {
@@ -355,10 +361,12 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         mRootPresenter.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
     public void setMenuIdRes(int menuIdRes) {
         this.mMenuIdRes = menuIdRes;
     }
 
+    @Override
     public void setMenuPopup(List<PopupMenuItem> menuPopup) {
         mMenuPopups = menuPopup;
     }

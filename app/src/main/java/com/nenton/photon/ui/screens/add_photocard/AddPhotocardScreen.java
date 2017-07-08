@@ -17,7 +17,9 @@ import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
+import com.nenton.photon.mvp.model.PhotocardModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IAddPhotocardPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.account.AccountScreen;
@@ -53,8 +55,8 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
     public class Module {
         @Provides
         @DaggerScope(AddPhotocardScreen.class)
-        MainModel providePhotoModel() {
-            return new MainModel();
+        PhotocardModel providePhotocardModel() {
+            return new PhotocardModel();
         }
 
         @Provides
@@ -81,12 +83,14 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
 
         void inject(AddPhotocardSuggestionTagsAdapter adapter);
 
+        void inject(AddPhotocardSelectTagsAdapter adapter);
+
         Picasso getPicasso();
 
         RootPresenter getRootPresenter();
     }
 
-    public class AddPhotocardPresenter extends AbstractPresenter<AddPhotocardView, MainModel> {
+    public class AddPhotocardPresenter extends AbstractPresenter<AddPhotocardView, PhotocardModel> implements IAddPhotocardPresenter {
 
         private String mAvatarUri;
         Subscription subscribe;
@@ -115,8 +119,8 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
 
-            if (mModel.isSignIn()){
-                if (mModel.haveAlbumUser()){
+            if (mModel.isSignIn() && getView() != null) {
+                if (mModel.haveAlbumUser()) {
                     getView().initView();
                     getView().showPhotoPanel();
                 } else {
@@ -161,7 +165,9 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
             }
-            ((RootActivity) getRootView()).startActivityForResult(intent, ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE);
+            if (getRootView() != null){
+                ((RootActivity) getRootView()).startActivityForResult(intent, ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE);
+            }
         }
 
         private void subscribeOnActivityResult() {
@@ -181,22 +187,29 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 mAvatarUri = activityResultDto.getIntent().getData().toString();
                 initPropertyView();
                 initAdapterSuggestionTags();
-                getView().showPropertyPanel();
+                if (getView() != null) {
+                    getView().showPropertyPanel();
+                }
             } else {
-                getRootView().showMessage("Что-то пошло не так");
+                if (getRootView() != null){
+                    getRootView().showMessage("Что-то пошло не так");
+                }
             }
         }
 
         //endregion
 
-        private void initPropertyView() {
+        @Override
+        public void initPropertyView() {
             UserInfoDto userInfo = mModel.getUserInfo();
             mCompSubs.add(mModel.getUser(userInfo.getId()).subscribe(new ViewSubscriber<UserRealm>() {
                 @Override
                 public void onNext(UserRealm userRealm) {
-                    getView().showView(userRealm);
-                    if (!userRealm.getAlbums().isEmpty()) {
-                        getView().goneAddAlbum();
+                    if (getView() != null) {
+                        getView().showView(userRealm);
+                        if (!userRealm.getAlbums().isEmpty()) {
+                            getView().goneAddAlbum();
+                        }
                     }
                 }
             }));
@@ -206,79 +219,112 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
                 @Override
                 public void onNext(String s) {
-                    getView().getTagsSuggestionAdapter().addTag(s);
+                    if (getView() != null) {
+                        getView().getTagsSuggestionAdapter().addTag(s);
+                    }
                 }
             }));
         }
 
         void clickAlbum(int positionOnSelectItem) {
-            getView().checkedCurrentAlbum(positionOnSelectItem);
+            if (getView() != null) {
+                getView().checkedCurrentAlbum(positionOnSelectItem);
+            }
         }
 
-        void clickOnSuggestTag(String albumRealm) {
-            getView().addTag(albumRealm);
+        void clickOnSuggestTag(String string) {
+            if (getView() != null) {
+                getView().addTag(string);
+            }
         }
 
-        void savePhotocard() {
-            FiltersDto filters = getView().getFilters();
-            String namePhotocard = getView().getNamePhotocard();
-            List<String> tags = getView().getTags();
-            String idAlbum = getView().getIdAlbum();
-            if (filters == null) {
-                getRootView().showMessage("Не все фильтры выбраны");
-                return;
-            }
-            if (namePhotocard == null) {
-                getRootView().showMessage("Не выбрано имя фотокарточки");
-                return;
-            }
-            if (tags == null) {
-                getRootView().showMessage("Не выбрано ни одного тэга");
-                return;
-            }
-            if (idAlbum == null) {
-                getRootView().showMessage("Не выбран альбом");
-                return;
-            }
+        @Override
+        public void savePhotocard() {
+            if (getView() != null) {
+                FiltersDto filters = getView().getFilters();
+                String namePhotocard = getView().getNamePhotocard();
+                List<String> tags = getView().getTags();
+                String idAlbum = getView().getIdAlbum();
 
-            if (mAvatarUri != null) {
-                UriHelper uriHelper = new UriHelper();
-                File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
-                mModel.createPhotocard(idAlbum, namePhotocard, file, mAvatarUri, tags, filters, () -> {
-                    ((RootActivity) getRootView()).runOnUiThread(() -> {
-//                        Flow.get(getView().getContext()).set(new AccountScreen());
-                        ((RootActivity) getRootView()).changeOnBottom(R.id.action_account);
+                if (getRootView() != null){
+                    if (namePhotocard == null) {
+                        getRootView().showMessage("Не выбрано имя фотокарточки");
+                        return;
+                    }
+                    if (filters == null) {
+                        getRootView().showMessage("Не все фильтры выбраны");
+                        return;
+                    }
+                    if (tags == null) {
+                        getRootView().showMessage("Не выбрано ни одного тэга");
+                        return;
+                    }
+                    if (idAlbum == null) {
+                        getRootView().showMessage("Не выбран альбом");
+                        return;
+                    }
+                }
+
+
+                if (mAvatarUri != null) {
+                    UriHelper uriHelper = new UriHelper();
+                    File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
+                    mModel.createPhotocard(idAlbum, namePhotocard, file, mAvatarUri, tags, filters, () -> {
+                        if (getRootView() != null) {
+                            ((RootActivity) getRootView()).runOnUiThread(() -> {
+                                getRootView().changeOnBottom(R.id.action_account);
+                            });
+                        }
                     });
-                });
+                }
             }
         }
 
-        void cancelCreate() {
+        @Override
+        public void cancelCreate() {
             mAvatarUri = null;
-            getView().showPhotoPanel();
+            if (getView() != null) {
+                getView().showPhotoPanel();
+            }
         }
 
-        void addAlbum(String name, String description) {
+        @Override
+        public void addAlbum(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
-                ((RootActivity) getRootView()).runOnUiThread(() -> {
-                    initPropertyView();
-                    getView().goneAddAlbum();
-                });
+                if (getRootView() != null){
+                    ((RootActivity) getRootView()).runOnUiThread(() -> {
+                        initPropertyView();
+                        if (getView() != null) {
+                            getView().goneAddAlbum();
+                        }
+                    });
+                }
             });
         }
 
+        @Override
         public void addAlbumFrom(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
-                ((RootActivity) getRootView()).runOnUiThread(() -> {
-                    getView().initView();
-                    getView().showPhotoPanel();
-                });
+                if (getRootView() != null && getView() != null){
+                    ((RootActivity) getRootView()).runOnUiThread(() -> {
+                        getView().initView();
+                        getView().showPhotoPanel();
+                    });
+                }
             });
         }
 
-        void goAccount() {
-            Flow.get(getView().getContext()).set(new AccountScreen());
+        @Override
+        public void goAccount() {
+            if (getRootView() != null) {
+                getRootView().changeOnBottom(R.id.action_account);
+            }
         }
 
+        public void removeTag(String string) {
+            if (getView() != null) {
+                getView().removeTag(string);
+            }
+        }
     }
 }

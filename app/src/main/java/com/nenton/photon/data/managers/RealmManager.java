@@ -224,4 +224,22 @@ public class RealmManager {
         }
     }
 
+    public Observable<Boolean> isPhotoFromFav(String userId, String id) {
+        Realm realm = Realm.getDefaultInstance();
+        UserRealm user = realm.where(UserRealm.class).equalTo("id", userId).findFirst();
+        if (user == null || user.getAlbums().isEmpty() || !user.getAlbums().get(0).isFavorite()) {
+            realm.close();
+            return Observable.just(false);
+        }
+
+        for (PhotocardRealm photocardRealm : user.getAlbums().get(0).getPhotocards()) {
+            if (photocardRealm.getId().equals(id)){
+                realm.close();
+                return Observable.just(true);
+            }
+        }
+
+        realm.close();
+        return Observable.just(false);
+    }
 }

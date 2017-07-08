@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,7 +43,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
     AccountScreen.AccountPresenter mPresenter;
 
     private List<AlbumRealm> mAlbums = new ArrayList<>();
-    private Context context;
+    private Context mContext;
 
     public void addAlbum(AlbumRealm album) {
         mAlbums.add(album);
@@ -61,7 +63,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
     @Override
     public AccountAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account_album, parent, false);
         return new AccountViewHolder(convertView);
     }
@@ -83,7 +85,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
         boolean hashId = album.getId().equals(String.valueOf(album.getTitle().hashCode() + album.getDescription().hashCode()));
 
-        picasso.with(context)
+        picasso.with(mContext)
                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
                 .placeholder(R.drawable.placeholder_album)
                 .error(R.drawable.placeholder_album)
@@ -99,7 +101,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
                     @Override
                     public void onError() {
-                        picasso.with(context)
+                        picasso.with(mContext)
                                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
                                 .placeholder(R.drawable.placeholder_album)
                                 .error(R.drawable.placeholder_album)
@@ -117,6 +119,12 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
                 mPresenter.clickOnAlbum(album);
             }
         });
+        setAnimation(holder.itemView);
+    }
+
+    private void setAnimation(View viewToAnimate) {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+        viewToAnimate.startAnimation(animation);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class AlbumTransform implements Transformation {
         Shader[] shaders = new Shader[2];
         shaders[0] = new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         shaders[1] = new LinearGradient(0, 0, source.getWidth(), 50,
-                Color.BLACK, Color.TRANSPARENT,
+                Color.parseColor("#101010"), Color.TRANSPARENT,
                 Shader.TileMode.CLAMP);
 
         ComposeShader composeShader = new ComposeShader(shaders[0], shaders[1], PorterDuff.Mode.SRC_ATOP);

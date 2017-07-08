@@ -4,12 +4,15 @@ import android.os.Bundle;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
+import com.nenton.photon.mvp.model.AccountModel;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IAuthorPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.album.AlbumScreen;
@@ -43,8 +46,8 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent> {
     public class Module {
         @Provides
         @DaggerScope(AuthorScreen.class)
-        MainModel providePhotoModel() {
-            return new MainModel();
+        AccountModel provideAccountModel() {
+            return new AccountModel();
         }
 
         @Provides
@@ -58,13 +61,17 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent> {
     @DaggerScope(AuthorScreen.class)
     public interface Component {
         void inject(AuthorPresenter presenter);
+
         void inject(AuthorView view);
+
         void inject(AuthorAdapter adapter);
+
         Picasso getPicasso();
+
         RootPresenter getRootPresenter();
     }
 
-    public class AuthorPresenter extends AbstractPresenter<AuthorView, MainModel> {
+    public class AuthorPresenter extends AbstractPresenter<AuthorView, AccountModel> implements IAuthorPresenter {
 
         @Override
         protected void initActionBar() {
@@ -88,12 +95,21 @@ public class AuthorScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            mCompSubs.add(mModel.getUser(owner).subscribe(userRealm -> getView().initView(userRealm), throwable -> {
+            mCompSubs.add(mModel.getUser(owner).subscribe(new ViewSubscriber<UserRealm>() {
+                @Override
+                public void onNext(UserRealm userRealm) {
+                    if (getView() != null) {
+                        getView().initView(userRealm);
+                    }
+                }
             }));
         }
 
+        @Override
         public void clickOnAlbum(AlbumRealm album) {
-            Flow.get(getView().getContext()).set(new AlbumScreen(album));
+            if (getView() != null){
+                Flow.get(getView().getContext()).set(new AlbumScreen(album));
+            }
         }
     }
 }

@@ -20,7 +20,6 @@ public class DaggerService {
     }
     private static Map<Class, Object> sComponentMap = new HashMap<>();
 
-    // TODO: 29.11.2016 fix me
     public static void registerComponent(Class componentClass, Object daggerComponent){
         sComponentMap.put(componentClass, daggerComponent);
     }

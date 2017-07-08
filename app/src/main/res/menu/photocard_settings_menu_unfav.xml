@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/unfav_photo_dial"
+        android:icon="@drawable/ic_fav_current_black_24dp"
+        android:title="Убрать с избранного"/>
+    <item
+        android:id="@+id/share_photo_dial"
+        android:icon="@drawable/ic_share_current_black_24dp"
+        android:title="Поделиться"/>
+    <item
+        android:id="@+id/download_photo_dial"
+        android:icon="@drawable/ic_download_photo_24dp"
+        android:title="Скачать" />
+</menu>

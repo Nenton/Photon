@@ -8,6 +8,7 @@ import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
+import com.nenton.photon.mvp.model.SearchModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
@@ -41,8 +42,8 @@ public class SearchFiltersScreen extends AbstractScreen<RootActivity.RootCompone
 
         @Provides
         @DaggerScope(SearchFiltersScreen.class)
-        MainModel provideSearchModel(){
-            return new MainModel();
+        SearchModel provideSearchModel(){
+            return new SearchModel();
         }
     }
 
@@ -57,14 +58,16 @@ public class SearchFiltersScreen extends AbstractScreen<RootActivity.RootCompone
 
     //endregion
 
-    public class SearchFiltersPresenter extends AbstractPresenter<SearchFiltersView, MainModel>{
+    public class SearchFiltersPresenter extends AbstractPresenter<SearchFiltersView, SearchModel>{
 
         @Override
         protected void initActionBar() {
-            mRootPresenter.newActionBarBuilder()
-                    .setVisibleToolbar(false)
-                    .setTab(getView().getViewPager())
-                    .build();
+            if (getView() != null){
+                mRootPresenter.newActionBarBuilder()
+                        .setVisibleToolbar(false)
+                        .setTab(getView().getViewPager())
+                        .build();
+            }
         }
 
         @Override
@@ -81,7 +84,9 @@ public class SearchFiltersScreen extends AbstractScreen<RootActivity.RootCompone
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
+            if (getView() != null){
+                getView().initView();
+            }
         }
     }
 }

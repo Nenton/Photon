@@ -13,7 +13,9 @@ import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
+import com.nenton.photon.mvp.model.PhotocardModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IEditPhotocardPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.account.AccountScreen;
@@ -51,8 +53,8 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
     public class Module {
         @Provides
         @DaggerScope(EditPhotocardScreen.class)
-        MainModel providePhotoModel() {
-            return new MainModel();
+        PhotocardModel providePhotocardModel() {
+            return new PhotocardModel();
         }
 
         @Provides
@@ -72,19 +74,17 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
     @DaggerScope(EditPhotocardScreen.class)
     public interface Component {
         void inject(EditPhotocardPresenter presenter);
-
         void inject(EditPhotocardView view);
-
         void inject(EditPhotocardSelectAlbumAdapter adapter);
-
         void inject(EditPhotocardSuggestionTagsAdapter adapter);
+        void inject(EditPhotocardSelectTagsAdapter adapter);
 
         Picasso getPicasso();
 
         RootPresenter getRootPresenter();
     }
 
-    public class EditPhotocardPresenter extends AbstractPresenter<EditPhotocardView, MainModel> {
+    public class EditPhotocardPresenter extends AbstractPresenter<EditPhotocardView, PhotocardModel> implements IEditPhotocardPresenter{
 
         @Override
         protected void initActionBar() {
@@ -107,26 +107,35 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            getView().initView();
-            getView().showView(mPhotocardRealm);
+            if (getView() != null){
+                getView().initView();
+                getView().showView(mPhotocardRealm);
+            }
             initPropertyView();
             initAdapterSuggestionTags();
         }
 
-        public void clickOnSuggestTag(String albumRealm) {
-            getView().addTag(albumRealm);
+        public void clickOnSuggestTag(String string) {
+            if (getView() != null){
+                getView().addTag(string);
+            }
         }
 
         public void clickAlbum(int positionOnSelectItem) {
-            getView().checkedCurrentAlbum(positionOnSelectItem);
+            if (getView() != null){
+                getView().checkedCurrentAlbum(positionOnSelectItem);
+            }
         }
 
-        private void initPropertyView() {
+        @Override
+        public void initPropertyView() {
             UserInfoDto userInfo = mModel.getUserInfo();
             mCompSubs.add(mModel.getUser(userInfo.getId()).subscribe(new ViewSubscriber<UserRealm>() {
                 @Override
                 public void onNext(UserRealm userRealm) {
-                    getView().initAlbums(userRealm);
+                    if (getView() != null){
+                        getView().initAlbums(userRealm);
+                    }
                 }
             }));
         }
@@ -135,42 +144,60 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
             mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
                 @Override
                 public void onNext(String s) {
-                    getView().getTagsSuggestionAdapter().addTag(s);
+                    if (getView() != null){
+                        getView().getTagsSuggestionAdapter().addTag(s);
+                    }
                 }
             }));
         }
 
-        void savePhotocard() {
-            FiltersDto filters = getView().getFilters();
-            String namePhotocard = getView().getNamePhotocard();
-            List<String> tags = getView().getTags();
-            String idAlbum = getView().getIdAlbum();
-            if (filters == null) {
-                getRootView().showMessage("Не все фильтры выбраны");
-                return;
-            }
-            if (namePhotocard == null) {
-                getRootView().showMessage("Не выбрано имя фотокарточки");
-                return;
-            }
-            if (tags == null) {
-                getRootView().showMessage("Не выбрано ни одного тэга");
-                return;
-            }
-            if (idAlbum == null) {
-                getRootView().showMessage("Не выбран альбом");
-                return;
-            }
+        @Override
+        public void savePhotocard() {
+            if (getView() != null){
+                FiltersDto filters = getView().getFilters();
+                String namePhotocard = getView().getNamePhotocard();
+                List<String> tags = getView().getTags();
+                String idAlbum = getView().getIdAlbum();
+                if (getRootView() != null){
+                    if (filters == null) {
+                        getRootView().showMessage("Не все фильтры выбраны");
+                        return;
+                    }
+                    if (namePhotocard == null) {
+                        getRootView().showMessage("Не выбрано имя фотокарточки");
+                        return;
+                    }
+                    if (tags == null) {
+                        getRootView().showMessage("Не выбрано ни одного тэга");
+                        return;
+                    }
+                    if (idAlbum == null) {
+                        getRootView().showMessage("Не выбран альбом");
+                        return;
+                    }
+                }
 
-            PhotocardReq photocardReq = new PhotocardReq(namePhotocard, mPhotocardRealm.getPhoto(), idAlbum, tags, filters);
+                PhotocardReq photocardReq = new PhotocardReq(namePhotocard, mPhotocardRealm.getPhoto(), idAlbum, tags, filters);
 
-            mModel.editPhotocards(mPhotocardRealm.getId(), idAlbum, photocardReq, () -> {
-                ((RootActivity) getRootView()).runOnUiThread(() -> Flow.get(getView().getContext()).set(new AccountScreen()));
-            });
+                mModel.editPhotocards(mPhotocardRealm.getId(), idAlbum, photocardReq, () -> {
+                    if (getRootView() != null){
+                        ((RootActivity) getRootView()).runOnUiThread(() -> Flow.get(getView().getContext()).set(new AccountScreen()));
+                    }
+                });
+            }
         }
 
-        public void clickOnCancel() {
-            ((RootActivity) getRootView()).onBackPressed();
+        @Override
+        public void cancelEdit() {
+            if (getRootView() != null){
+                ((RootActivity) getRootView()).onBackPressed();
+            }
+        }
+
+        public void removeTag(String string) {
+            if (getView() != null){
+                getView().removeTag(string);
+            }
         }
     }
 }

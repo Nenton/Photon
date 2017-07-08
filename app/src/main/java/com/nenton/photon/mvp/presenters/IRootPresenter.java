@@ -5,10 +5,7 @@ package com.nenton.photon.mvp.presenters;
  */
 
 public interface IRootPresenter {
-
     void clickOnMain();
     void clickOnAccount();
     void clickOnDownload();
-
-
 }

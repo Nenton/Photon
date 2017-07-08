@@ -14,8 +14,9 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
-import com.nenton.photon.mvp.model.MainModel;
+import com.nenton.photon.mvp.model.PhotocardModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IPhotocardPresenter;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
@@ -63,8 +64,8 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
     public class Module {
         @Provides
         @DaggerScope(PhotocardScreen.class)
-        MainModel provideSearchModel() {
-            return new MainModel();
+        PhotocardModel providePhotocardModel() {
+            return new PhotocardModel();
         }
 
         @Provides
@@ -88,7 +89,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         Picasso getPicasso();
     }
 
-    public class PhotocardPresenter extends AbstractPresenter<PhotocardView, MainModel> {
+    public class PhotocardPresenter extends AbstractPresenter<PhotocardView, PhotocardModel> implements IPhotocardPresenter {
 
         @Override
         protected void initActionBar() {
@@ -96,7 +97,9 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
                     .setTitle("Фотокарточка")
                     .setBackArrow(true)
                     .addAction(new MenuItemHolder("Меню", R.drawable.ic_custom_menu_black_24dp, item -> {
-                        getRootView().showSettings();
+                        if (getRootView() != null) {
+                            getRootView().showSettings();
+                        }
                         return true;
                     }))
                     .build();
@@ -104,16 +107,30 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
         @Override
         protected void initMenuPopup() {
-            mRootPresenter.newMenuPopupBuilder()
-                    .setIdMenuRes(R.menu.photocard_settings_menu)
-                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_dial, this::addToFavouriteDialog))
-                    .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, this::sharePhotoDialog))
-//                    .addMenuPopup(new PopupMenuItem(R.id.fav_photo_delete_dial, this::deleteFromFav))
-                    .addMenuPopup(new PopupMenuItem(R.id.download_photo_dial, this::downloadPhoto))
-                    .build();
+            mModel.isPhotoFromFav(mPhotocard.getId()).subscribe(new ViewSubscriber<Boolean>() {
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    if (aBoolean) {
+                        mRootPresenter.newMenuPopupBuilder()
+                                .setIdMenuRes(R.menu.photocard_settings_menu_unfav)
+                                .addMenuPopup(new PopupMenuItem(R.id.unfav_photo_dial, () -> deleteFromFav()))
+                                .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, () -> sharePhotoDialog()))
+                                .addMenuPopup(new PopupMenuItem(R.id.download_photo_dial, () -> downloadPhoto()))
+                                .build();
+                    } else {
+                        mRootPresenter.newMenuPopupBuilder()
+                                .setIdMenuRes(R.menu.photocard_settings_menu_fav)
+                                .addMenuPopup(new PopupMenuItem(R.id.fav_photo_dial, () -> addToFavouriteDialog()))
+                                .addMenuPopup(new PopupMenuItem(R.id.share_photo_dial, () -> sharePhotoDialog()))
+                                .addMenuPopup(new PopupMenuItem(R.id.download_photo_dial, () -> downloadPhoto()))
+                                .build();
+                    }
+                }
+            });
         }
 
-        private void deleteFromFav() {
+        @Override
+        public void deleteFromFav() {
             if (mModel.isSignIn()) {
                 mCompSubs.add(mModel.deleteFromFav(mPhotocard.getId()).subscribe(new ViewSubscriber<Boolean>() {
                     @Override
@@ -124,8 +141,9 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             }
         }
 
-        private void downloadPhoto() {
-            if (!mPhotocard.getPhoto().isEmpty()){
+        @Override
+        public void downloadPhoto() {
+            if (!mPhotocard.getPhoto().isEmpty()) {
                 DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
 
                 r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
@@ -139,26 +157,36 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
 
         private void sharePhotoDialog() {
-            getView().showDialogSharePhoto();
+            if (getView() != null) {
+                getView().showDialogSharePhoto();
+            }
         }
 
-        void sharePhoto() {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, mPhotocard.getPhoto());
-            shareIntent.setType("image/jpeg");
-            RootActivity rootView = (RootActivity) getRootView();
-            rootView.startActivity(Intent.createChooser(shareIntent, rootView.getResources().getText(R.string.app_name)));
+        @Override
+        public void sharePhoto() {
+            if (getRootView() != null) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, mPhotocard.getPhoto());
+                shareIntent.setType("image/jpeg");
+                RootActivity rootView = (RootActivity) getRootView();
+                rootView.startActivity(Intent.createChooser(shareIntent, rootView.getResources().getText(R.string.app_name)));
+            }
         }
 
         private void addToFavouriteDialog() {
-            if (mModel.isSignIn()) {
+            if (mModel.isSignIn() && getView() != null) {
                 getView().showDialogAddFav();
             }
         }
 
+        @Override
         public void addTofav() {
-            mModel.addToFav(mPhotocard.getId(), () -> ((RootActivity) getRootView()).runOnUiThread(() -> getRootView().showMessage("Фотокарточка добавлена в избранное")));
+            mModel.addToFav(mPhotocard.getId(), () -> {
+                if (getRootView() != null) {
+                    ((RootActivity) getRootView()).runOnUiThread(() -> getRootView().showMessage("Фотокарточка добавлена в избранное"));
+                }
+            });
         }
 
         @Override
@@ -177,11 +205,23 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
                     }
                 }));
+
+                mCompSubs.add(mModel.isPhotoFromFav(mPhotocard.getId()).subscribe(new ViewSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (getView() != null) {
+                            getView().showFavIcon(aBoolean);
+                        }
+                    }
+                }));
             }
         }
 
+        @Override
         public void clickOnAuthor() {
-            Flow.get(getView().getContext()).set(new AuthorScreen(mPhotocard.getOwner()));
+            if (getView() != null) {
+                Flow.get(getView().getContext()).set(new AuthorScreen(mPhotocard.getOwner()));
+            }
         }
 
         private class RealmSubscriber extends Subscriber<UserRealm> {
@@ -200,7 +240,9 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
             @Override
             public void onNext(UserRealm userRealm) {
-                getView().initView(mPhotocard, new UserInfoDto(userRealm));
+                if (getView() != null) {
+                    getView().initView(mPhotocard, new UserInfoDto(userRealm));
+                }
             }
         }
     }

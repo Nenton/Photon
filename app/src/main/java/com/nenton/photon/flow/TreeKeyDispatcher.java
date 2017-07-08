@@ -62,13 +62,6 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
             return;
         }
 
-        if (inKey instanceof TreeKey) {
-            // TODO: 27.11.2016 implement treeKey case
-        }
-
-        if (inKey instanceof MultiKey) {
-            // TODO: 27.11.2016 implement treeKey case
-        }
         Context flowContext = traversal.createContext(inKey, mActivity);
         Context mortarContext = ScreenScoper.getScreenScope((AbstractScreen) inKey).createContext(flowContext);
         contexts = Collections.singletonMap(inKey, mortarContext);

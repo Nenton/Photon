@@ -19,11 +19,14 @@ import com.nenton.photon.utils.TextWatcherEditText;
 
 public class DialogEditUser {
 
-    public static AlertDialog editUserInfoDialog(Context context, EditUserInfo listener) {
+    public static AlertDialog editUserInfoDialog(Context context, String loginOld, String nameOld, EditUserInfo listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_account, null);
         TextInputLayout login_ti = (TextInputLayout) view.findViewById(R.id.edit_login_til);
         TextInputLayout name_ti = (TextInputLayout) view.findViewById(R.id.edit_name_til);
+
+        login_ti.getEditText().setText(loginOld);
+        name_ti.getEditText().setText(nameOld);
 
         Button okBtn = (Button) view.findViewById(R.id.edit_positive_btn);
         Button cancelBtn = (Button) view.findViewById(R.id.edit_negative_btn);

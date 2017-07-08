@@ -72,31 +72,34 @@ public class DialogsAlbum {
         return dialog;
     }
 
-    public static AlertDialog editAlbum(Context context, AlbumAction action) {
+    public static AlertDialog editAlbum(Context context, String titleOld, String descriptionOld, AlbumAction action) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_new_album, null);
-        TextInputLayout name_уе = (TextInputLayout) view.findViewById(R.id.add_album_name_til);
-        TextInputLayout description_et = (TextInputLayout) view.findViewById(R.id.add_album_description_til);
+        TextInputLayout name_til = (TextInputLayout) view.findViewById(R.id.add_album_name_til);
+        TextInputLayout description_til = (TextInputLayout) view.findViewById(R.id.add_album_description_til);
         Button ok = (Button) view.findViewById(R.id.add_album_ok_btn);
         Button cancel = (Button) view.findViewById(R.id.add_album_cancel_btn);
 
-        name_уе.getEditText().addTextChangedListener(new TextWatcherEditText() {
+        name_til.getEditText().setText(titleOld);
+        description_til.getEditText().setText(descriptionOld);
+
+        name_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
-                    name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.black));
-                    name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    name_уе.setHint("Имя");
+                    name_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
+                    name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                    name_til.setHint("Имя");
                 } else {
-                    name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    name_уе.setHint("Имя (Не валидное имя)");
+                    name_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                    name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                    name_til.setHint("Имя (Не валидное имя)");
                 }
             }
         });
 
         ok.setOnClickListener(v -> {
-            String name = name_уе.getEditText().getText().toString();
-            String description = description_et.getEditText().getText().toString();
+            String name = name_til.getEditText().getText().toString();
+            String description = description_til.getEditText().getText().toString();
 
             if (name.matches(ConstantsManager.REG_EXP_NAME) && description.length() > 2 && description.length() < 400) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);

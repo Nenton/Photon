@@ -22,6 +22,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IAddPhotocardView;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.utils.TextWatcherEditText;
 
@@ -37,7 +38,7 @@ import butterknife.OnClick;
  * Created by serge on 18.06.2017.
  */
 
-public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotocardPresenter> {
+public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotocardPresenter> implements IAddPhotocardView{
 
     @BindView(R.id.add_album_for_photocard_rv)
     RecyclerView mAlbums;
@@ -91,6 +92,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         super(context, attrs);
     }
 
+    @Override
     public void showPhotoPanel() {
         mAddPhotoPanel.setVisibility(VISIBLE);
         mPropertyPanel.setVisibility(GONE);
@@ -98,6 +100,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mNotAlbum.setVisibility(GONE);
     }
 
+    @Override
     public void showPropertyPanel() {
         mAddPhotoPanel.setVisibility(GONE);
         mPropertyPanel.setVisibility(VISIBLE);
@@ -132,6 +135,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mAvailableTags.setAdapter(mTagsSuggestionAdapter);
     }
 
+    @Override
     public void showView(UserRealm userRealm) {
         for (AlbumRealm albumRealm : userRealm.getAlbums()) {
             mAdapter.addAlbum(albumRealm);
@@ -151,6 +155,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mCheckTag.setVisibility(GONE);
     }
 
+    @Override
     @Nullable
     public FiltersDto getFilters() {
         String dish = mDish.getCheckedRadioButtonId() != -1 ? (String) findViewById(mDish.getCheckedRadioButtonId()).getTag() : "";
@@ -178,6 +183,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         }
     }
 
+    @Override
     @Nullable
     public String getNamePhotocard() {
         if (mNamePhotocard.getText().toString().isEmpty()) {
@@ -187,6 +193,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         }
     }
 
+    @Override
     @Nullable
     public List<String> getTags() {
         if (mTagsSelectedAdapter.getStrings().size() == 0) {
@@ -196,6 +203,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         }
     }
 
+    @Override
     @Nullable
     public String getIdAlbum() {
         if (((CheckBox) mAlbums.getLayoutManager().findViewByPosition(mAdapter.getPositionOnSelectItem()).findViewById(R.id.check_album_add)).isChecked()) {
@@ -209,8 +217,10 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         ((CheckBox) mAlbums.getLayoutManager().findViewByPosition(positionOnSelectItem).findViewById(R.id.check_album_add)).setChecked(false);
     }
 
-    public void addTag(String albumRealm) {
-        mTagsSelectedAdapter.addTag(albumRealm);
+    @Override
+    public void addTag(String string) {
+        mTagsSelectedAdapter.addTag(string);
+        mTagsSuggestionAdapter.deleteString(string);
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
 
@@ -245,11 +255,17 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     public void checkTag() {
         mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
         mAddTags.setText("");
+
     }
 
     @OnClick(R.id.cancel_name_tag)
     public void cancelTag() {
         mAddTags.setText("");
+    }
+
+    @OnClick(R.id.cancel_name)
+    public void cancelName() {
+        mNamePhotocard.setText("");
     }
 
     @OnClick(R.id.add_album_from_add_photocard)
@@ -269,6 +285,10 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     @OnClick(R.id.go_account_btn)
     public void goAccount() {
         mPresenter.goAccount();
+    }
+
+    public void removeTag(String string) {
+        mTagsSuggestionAdapter.addTag(string);
     }
 
     //endregion

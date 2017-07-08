@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.nenton.photon.R;
 import com.nenton.photon.data.network.req.UserCreateReq;
 import com.nenton.photon.data.network.req.UserLoginReq;
+import com.nenton.photon.data.network.res.SignInRes;
+import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.di.sqopes.DaggerScope;
@@ -12,6 +14,7 @@ import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.IMainPresenter;
 import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
@@ -70,7 +73,7 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         RootPresenter getRootPresenter();
     }
 
-    public class MainPresenter extends AbstractPresenter<MainView, MainModel> {
+    public class MainPresenter extends AbstractPresenter<MainView, MainModel> implements IMainPresenter {
 
         private static final int AUTH_STATE = 900;
         private static final int UN_AUTH_STATE = 990;
@@ -83,29 +86,37 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             switch (mRootPresenter.getSearchEnum()) {
                 case SEARCH:
                     builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_primary_24dp, item -> {
-                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
-                        ((RootActivity) getRootView()).hideSnackbar();
+                        if (getRootView() != null && getView() != null) {
+                            Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                            getRootView().hideSnackbar();
+                        }
                         return true;
                     }));
                     break;
                 case FILTER:
                     builder.addAction(new MenuItemHolder("Фильтер", R.drawable.ic_style_accent_24dp, item -> {
-                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
-                        ((RootActivity) getRootView()).hideSnackbar();
+                        if (getRootView() != null && getView() != null) {
+                            Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                            getRootView().hideSnackbar();
+                        }
                         return true;
                     }));
                     break;
                 case NONE:
                     builder.addAction(new MenuItemHolder("Поиск", R.drawable.ic_custom_search_black_24dp, item -> {
-                        Flow.get(getView().getContext()).set(new SearchFiltersScreen());
-                        ((RootActivity) getRootView()).hideSnackbar();
+                        if (getRootView() != null && getView() != null) {
+                            Flow.get(getView().getContext()).set(new SearchFiltersScreen());
+                            getRootView().hideSnackbar();
+                        }
                         return true;
                     }));
                     break;
             }
 
             builder.addAction(new MenuItemHolder("Настройки", R.drawable.ic_custom_gear_black_24dp, item -> {
-                getRootView().showSettings();
+                if (getRootView() != null) {
+                    getRootView().showSettings();
+                }
                 return true;
             }))
                     .build();
@@ -129,14 +140,19 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         private void registration() {
-            getView().signUp();
+            if (getView() != null){
+                getView().signUp();
+            }
         }
 
         private void enterAccount() {
-            getView().signIn();
+            if (getView() != null){
+                getView().signIn();
+            }
         }
 
-        private void exitUser() {
+        @Override
+        public void exitUser() {
             mModel.unAuth();
             changeStateAuth();
             initMenuPopup();
@@ -154,70 +170,85 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             initView();
         }
 
-        private void initView() {
-            System.out.println(Flow.getKey(getView()).toString());
-            switch (mRootPresenter.getSearchEnum()) {
-                case SEARCH:
-                    mCompSubs.clear();
-                    mCompSubs.add(subscribeOnSearchRealmObs());
-                    ((RootActivity) getRootView()).showSearchSetting("Поиск", () -> {
+        @Override
+        public void initView() {
+            if (getRootView() != null && getView() != null) {
+                switch (mRootPresenter.getSearchEnum()) {
+                    case SEARCH:
+                        mCompSubs.clear();
+                        mCompSubs.add(subscribeOnSearchRealmObs());
+                        getRootView().showSearchSetting("Поиск", () -> {
+                            getView().reloadAdapter();
+                            initActionBar();
+                            initView();
+                        });
+                        break;
+                    case FILTER:
+                        mCompSubs.clear();
+                        mCompSubs.add(subscribeOnSearchFilterRealmObs());
+                        getRootView().showFilterSetting("Фильтер", () -> {
+                            getView().reloadAdapter();
+                            initActionBar();
+                            initView();
+                        });
+                        break;
+                    case NONE:
+                    default:
+                        mCompSubs.clear();
                         getView().reloadAdapter();
-                        initActionBar();
-                        initView();
-                    });
-                    break;
-                case FILTER:
-                    mCompSubs.clear();
-                    mCompSubs.add(subscribeOnSearchFilterRealmObs());
-                    ((RootActivity) getRootView()).showFilterSetting("Фильтер", () -> {
-                        getView().reloadAdapter();
-                        initActionBar();
-                        initView();
-                    });
-                    break;
-                case NONE:
-                default:
-                    mCompSubs.clear();
-                    getView().reloadAdapter();
-                    mCompSubs.add(subscribeOnProductRealmObs());
+                        mCompSubs.add(subscribeOnProductRealmObs());
+                }
             }
         }
 
-        private Subscription subscribeOnProductRealmObs() {
+        @Override
+        public Subscription subscribeOnProductRealmObs() {
             return mModel.getPhotocardObs()
                     .subscribe(new RealmSubscriber());
         }
 
-        private Subscription subscribeOnSearchFilterRealmObs() {
+        @Override
+        public Subscription subscribeOnSearchFilterRealmObs() {
             return mModel.searchOnFilterPhoto(mRootPresenter.getSearchFilterQuery())
                     .subscribe(new RealmSubscriber());
         }
 
-        private Subscription subscribeOnSearchRealmObs() {
+        @Override
+        public Subscription subscribeOnSearchRealmObs() {
             return mModel.searchPhoto(mRootPresenter.getSearchQuery())
                     .subscribe(new RealmSubscriber());
         }
 
+        @Override
         public void signIn(UserLoginReq loginReq) {
             mCompSubs.add(mModel.signIn(loginReq)
-                    .subscribe(signInRes -> {
-                            },
-                            throwable -> getRootView().showMessage("не правильный логин или пароль"),
-                            () -> {
+                    .subscribe(new ViewSubscriber<SignInRes>() {
+                        @Override
+                        public void onNext(SignInRes signInRes) {
+                            if (getRootView() != null && getView() != null) {
                                 getView().cancelSignIn();
-                                Flow.get(getView().getContext()).set(new AccountScreen());
-                            }));
+                                getRootView().changeOnBottom(R.id.action_account);
+                            }
+                        }
+                    }));
         }
 
+        @Override
         public void signUp(UserCreateReq createReq) {
             mCompSubs.add(mModel.signUp(createReq)
-                    .subscribe(signUpRes -> {
-                        getView().cancelSignUp();
-                        getView().signIn();
-                    }, throwable -> getRootView().showMessage("не правильный логин или пароль")));
+                    .subscribe(new ViewSubscriber<SignUpRes>() {
+                        @Override
+                        public void onNext(SignUpRes signUpRes) {
+                            if (getView() != null){
+                                getView().cancelSignUp();
+                                getView().signIn();
+                            }
+                        }
+                    }));
         }
 
-        private void changeStateAuth() {
+        @Override
+        public void changeStateAuth() {
             if (mLoginState == AUTH_STATE) {
                 mLoginState = UN_AUTH_STATE;
             } else {
@@ -225,8 +256,11 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             }
         }
 
+        @Override
         public void clickOnPhoto(PhotocardRealm photocard) {
-            Flow.get(getView().getContext()).set(new PhotocardScreen(photocard));
+            if (getView() != null){
+                Flow.get(getView().getContext()).set(new PhotocardScreen(photocard));
+            }
         }
 
         private class RealmSubscriber extends Subscriber<PhotocardRealm> {
@@ -247,7 +281,9 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             @Override
             public void onNext(PhotocardRealm photocardRealm) {
                 mAdapter.addPhoto(photocardRealm);
-                getRootView().hideLoad();
+                if (getRootView() != null){
+                    getRootView().hideLoad();
+                }
             }
         }
     }

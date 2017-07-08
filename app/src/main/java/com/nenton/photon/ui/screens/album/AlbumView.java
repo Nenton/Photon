@@ -5,7 +5,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
@@ -13,6 +12,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IAlbumView;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
 
 import butterknife.BindView;
@@ -21,7 +21,7 @@ import butterknife.BindView;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
+public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> implements IAlbumView{
 
     @BindView(R.id.album_RV)
     RecyclerView mRecycleView;
@@ -31,8 +31,6 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
     TextView mCountPhoto;
     @BindView(R.id.album_description)
     TextView mDescription;
-    @BindView(R.id.anchor_popup_menu)
-    View mView;
 
     private AlbumAdapter mAccountAdapter = new AlbumAdapter();
     private AlertDialog dialogEditAlbum = null;
@@ -51,6 +49,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         DaggerService.<AlbumScreen.Component>getDaggerComponent(context).inject(this);
     }
 
+    @Override
     public void initView(AlbumRealm mAlbum) {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(manager);
@@ -63,6 +62,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         }
     }
 
+    @Override
     public void showDeleteAlbum() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setTitle("Удаление альбома")
@@ -72,10 +72,11 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         builder.create().show();
     }
 
-    public void showEditAlbum() {
+    @Override
+    public void showEditAlbum(String titleOld, String descriptionOld) {
         if (dialogEditAlbum == null) {
-            dialogEditAlbum = DialogsAlbum.editAlbum(getContext(), (name, description) -> {
-                mPresenter.editAlbumObs(name, description);
+            dialogEditAlbum = DialogsAlbum.editAlbum(getContext(), titleOld, descriptionOld, (name, description) -> {
+                mPresenter.editAlbum(name, description);
                 cancelEditAlbum();
             });
         }
@@ -93,6 +94,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> {
         mRecycleView.getLayoutManager().findViewByPosition(posLongTap).findViewById(R.id.long_tap_photo).setVisibility(GONE);
     }
 
+    @Override
     public void showDeletePhoto(String id, int adapterPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                 .setTitle("Удаление фотокарточки")

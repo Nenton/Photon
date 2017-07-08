@@ -46,6 +46,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/counts_author_wrap"
         style="@style/TextIconItemWrap">
 
         <ImageView

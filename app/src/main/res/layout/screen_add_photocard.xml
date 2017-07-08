@@ -10,7 +10,8 @@
         android:id="@+id/add_property_photo_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -25,15 +26,28 @@
 
             <View style="@style/DividerView"/>
 
-            <EditText
-                android:id="@+id/add_name_photocard"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_marginRight="@dimen/spacing_normal_16"
-                android:drawableRight="@drawable/ic_custom_cancel_black_24dp"
-                android:hint="Название фотографии"
-                android:inputType="textEmailAddress"/>
+                android:layout_marginRight="@dimen/spacing_normal_16">
+
+                <EditText
+                    android:id="@+id/add_name_photocard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Название фотографии"
+                    android:layout_toLeftOf="@+id/cancel_name"
+                    android:inputType="textEmailAddress"/>
+
+                <ImageButton
+                    android:id="@+id/cancel_name"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_custom_cancel_black_24dp"/>
+            </RelativeLayout>
 
             <View style="@style/DividerView"/>
 
@@ -75,6 +89,7 @@
                     android:id="@+id/add_tag_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/check_add_tag"
                     android:hint="Имя тэга"
                     android:inputType="textEmailAddress"/>
 

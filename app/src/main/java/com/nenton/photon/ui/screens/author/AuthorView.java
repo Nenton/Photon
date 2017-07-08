@@ -12,6 +12,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IAuthorView;
 import com.nenton.photon.ui.screens.account.AccountAdapter;
 import com.nenton.photon.ui.screens.account.AccountScreen;
 import com.nenton.photon.utils.AvatarTransform;
@@ -28,7 +29,7 @@ import butterknife.BindView;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter>{
+public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> implements IAuthorView {
 
     @BindView(R.id.author_photocard_RV)
     RecyclerView mRecycleView;
@@ -61,17 +62,14 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter>{
         DaggerService.<AuthorScreen.Component>getDaggerComponent(context).inject(this);
     }
 
+    @Override
     public void initView(UserRealm userRealm) {
 
-        RequestCreator load;
-
-        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()) {
-            load = mPicasso.load(userRealm.getAvatar());
-        } else {
-            load = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-        }
-
-        load.networkPolicy(NetworkPolicy.OFFLINE)
+        mPicasso.with(getContext())
+                .load(userRealm.getAvatar())
+                .error(R.drawable.ic_account_black_24dp)
+                .placeholder(R.drawable.ic_account_black_24dp)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(200, 200)
                 .centerCrop()
                 .transform(new AvatarTransform())
@@ -83,13 +81,11 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter>{
 
                     @Override
                     public void onError() {
-                        RequestCreator creator;
-                        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()) {
-                            creator = mPicasso.load(userRealm.getAvatar());
-                        } else {
-                            creator = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-                        }
-                        creator.resize(200, 200)
+                        mPicasso.with(getContext())
+                                .load(userRealm.getAvatar())
+                                .error(R.drawable.ic_account_black_24dp)
+                                .placeholder(R.drawable.ic_account_black_24dp)
+                                .resize(200, 200)
                                 .centerCrop()
                                 .transform(new AvatarTransform())
                                 .into(mAvatar);

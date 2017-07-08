@@ -168,23 +168,40 @@ public class DataManager {
     @RxLogObservable
     public Observable<SignInRes> singIn(UserLoginReq loginReq) {
         return mRestService.signIn(loginReq)
-                .compose(((RestCallTransformer<SignInRes>) mRestCallTransformer))
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(signInResResponse -> {
+                    switch (signInResResponse.code()) {
+                        case 200:
+                            return Observable.just(signInResResponse.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(signInResResponse.code()));
+                    }
+                })
                 .doOnNext(userRes -> {
                             saveUserInfo(new UserInfoDto(userRes.getId(), userRes.getName(), userRes.getLogin(), userRes.getAvatar()), userRes.getToken());
                             mRealmManager.saveAccountInfoToRealm(userRes);
                         }
                 )
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(Observable::just);
     }
 
     public Observable<SignUpRes> singUp(UserCreateReq createReq) {
         return mRestService.signUp(createReq)
-                .compose(((RestCallTransformer<SignUpRes>) mRestCallTransformer))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(signInResResponse -> {
+                    switch (signInResResponse.code()) {
+                        case 201:
+                            return Observable.just(signInResResponse.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(signInResResponse.code()));
+                    }
+                })
                 .flatMap(Observable::just);
     }
 
@@ -482,5 +499,9 @@ public class DataManager {
 
     public Observable<AlbumRealm> getAlbumFromTitleDesc(String title, String description) {
         return mRealmManager.getAlbumByTitleDesc(title, description, getPreferencesManager().getUserId());
+    }
+
+    public Observable<Boolean> isPhotoFromFav(String id) {
+        return mRealmManager.isPhotoFromFav(getPreferencesManager().getUserId(), id);
     }
 }

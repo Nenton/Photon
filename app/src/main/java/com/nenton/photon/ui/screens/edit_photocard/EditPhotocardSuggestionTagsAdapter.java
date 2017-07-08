@@ -40,6 +40,11 @@ public class EditPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<Edi
         notifyDataSetChanged();
     }
 
+    public void deleteString(String string) {
+        mStringRealms.remove(string);
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_suggestion, parent, false);
@@ -54,11 +59,11 @@ public class EditPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<Edi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String albumRealm = mStringResult.get(position);
-        holder.mTag.setText(albumRealm);
+        String string = mStringResult.get(position);
+        holder.mTag.setText(string);
 
         holder.mTag.setOnClickListener(v -> {
-            mPresenter.clickOnSuggestTag(albumRealm);
+            mPresenter.clickOnSuggestTag(string);
         });
     }
 

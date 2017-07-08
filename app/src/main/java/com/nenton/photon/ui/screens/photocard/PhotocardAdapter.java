@@ -1,9 +1,12 @@
 package com.nenton.photon.ui.screens.photocard;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
@@ -21,6 +24,7 @@ import butterknife.ButterKnife;
 
 public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.PhotocardViewHolder> {
     private List<String> mStrings = new ArrayList<>();
+    private Context mContext;
 
     public void addString(StringRealm s){
         mStrings.add(s.getString());
@@ -29,6 +33,7 @@ public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.Phot
 
     @Override
     public PhotocardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag_photocard, parent, false);
         return new PhotocardViewHolder(convertView);
     }
@@ -36,6 +41,12 @@ public class PhotocardAdapter extends RecyclerView.Adapter<PhotocardAdapter.Phot
     @Override
     public void onBindViewHolder(PhotocardViewHolder holder, int position) {
         holder.mTextView.setText(mStrings.get(position));
+        setAnimation(holder.itemView);
+    }
+
+    private void setAnimation(View viewToAnimate) {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
+        viewToAnimate.startAnimation(animation);
     }
 
     @Override

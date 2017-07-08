@@ -9,7 +9,9 @@ import com.nenton.photon.di.sqopes.DaggerScope;
 import com.nenton.photon.flow.AbstractScreen;
 import com.nenton.photon.flow.Screen;
 import com.nenton.photon.mvp.model.MainModel;
+import com.nenton.photon.mvp.model.SearchModel;
 import com.nenton.photon.mvp.presenters.AbstractPresenter;
+import com.nenton.photon.mvp.presenters.ISearchPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.main.MainScreen;
@@ -38,32 +40,35 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
     }
 
     @dagger.Module
-    public class Module{
+    public class Module {
         @Provides
         @DaggerScope(SearchScreen.class)
-        MainModel provideSearchModel(){
-            return new MainModel();
+        SearchModel provideSearchModel() {
+            return new SearchModel();
         }
 
         @Provides
         @DaggerScope(SearchScreen.class)
-        SearchPresenter provideSearchPresenter(){
+        SearchPresenter provideSearchPresenter() {
             return new SearchPresenter();
         }
     }
 
     @dagger.Component(dependencies = SearchFiltersScreen.Component.class, modules = Module.class)
     @DaggerScope(SearchScreen.class)
-    public interface Component{
+    public interface Component {
         void inject(SearchPresenter presenter);
+
         void inject(SearchTitleView view);
+
         void inject(TagsAdapter adapter);
+
         void inject(SearchAdapter adapter);
 
         RootPresenter getRootPresenter();
     }
 
-    public class SearchPresenter extends AbstractPresenter<SearchTitleView,MainModel>{
+    public class SearchPresenter extends AbstractPresenter<SearchTitleView, SearchModel> implements ISearchPresenter {
 
         public SearchQuery getSearchFilterQuery() {
             return mSearchFilterQuery;
@@ -88,27 +93,43 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
-            mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(stringRealm -> {
-                    getView().getAdapter().addString(stringRealm);
-            }, throwable -> {}));
-            getView().initView(mModel.getStrings());
+            mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
+                @Override
+                public void onNext(String s) {
+                    if (getView() != null){
+                        getView().getAdapter().addString(s);
+                    }
+                }
+            }));
+            if (getView() != null){
+                getView().initView(mModel.getStrings());
+            }
         }
 
+        @Override
         public void clickOnStringQuery(String s) {
-            getView().setTextSearchViewByQueryString(s);
+            if (getView() != null){
+                getView().setTextSearchViewByQueryString(s);
+            }
         }
 
+        @Override
         public void clickOnSearch(CharSequence query, Set<String> stringSet) {
             mModel.saveSearchString(query.toString());
             mSearchFilterQuery.setTags(stringSet);
             mSearchFilterQuery.setTitle(query.toString());
             mRootPresenter.setSearchQuery(mSearchFilterQuery);
             mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
-            Flow.get(getView().getContext()).set(new MainScreen());
+            if (getView() != null){
+                Flow.get(getView().getContext()).set(new MainScreen());
+            }
         }
 
+        @Override
         public void goBack() {
-            ((RootActivity) getRootView()).onBackPressed();
+            if (getRootView() != null) {
+                ((RootActivity) getRootView()).onBackPressed();
+            }
         }
     }
 }

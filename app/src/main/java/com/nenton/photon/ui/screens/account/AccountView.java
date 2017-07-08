@@ -20,6 +20,7 @@ import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
+import com.nenton.photon.mvp.views.IAccountView;
 import com.nenton.photon.ui.dialogs.DialogEditUser;
 import com.nenton.photon.ui.dialogs.DialogSign;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
@@ -40,7 +41,7 @@ import butterknife.OnClick;
  * Created by serge_000 on 06.06.2017.
  */
 
-public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
+public class AccountView extends AbstractView<AccountScreen.AccountPresenter> implements IAccountView {
 
     @Inject
     Picasso mPicasso;
@@ -86,20 +87,16 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         DaggerService.<AccountScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-
+    @Override
     public void showAuthState(UserRealm userRealm) {
         mUserWrap.setVisibility(VISIBLE);
         mNoUserWrap.setVisibility(GONE);
 
-        RequestCreator load;
-
-        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()) {
-            load = mPicasso.load(userRealm.getAvatar());
-        } else {
-            load = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-        }
-
-        load.networkPolicy(NetworkPolicy.OFFLINE)
+        mPicasso.with(getContext())
+                .load(userRealm.getAvatar())
+                .error(R.drawable.ic_account_black_24dp)
+                .placeholder(R.drawable.ic_account_black_24dp)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(200, 200)
                 .centerCrop()
                 .transform(new AvatarTransform())
@@ -111,13 +108,11 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
 
                     @Override
                     public void onError() {
-                        RequestCreator creator;
-                        if (userRealm.getAvatar() != null && !userRealm.getAvatar().isEmpty()) {
-                            creator = mPicasso.load(userRealm.getAvatar());
-                        } else {
-                            creator = mPicasso.load("https://thumbs.dreamstime.com/z/food-seamless-pattern-background-icons-works-as-32549888.jpg");
-                        }
-                        creator.resize(200, 200)
+                        mPicasso.with(getContext())
+                                .load(userRealm.getAvatar())
+                                .error(R.drawable.ic_account_black_24dp)
+                                .placeholder(R.drawable.ic_account_black_24dp)
+                                .resize(200, 200)
                                 .centerCrop()
                                 .transform(new AvatarTransform())
                                 .into(mAvatar);
@@ -148,6 +143,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         mRecycleView.setAdapter(mAccountAdapter);
     }
 
+    @Override
     public void showUnAuthState() {
         mUserWrap.setVisibility(GONE);
         mNoUserWrap.setVisibility(VISIBLE);
@@ -165,6 +161,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         mPresenter.clickOnSignUp();
     }
 
+    @Override
     public void signUp() {
         if (dialogSignUp == null) {
             dialogSignUp = DialogSign.createDialogSignUp(getContext(), createReq -> mPresenter.signUp(createReq));
@@ -179,6 +176,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         }
     }
 
+    @Override
     public void signIn() {
         if (dialogSignIn == null) {
             dialogSignIn = DialogSign.createDialogSignIn(getContext(), loginReq -> mPresenter.signIn(loginReq));
@@ -193,6 +191,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         }
     }
 
+    @Override
     public void showDialogAddAlbum() {
         if (dialogAddAlbum == null) {
             dialogAddAlbum = DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
@@ -209,9 +208,10 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         }
     }
 
-    public void showDialogEditUserInfo() {
+    @Override
+    public void showDialogEditUserInfo(String loginOld, String nameOld) {
         if (dialogEditUserInfo == null) {
-            dialogEditUserInfo = DialogEditUser.editUserInfoDialog(getContext(), (name, login) -> {
+            dialogEditUserInfo = DialogEditUser.editUserInfoDialog(getContext(), loginOld, nameOld,(name, login) -> {
                 mPresenter.editUserInfo(name, login);
             });
         }
@@ -225,6 +225,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> {
         }
     }
 
+    @Override
     public void showExit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Выход из профиля")

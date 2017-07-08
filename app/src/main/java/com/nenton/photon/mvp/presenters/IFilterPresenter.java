@@ -5,6 +5,5 @@ package com.nenton.photon.mvp.presenters;
  */
 
 public interface IFilterPresenter {
-    void clickFind();
-
+    void clickOnSearch();
 }

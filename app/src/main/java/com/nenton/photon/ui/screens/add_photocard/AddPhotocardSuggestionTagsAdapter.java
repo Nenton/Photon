@@ -53,11 +53,11 @@ public class AddPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<AddP
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String albumRealm = mStringResult.get(position);
-        holder.mTag.setText(albumRealm);
+        String string = mStringResult.get(position);
+        holder.mTag.setText(string);
 
         holder.mTag.setOnClickListener(v -> {
-            mPresenter.clickOnSuggestTag(albumRealm);
+            mPresenter.clickOnSuggestTag(string);
         });
     }
 
@@ -72,6 +72,11 @@ public class AddPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<AddP
             mTagsFilter = new TagsFilter();
         }
         return mTagsFilter;
+    }
+
+    public void deleteString(String string) {
+        mStringRealms.remove(string);
+        notifyDataSetChanged();
     }
 
 

@@ -177,9 +177,9 @@ public class RootPresenter extends Presenter<IRootView> {
 
         public void build() {
             if (getRootView() != null) {
-                RootActivity activity = (RootActivity) getRootView();
-                activity.setMenuIdRes(mIdMenuRes);
-                activity.setMenuPopup(items);
+                IRootView rootView = getRootView();
+                rootView.setMenuIdRes(mIdMenuRes);
+                rootView.setMenuPopup(items);
             }
         }
     }
