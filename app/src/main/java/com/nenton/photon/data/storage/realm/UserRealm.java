@@ -51,6 +51,14 @@ public class UserRealm extends RealmObject implements Serializable {
         }
     }
 
+    public UserRealm(UserRealm userRealm, UserEditReq userEditReq) {
+        this.id = userRealm.getId();
+        this.name = userEditReq.getName();
+        this.login = userEditReq.getLogin();
+        this.avatar = userEditReq.getAvatar();
+        this.albums = userRealm.getAlbums();
+    }
+
     public String getId() {
         return id;
     }

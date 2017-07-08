@@ -37,8 +37,9 @@ public class EditUserInfoJob extends Job {
         DataManager.getInstance().getPreferencesManager().saveUserInfo(mUserEditReq);
         Realm realm = Realm.getDefaultInstance();
         UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", DataManager.getInstance().getPreferencesManager().getUserId()).findFirst();
-        userRealm.setUserInfo(mUserEditReq);
-        realm.insertOrUpdate(userRealm);
+        realm.executeTransaction(realm1 -> {
+            userRealm.setUserInfo(mUserEditReq);
+        });
         realm.close();
     }
 

@@ -148,7 +148,12 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         public void editUserInfo(String name, String login) {
-            mModel.editUserInfoObs(name, login, this::loadUserInfo);
+            mModel.editUserInfoObs(name, login, () -> {
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
+                    getView().cancelEditUserInfo();
+                    loadUserInfo();
+                });
+            });
         }
 
         @Override
@@ -210,13 +215,13 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                     UriHelper uriHelper = new UriHelper();
                     File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
                     mModel.uploadUserAvatar(mAvatarUri, file, () -> {
-                        if(getRootView() != null){
+                        if (getRootView() != null) {
                             ((RootActivity) getRootView()).runOnUiThread(this::loadUserInfo);
                         }
                     });
                 }
             } else {
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     getRootView().showMessage("Что-то пошло не так");
                 }
             }
@@ -227,7 +232,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         public void addAlbum(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     ((RootActivity) getRootView()).runOnUiThread(() -> {
                         loadUserInfo();
                         if (getView() != null) {
