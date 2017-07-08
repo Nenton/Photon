@@ -126,7 +126,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
         @OnClick(R.id.edit_long_tap)
         void clickOnEdit() {
-            mPresenter.editPhoto();
+            mPresenter.editPhoto(mPhotocards.get(getAdapterPosition()));
             posLongTap = -1;
             mLongTapWrap.setVisibility(View.GONE);
         }

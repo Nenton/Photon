@@ -9,6 +9,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:visibility="gone"
         app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -23,7 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
                     android:id="@+id/account_avatar_IV"
@@ -72,7 +74,7 @@
 
                             <TextView
                                 style="@style/TextCountTitle"
-                                android:text="Карты"/>
+                                android:text="@string/photocards"/>
 
                             <TextView
                                 android:id="@+id/account_photocard_count"
@@ -96,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="У вас нет альбомов.\nДобавьте новый, чтобы \nсохранять карточки"
+        android:text="@string/have_not_album_account"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -105,28 +107,29 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:minLines="3"
-            android:text="Авторизуйтесь,\n чтобы посмотреть\n данные профиля"
-            android:textAlignment="center"
-            />
+            style="@style/TextDescription"
+            android:text="@string/autorization_message"/>
 
         <Button
             android:id="@+id/sign_up_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="Регистрация "/>
+            android:paddingLeft="@dimen/spacing_medial_24"
+            android:paddingRight="@dimen/spacing_medial_24"
+            style="@style/ButtonStyle"
+            android:text="@string/registration_btn"/>
 
         <Button
             android:id="@+id/sign_in_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="Вход"/>
+            android:paddingLeft="@dimen/spacing_medial_24"
+            android:paddingRight="@dimen/spacing_medial_24"
+            style="@style/ButtonStyle"
+            android:text="@string/enter_btn"/>
 
     </LinearLayout>
 </com.nenton.photon.ui.screens.account.AccountView>

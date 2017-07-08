@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.nenton.photon.ui.screens.add_photocard.AddPhotocardView
+<com.nenton.photon.ui.screens.edit_photocard.EditPhotocardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/add_property_photo_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
         app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -26,7 +23,7 @@
             <View style="@style/DividerView"/>
 
             <EditText
-                android:id="@+id/add_name_photocard"
+                android:id="@+id/edit_name_photocard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_normal_16"
@@ -57,7 +54,7 @@
                 android:text="Укажите тэги"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_tags_selected_rv"
+                android:id="@+id/edit_tags_selected_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_normal_16"
@@ -72,11 +69,14 @@
                 android:layout_marginRight="@dimen/spacing_normal_16">
 
                 <EditText
-                    android:id="@+id/add_tag_et"
+                    android:id="@+id/edit_tag_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Имя тэга"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"/>
 
                 <ImageButton
                     android:id="@+id/cancel_name_tag"
@@ -87,7 +87,7 @@
                     android:background="@drawable/ic_custom_cancel_black_24dp"/>
 
                 <ImageButton
-                    android:id="@+id/check_add_tag"
+                    android:id="@+id/check_edit_tag"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
@@ -100,7 +100,7 @@
             <View style="@style/DividerView"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/available_tags"
+                android:id="@+id/edit_available_tags"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginLeft="@dimen/spacing_normal_16"
@@ -113,17 +113,9 @@
                 android:text="Выберите альбом"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_album_for_photocard_rv"
+                android:id="@+id/edit_album_for_photocard_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/add_album_from_add_photocard"
-                style="@style/ButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Добавить альбом"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,83 +126,21 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/save_photocard_btn"
-                    style="@style/ButtonStyle.Dialog"
-                    android:layout_marginBottom="@dimen/spacing_normal_16"
-                    android:layout_marginRight="@dimen/spacing_small_8"
-                    android:text="@string/save"/>
+                    android:id="@+id/save_edit_photocard_btn"
+                    style="?attr/buttonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Сохранить"/>
 
                 <Button
-                    android:id="@+id/cancel_add_photocard_btn"
-                    style="@style/ButtonStyle.Dialog"
-                    android:layout_marginBottom="@dimen/spacing_normal_16"
-                    android:text="@string/cancel_btn"/>
+                    android:id="@+id/cancel_edit_photocard_btn"
+                    style="?attr/buttonBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Отмена"/>
             </LinearLayout>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/add_photo_panel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/TextDescription"
-            android:text="Выберите фотокарточку\nиз галереи и добавьте\nк вашим альбомам"/>
-
-        <Button
-            android:id="@+id/add_photo_from_gallery"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Выбрать фото"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/show_not_album"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/TextDescription"
-            android:text="Для загрузки необходим хотя бы 1 альбом"/>
-
-        <Button
-            android:id="@+id/create_album"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_album"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/show_not_is_sign"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:visibility="gone">
-
-        <TextView
-            style="@style/TextDescription"
-            android:text="Для загрузки \nфотокарточки авторизуйтесь"/>
-
-        <Button
-            android:id="@+id/go_account_btn"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/autorization"/>
-
-    </LinearLayout>
-
-</com.nenton.photon.ui.screens.add_photocard.AddPhotocardView>
+</com.nenton.photon.ui.screens.edit_photocard.EditPhotocardView>

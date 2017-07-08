@@ -85,7 +85,7 @@ public interface RestService {
 
     // delete photocard
     @DELETE("user/{userId}/photocard/{id}")
-    Observable<Response> deletePhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
+    Observable<Response<Object>> deletePhotocardObs(@Header("Authorization")String authToken, @Path("userId") String userId, @Path("id") String id);
 
     //add views
     @POST("photocard/{photocardId}/view")
@@ -101,7 +101,7 @@ public interface RestService {
 
     //delete photocard from favorite
     @DELETE("user/{userId}/favorite/{photocardId}")
-    Observable<Response> deletePhotocardFavObs (@Header("Authorization")String authToken, @Path("userId") String userId, @Path("photocardId") String photocardId);
+    Observable<Response<Object>> deletePhotocardFavObs (@Header("Authorization")String authToken, @Path("userId") String userId, @Path("photocardId") String photocardId);
 
     //get album list
     @GET("user/{userId}/album/list")

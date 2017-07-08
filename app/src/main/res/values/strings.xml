@@ -50,4 +50,15 @@
     <string name="light_source_one">one</string>
     <string name="light_source_two">two</string>
     <string name="light_source_three">three</string>
+    <string name="accept_btn">Ок</string>
+    <string name="cancel_btn">Отмена</string>
+    <string name="registration_btn">Регистрация</string>
+    <string name="autorization_message">Авторизуйтесь, \nчтобы посмотреть \nданные профиля</string>
+    <string name="enter_btn">Вход</string>
+    <string name="have_not_album_account">У вас нет альбомов.\nДобавьте новый, чтобы \nсохранять карточки</string>
+    <string name="photocards">Карты</string>
+    <string name="search">Найти</string>
+    <string name="autorization">Авторизация</string>
+    <string name="create_album">Создать альбом</string>
+    <string name="save">Сохранить</string>
 </resources>

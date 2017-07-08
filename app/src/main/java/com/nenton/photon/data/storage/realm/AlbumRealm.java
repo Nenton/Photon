@@ -16,7 +16,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by serge on 01.06.2017.
  */
 
-public class AlbumRealm extends RealmObject implements Serializable{
+public class AlbumRealm extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
     private String owner;
@@ -79,6 +79,17 @@ public class AlbumRealm extends RealmObject implements Serializable{
         photocards = new RealmList<>();
     }
 
+    public AlbumRealm(AlbumRealm album, String name, String description) {
+        this.title = name;
+        this.description = description;
+        this.id = album.getId();
+        this.owner = album.getOwner();
+        this.isFavorite = album.isFavorite();
+        this.views = album.getViews();
+        this.favorits = album.getFavorits();
+        photocards = album.getPhotocards();
+    }
+
     public boolean isFavorite() {
         return isFavorite;
     }
@@ -111,11 +122,4 @@ public class AlbumRealm extends RealmObject implements Serializable{
         return photocards;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

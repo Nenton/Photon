@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nenton.photon.R;
@@ -50,11 +48,11 @@ public class SplashActivity extends AppCompatActivity {
         iv.clearAnimation();
         iv.startAnimation(anim);
 
-        if (!NetworkStatusChecker.isNetworkAvailible()){
+        if (!NetworkStatusChecker.isNetworkAvailible()) {
             b = true;
         }
 
-        DataManager.getInstance().getPhotocardObsFromNetwork().subscribe(new Subscriber<PhotocardRealm>() {
+        DataManager.getInstance().getPhotocardsObsFromNetwork().subscribe(new Subscriber<PhotocardRealm>() {
             int i = 0;
 
             @Override

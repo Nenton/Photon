@@ -39,16 +39,13 @@
 
         <Button
             android:id="@+id/sign_in_positive_btn"
-            style="?borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ButtonStyle.Dialog"
+            android:layout_marginRight="@dimen/spacing_small_8"
             android:text="ок"/>
 
         <Button
             android:id="@+id/sign_in_negative_btn"
-            style="?borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ButtonStyle.Dialog"
             android:text="отмена"/>
     </LinearLayout>
 

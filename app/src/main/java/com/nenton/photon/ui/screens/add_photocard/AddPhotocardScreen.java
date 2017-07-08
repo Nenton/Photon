@@ -245,7 +245,10 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 UriHelper uriHelper = new UriHelper();
                 File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
                 mModel.createPhotocard(idAlbum, namePhotocard, file, mAvatarUri, tags, filters, () -> {
-                    ((RootActivity) getRootView()).runOnUiThread(() -> Flow.get(getView().getContext()).set(new AccountScreen()));
+                    ((RootActivity) getRootView()).runOnUiThread(() -> {
+//                        Flow.get(getView().getContext()).set(new AccountScreen());
+                        ((RootActivity) getRootView()).changeOnBottom(R.id.action_account);
+                    });
                 });
             }
         }

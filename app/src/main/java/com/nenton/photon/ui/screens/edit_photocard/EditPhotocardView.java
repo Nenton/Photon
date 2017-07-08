@@ -1,4 +1,4 @@
-package com.nenton.photon.ui.screens.add_photocard;
+package com.nenton.photon.ui.screens.edit_photocard;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -14,15 +14,20 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.FiltersDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
+import com.nenton.photon.data.storage.realm.PhotocardRealm;
+import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
-import com.nenton.photon.ui.dialogs.DialogsAlbum;
+import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectAlbumAdapter;
+import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectTagsAdapter;
+import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSuggestionTagsAdapter;
 import com.nenton.photon.utils.TextWatcherEditText;
 
 import java.util.List;
@@ -34,36 +39,26 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 /**
- * Created by serge on 18.06.2017.
+ * Created by serge on 07.07.2017.
  */
 
-public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotocardPresenter> {
+public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhotocardPresenter> {
 
-    @BindView(R.id.add_album_for_photocard_rv)
+    @BindView(R.id.edit_album_for_photocard_rv)
     RecyclerView mAlbums;
-    @BindView(R.id.add_tags_selected_rv)
+    @BindView(R.id.edit_tags_selected_rv)
     RecyclerView mSelectedTags;
-    @BindView(R.id.available_tags)
+    @BindView(R.id.edit_available_tags)
     RecyclerView mAvailableTags;
-    @BindView(R.id.add_property_photo_panel)
-    NestedScrollView mPropertyPanel;
-    @BindView(R.id.add_photo_panel)
-    LinearLayout mAddPhotoPanel;
-    @BindView(R.id.show_not_album)
-    LinearLayout mNotAlbum;
-    @BindView(R.id.show_not_is_sign)
-    LinearLayout mNotIsSign;
 
-    @BindView(R.id.add_tag_et)
+    @BindView(R.id.edit_tag_et)
     EditText mAddTags;
-    @BindView(R.id.add_name_photocard)
+    @BindView(R.id.edit_name_photocard)
     EditText mNamePhotocard;
     @BindView(R.id.cancel_name_tag)
     ImageButton mCancelTag;
-    @BindView(R.id.check_add_tag)
+    @BindView(R.id.check_edit_tag)
     ImageButton mCheckTag;
-    @BindView(R.id.add_album_from_add_photocard)
-    Button mButton;
 
     @BindViews({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     List<CheckBox> mNuances;
@@ -81,36 +76,35 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     @BindView(R.id.radio_group_light_source)
     RadioGroup mLightSource;
 
+    @OnClick(R.id.save_edit_photocard_btn)
+    void clickOnSave() {
+        mPresenter.savePhotocard();
+    }
+
+    @OnClick(R.id.cancel_edit_photocard_btn)
+    void clickOnCancel() {
+        mPresenter.clickOnCancel();
+    }
+
+    @OnClick(R.id.check_edit_tag)
+    public void checkTag() {
+        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
+        mAddTags.setText("");
+    }
+
+    @OnClick(R.id.cancel_name_tag)
+    public void cancelTag() {
+        mAddTags.setText("");
+    }
+
     @Inject
-    AddPhotocardSelectTagsAdapter mTagsSelectedAdapter;
+    EditPhotocardSelectTagsAdapter mTagsSelectedAdapter;
 
-    private AddPhotocardSelectAlbumAdapter mAdapter = new AddPhotocardSelectAlbumAdapter();
-    private AddPhotocardSuggestionTagsAdapter mTagsSuggestionAdapter = new AddPhotocardSuggestionTagsAdapter();
+    private EditPhotocardSelectAlbumAdapter mAdapter = new EditPhotocardSelectAlbumAdapter();
+    private EditPhotocardSuggestionTagsAdapter mTagsSuggestionAdapter = new EditPhotocardSuggestionTagsAdapter();
 
-    public AddPhotocardView(Context context, AttributeSet attrs) {
+    public EditPhotocardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public void showPhotoPanel() {
-        mAddPhotoPanel.setVisibility(VISIBLE);
-        mPropertyPanel.setVisibility(GONE);
-        mNotIsSign.setVisibility(GONE);
-        mNotAlbum.setVisibility(GONE);
-    }
-
-    public void showPropertyPanel() {
-        mAddPhotoPanel.setVisibility(GONE);
-        mPropertyPanel.setVisibility(VISIBLE);
-        mNotIsSign.setVisibility(GONE);
-        mNotAlbum.setVisibility(GONE);
-    }
-
-    public AddPhotocardSelectAlbumAdapter getAdapter() {
-        return mAdapter;
-    }
-
-    public AddPhotocardSuggestionTagsAdapter getTagsSuggestionAdapter() {
-        return mTagsSuggestionAdapter;
     }
 
     @Override
@@ -118,9 +112,13 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         return false;
     }
 
+    public EditPhotocardSuggestionTagsAdapter getTagsSuggestionAdapter() {
+        return mTagsSuggestionAdapter;
+    }
+
     @Override
     protected void initDagger(Context context) {
-        DaggerService.<AddPhotocardScreen.Component>getDaggerComponent(context).inject(this);
+        DaggerService.<EditPhotocardScreen.Component>getDaggerComponent(context).inject(this);
     }
 
     public void initView() {
@@ -132,23 +130,25 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mAvailableTags.setAdapter(mTagsSuggestionAdapter);
     }
 
-    public void showView(UserRealm userRealm) {
-        for (AlbumRealm albumRealm : userRealm.getAlbums()) {
-            mAdapter.addAlbum(albumRealm);
-        }
-        mTagsSuggestionAdapter.getFilter().filter("");
-        mAddTags.addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().isEmpty()) {
-                    mCheckTag.setVisibility(GONE);
-                } else {
-                    mCheckTag.setVisibility(VISIBLE);
-                }
-                mTagsSuggestionAdapter.getFilter().filter(s.toString());
+    public void showView(PhotocardRealm photocardRealm) {
+        mNamePhotocard.setText(photocardRealm.getTitle());
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getDish())).setChecked(true);
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getLightSource())).setChecked(true);
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getLight())).setChecked(true);
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getLightDirection())).setChecked(true);
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getTemperature())).setChecked(true);
+        ((RadioButton) findViewWithTag(photocardRealm.getFilters().getDecor())).setChecked(true);
+
+        String s = photocardRealm.getFilters().getNuances();
+        for (CheckBox cb : mNuances) {
+            if (s.contains(((String) cb.getTag()))) {
+                cb.setChecked(true);
             }
-        });
-        mCheckTag.setVisibility(GONE);
+        }
+
+        for (StringRealm string : photocardRealm.getTags()) {
+            mTagsSelectedAdapter.addTag(string.getString());
+        }
     }
 
     @Nullable
@@ -205,71 +205,31 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         }
     }
 
-    public void checkedCurrentAlbum(int positionOnSelectItem) {
-        ((CheckBox) mAlbums.getLayoutManager().findViewByPosition(positionOnSelectItem).findViewById(R.id.check_album_add)).setChecked(false);
-    }
-
     public void addTag(String albumRealm) {
         mTagsSelectedAdapter.addTag(albumRealm);
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
 
-
-    public void goneAddAlbum() {
-        mButton.setVisibility(GONE);
+    public void checkedCurrentAlbum(int positionOnSelectItem) {
+        ((CheckBox) mAlbums.getLayoutManager().findViewByPosition(positionOnSelectItem).findViewById(R.id.check_album_add)).setChecked(false);
     }
 
-    public void showAddAlbum() {
-        mNotIsSign.setVisibility(GONE);
-        mNotAlbum.setVisibility(VISIBLE);
+    public void initAlbums(UserRealm userRealm) {
+        for (AlbumRealm albumRealm : userRealm.getAlbums()) {
+            mAdapter.addAlbum(albumRealm);
+        }
+        mTagsSuggestionAdapter.getFilter().filter("");
+        mAddTags.addTextChangedListener(new TextWatcherEditText() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    mCheckTag.setVisibility(GONE);
+                } else {
+                    mCheckTag.setVisibility(VISIBLE);
+                }
+                mTagsSuggestionAdapter.getFilter().filter(s.toString());
+            }
+        });
+        mCheckTag.setVisibility(GONE);
     }
-
-    //region ========================= Events =========================
-
-    @OnClick(R.id.add_photo_from_gallery)
-    public void clickOnAddPhotocard() {
-        mPresenter.chooseGallery();
-    }
-
-    @OnClick(R.id.save_photocard_btn)
-    public void clickOnSavePhotocard() {
-        mPresenter.savePhotocard();
-    }
-
-    @OnClick(R.id.cancel_add_photocard_btn)
-    public void cancelCreate() {
-        mPresenter.cancelCreate();
-    }
-
-    @OnClick(R.id.check_add_tag)
-    public void checkTag() {
-        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
-        mAddTags.setText("");
-    }
-
-    @OnClick(R.id.cancel_name_tag)
-    public void cancelTag() {
-        mAddTags.setText("");
-    }
-
-    @OnClick(R.id.add_album_from_add_photocard)
-    public void addAlbum() {
-        DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
-            mPresenter.addAlbum(name, description);
-        }).show();
-    }
-
-    @OnClick(R.id.create_album)
-    public void addAlbumFrom() {
-        DialogsAlbum.createDialogAddAlbum(getContext(), (name, description) -> {
-            mPresenter.addAlbumFrom(name, description);
-        }).show();
-    }
-
-    @OnClick(R.id.go_account_btn)
-    public void goAccount() {
-        mPresenter.goAccount();
-    }
-
-    //endregion
 }

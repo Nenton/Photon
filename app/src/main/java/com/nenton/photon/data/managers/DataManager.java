@@ -104,7 +104,7 @@ public class DataManager {
         mRestCallTransformer = new RestCallTransformer<>();
     }
 
-    public Observable<PhotocardRealm> getPhotocardObsFromNetwork() {
+    public Observable<PhotocardRealm> getPhotocardsObsFromNetwork() {
         return mRestService.getPhotocardListObs(50, 0)
                 .compose(((RestCallTransformer<List<Photocard>>) mRestCallTransformer))
                 .flatMap(Observable::from)
@@ -116,7 +116,8 @@ public class DataManager {
                     }
                 })
                 .filter(Photocard::isActive)
-                .doOnNext(productRes -> mRealmManager.savePhotocardResponseToRealm(productRes)
+                .flatMap(photocard -> Observable.just(new PhotocardRealm(photocard)))
+                .doOnNext(photocardRealm -> mRealmManager.savePhotocardResponseToRealm(photocardRealm)
                 )
                 .retryWhen(errorObservable ->
                         errorObservable
@@ -152,7 +153,7 @@ public class DataManager {
         return mRealmManager.getTags();
     }
 
-    public Observable<PhotocardRealm> getPhotocardFromRealm() {
+    public Observable<PhotocardRealm> getPhotocardsFromRealm() {
         return mRealmManager.getAllPhotocardFromRealm();
     }
 
@@ -199,18 +200,28 @@ public class DataManager {
         return mPreferencesManager.isUserAuth();
     }
 
+    @RxLogObservable
     public Observable<UserRealm> getUserById(String id) {
         return mRealmManager.getUserById(id);
     }
 
+    @RxLogObservable
     public Observable<UserRealm> getUserFromNetwork(String id) {
         return mRestService.getUserInfoObs(id)
-                .compose(((RestCallTransformer<UserInfo>) mRestCallTransformer))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.io())
-                .flatMap(userInfo -> Observable.just(new UserRealm(userInfo, id)))
-                .doOnNext(userRealm -> {
-                    mRealmManager.saveUserInfo(userRealm);
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(response -> {
+                    switch (response.code()) {
+                        case 200:
+                            return Observable.just(response.body());
+                        case 403:
+                            return Observable.error(new AccessError());
+                        default:
+                            return Observable.error(new ApiError(response.code()));
+                    }
+                })
+                .doOnNext(userInfo -> {
+                    mRealmManager.saveUserInfo(new UserRealm(userInfo, id));
                 })
                 .retryWhen(errorObservable ->
                         errorObservable
@@ -218,7 +229,8 @@ public class DataManager {
                                 .doOnNext(retryCount -> Log.e(TAG, "LOCAL UPDATE request retry count: " + retryCount + " " + new Date()))
                                 .map(retryCount -> ((long) (AppConfig.RETRY_REQUEST_BASE_DELAY * Math.pow(Math.E, retryCount))))
                                 .doOnNext(delay -> Log.e(TAG, "LOCAL UPDATE delay: " + delay))
-                                .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)));
+                                .flatMap(delay -> Observable.timer(delay, TimeUnit.MILLISECONDS)))
+                .flatMap(userInfo -> Observable.empty());
     }
 
     public Observable<UserEditRes> editUserInfoObs(UserEditReq userEditReq) {
@@ -334,8 +346,8 @@ public class DataManager {
                             return Observable.error(new ApiError(response.code()));
                     }
                 })
-                .doOnNext(photocard -> getRealmManager().savePhotocardResponseToRealm(photocard))
-                .flatMap(photocard -> Observable.just(new PhotocardRealm(photocard)));
+                .flatMap(photocard -> Observable.just(new PhotocardRealm(photocard)))
+                .doOnNext(photocardRealm -> getRealmManager().savePhotocardResponseToRealm(photocardRealm));
     }
 
     public Observable<Photocard> editPhotocardObs(String photoId, PhotocardReq photocardReq) {
@@ -370,7 +382,7 @@ public class DataManager {
                 });
     }
 
-    public Observable<Album> getAlbumListObs(String userId, int limit, int offset) {
+    public Observable<AlbumRealm> getAlbumListObs(String userId, int limit, int offset) {
         return mRestService.getAlbumListObs(userId, limit, offset)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -385,7 +397,8 @@ public class DataManager {
                     }
                 })
                 .flatMap(Observable::from)
-                .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album));
+                .flatMap(album -> Observable.just(new AlbumRealm(album)))
+                .doOnNext(albumRealm -> getRealmManager().saveAlbumResponseToRealm(albumRealm));
     }
 
     public Observable<AlbumRealm> getAlbumObs(String userId, String id) {
@@ -402,8 +415,8 @@ public class DataManager {
                             return Observable.error(new ApiError(response.code()));
                     }
                 })
-                .doOnNext(album -> getRealmManager().saveAlbumResponseToRealm(album))
-                .flatMap(album -> Observable.empty());
+                .flatMap(album -> Observable.just(new AlbumRealm(album)))
+                .doOnNext(albumRealm -> getRealmManager().saveAlbumResponseToRealm(albumRealm));
     }
 
     public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {

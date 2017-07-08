@@ -85,15 +85,15 @@ public class PhotocardRealm extends RealmObject implements Serializable{
         }
     }
 
-    public PhotocardRealm(String id, PhotocardReq photocardReq, PhotocardRealm first) {
+    public PhotocardRealm(String id, PhotocardReq photocardReq, String owner) {
         this.id = id;
-        this.owner = first.getOwner();
+        this.owner = owner;
         this.title = photocardReq.getTitle();
         this.photo = photocardReq.getPhoto();
-        this.views = first.getViews();
-        this.updated = first.getUpdated();
-        this.created = first.getCreated();
-        this.favorits = first.getFavorits();
+        this.views = 0;
+        this.updated = String.valueOf(new Date());
+        this.created = String.valueOf(new Date());
+        this.favorits = 0;
         this.filters = new FiltersRealm(id, photocardReq.getFilters());
 
         tags = new RealmList<>();

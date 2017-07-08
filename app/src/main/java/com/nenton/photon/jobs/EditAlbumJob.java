@@ -41,11 +41,10 @@ public class EditAlbumJob extends Job {
         Log.e(TAG, " onAdded: ");
         Realm realm = Realm.getDefaultInstance();
         UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", DataManager.getInstance().getPreferencesManager().getUserId()).findFirst();
-        AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mAlbumId).findFirst();
+        AlbumRealm albumStorage = realm.where(AlbumRealm.class).equalTo("id", mAlbumId).findFirst();
+        AlbumRealm albumRealm = new AlbumRealm(albumStorage, mName, mDescription);
         realm.executeTransaction(realm1 -> {
-            albumRealm.deleteFromRealm();
-            albumRealm.setTitle(mName);
-            albumRealm.setDescription(mDescription);
+            albumStorage.deleteFromRealm();
             userRealm.getAlbums().add(albumRealm);
         });
         realm.close();

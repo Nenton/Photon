@@ -57,17 +57,14 @@
 
         <Button
             android:id="@+id/sign_up_positive_btn"
-            style="?borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ок"/>
+            style="@style/ButtonStyle.Dialog"
+            android:layout_marginRight="@dimen/spacing_small_8"
+            android:text="@string/accept_btn"/>
 
         <Button
             android:id="@+id/sign_up_negative_btn"
-            style="?borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="отмена"/>
+            style="@style/ButtonStyle.Dialog"
+            android:text="@string/cancel_btn"/>
     </LinearLayout>
 
 </LinearLayout>

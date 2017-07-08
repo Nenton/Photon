@@ -18,7 +18,6 @@ public class PicassoCacheModule {
         OkHttp3Downloader okHttp3Downloader = new OkHttp3Downloader(context);
         Picasso picasso = new Picasso.Builder(context)
                 .downloader(okHttp3Downloader)
-                .debugging(true)
                 .build();
         Picasso.setSingletonInstance(picasso);
         return picasso;

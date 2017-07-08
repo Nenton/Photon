@@ -261,6 +261,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                     getView().cancelSignUp();
                 }
             }));
+
         }
 
         public void clickOnAlbum(String title, String decription) {

@@ -58,7 +58,6 @@ public class EditPhotocardJob extends Job {
                     Realm realm = Realm.getDefaultInstance();
                     AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mIdAlbum).findFirst();
                     PhotocardRealm photocardRealm = realm.where(PhotocardRealm.class).equalTo("id", mPhotoId).findFirst();
-
                     realm.executeTransaction(realm1 -> {
                         photocardRealm.deleteFromRealm();
                         albumRealm.getPhotocards().add(new PhotocardRealm(photocard));

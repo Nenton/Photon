@@ -125,14 +125,16 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         }
 
         private void downloadPhoto() {
-            DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
+            if (!mPhotocard.getPhoto().isEmpty()){
+                DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
 
-            r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
-            r.allowScanningByMediaScanner();
-            r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
+                r.allowScanningByMediaScanner();
+                r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-            DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
-            dm.enqueue(r);
+                DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
+                dm.enqueue(r);
+            }
         }
 
 

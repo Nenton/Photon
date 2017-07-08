@@ -15,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by serge on 01.06.2017.
  */
 
-public class UserRealm extends RealmObject implements Serializable{
+public class UserRealm extends RealmObject implements Serializable {
 
     @PrimaryKey
     private String id;
@@ -33,7 +33,7 @@ public class UserRealm extends RealmObject implements Serializable{
         this.login = user.getLogin();
         this.avatar = user.getAvatar();
         for (Album album : user.getAlbums()) {
-            if (album.isActive()){
+            if (album.isActive()) {
                 this.albums.add(new AlbumRealm(album));
             }
         }
@@ -45,7 +45,7 @@ public class UserRealm extends RealmObject implements Serializable{
         this.login = userInfo.getLogin();
         this.avatar = userInfo.getAvatar();
         for (Album album : userInfo.getAlbums()) {
-            if (album.isActive()){
+            if (album.isActive()) {
                 this.albums.add(new AlbumRealm(album));
             }
         }

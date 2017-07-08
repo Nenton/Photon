@@ -15,6 +15,7 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.edit_photocard.EditPhotocardScreen;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.squareup.picasso.Picasso;
 
@@ -163,8 +164,8 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
             Flow.get(getView().getContext()).set(new PhotocardScreen(mPhoto));
         }
 
-        public void editPhoto() {
-
+        public void editPhoto(PhotocardRealm photocardRealm) {
+            Flow.get(getView().getContext()).set(new EditPhotocardScreen(photocardRealm));
         }
 
         public void showDeletePhoto(String id, int adapterPosition) {
@@ -191,8 +192,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
             mModel.isAlbumFromUser(mAlbum.getOwner()).subscribe(aBoolean -> {
                 b[0] = aBoolean;
             });
-//            return b[0];
-            return true;
+            return b[0];
         }
 
     }

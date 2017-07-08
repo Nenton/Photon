@@ -9,7 +9,6 @@ import com.nenton.photon.data.network.req.UserLoginReq;
 import com.nenton.photon.data.network.res.SignInRes;
 import com.nenton.photon.data.network.res.SignUpRes;
 import com.nenton.photon.data.storage.dto.FiltersDto;
-import com.nenton.photon.data.storage.dto.PhotocardDto;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
@@ -29,11 +28,7 @@ import com.nenton.photon.utils.SearchQuery;
 import java.io.File;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by serge on 04.06.2017.
@@ -45,8 +40,8 @@ public class MainModel extends AbstractModel {
 
     @RxLogObservable
     public Observable<PhotocardRealm> getPhotocardObs() {
-        Observable<PhotocardRealm> disk = mDataManager.getPhotocardFromRealm();
-        Observable<PhotocardRealm> network = mDataManager.getPhotocardObsFromNetwork();
+        Observable<PhotocardRealm> disk = mDataManager.getPhotocardsFromRealm();
+        Observable<PhotocardRealm> network = mDataManager.getPhotocardsObsFromNetwork();
 
         return Observable.mergeDelayError(disk, network)
                 .distinct(PhotocardRealm::getId);
@@ -58,8 +53,8 @@ public class MainModel extends AbstractModel {
 
     @RxLogObservable
     public Observable<UserRealm> getUser(String id) {
-        Observable<UserRealm> network = mDataManager.getUserFromNetwork(id);
         Observable<UserRealm> disk = mDataManager.getUserById(id);
+        Observable<UserRealm> network = mDataManager.getUserFromNetwork(id);
 
         return Observable.mergeDelayError(disk, network)
                 .distinct(UserRealm::getId);
@@ -125,18 +120,6 @@ public class MainModel extends AbstractModel {
 
     public void saveSearchString(String s) {
         mDataManager.getPreferencesManager().saveSearchString(s);
-    }
-
-    public Observable<String> uploadPhotoToNetwork(String avatarUri, File file) {
-        if (avatarUri != null) {
-            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
-
-            return mDataManager.uploadPhoto(part);
-
-        } else {
-            return Observable.empty();
-        }
     }
 
     public void uploadUserAvatar(String avatarUri, File file, AsyncAddCallback callback) {
