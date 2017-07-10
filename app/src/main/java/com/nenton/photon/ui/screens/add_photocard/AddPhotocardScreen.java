@@ -28,6 +28,7 @@ import com.nenton.photon.utils.UriHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import dagger.Provides;
@@ -64,36 +65,33 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
         AddPhotocardPresenter provideAccountPresenter() {
             return new AddPhotocardPresenter();
         }
-
-        @Provides
-        @DaggerScope(AddPhotocardScreen.class)
-        AddPhotocardSelectTagsAdapter provideAddPhotocardSelectTagsAdapter() {
-            return new AddPhotocardSelectTagsAdapter();
-        }
     }
 
     @dagger.Component(dependencies = RootActivity.RootComponent.class, modules = Module.class)
     @DaggerScope(AddPhotocardScreen.class)
     public interface Component {
         void inject(AddPhotocardPresenter presenter);
-
         void inject(AddPhotocardView view);
-
+        void inject(AddPhotocardSuggestionTagsAdapter adapter);
         void inject(AddPhotocardSelectAlbumAdapter adapter);
 
-        void inject(AddPhotocardSuggestionTagsAdapter adapter);
-
-        void inject(AddPhotocardSelectTagsAdapter adapter);
-
         Picasso getPicasso();
-
         RootPresenter getRootPresenter();
     }
 
     public class AddPhotocardPresenter extends AbstractPresenter<AddPhotocardView, PhotocardModel> implements IAddPhotocardPresenter {
 
         private String mAvatarUri;
-        Subscription subscribe;
+        private Subscription subscribe;
+        private List<String> mStrings = new ArrayList<>();
+
+        public void addString(String s) {
+            mStrings.add(s);
+        }
+
+        public void removeString(String s) {
+            mStrings.remove(s);
+        }
 
         //region ========================= LifeCycle =========================
 
@@ -165,7 +163,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
             }
-            if (getRootView() != null){
+            if (getRootView() != null) {
                 ((RootActivity) getRootView()).startActivityForResult(intent, ConstantsManager.REQUEST_PROFILE_PHOTO_PICTURE);
             }
         }
@@ -191,7 +189,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
                     getView().showPropertyPanel();
                 }
             } else {
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     getRootView().showMessage("Что-то пошло не так");
                 }
             }
@@ -243,10 +241,10 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             if (getView() != null) {
                 FiltersDto filters = getView().getFilters();
                 String namePhotocard = getView().getNamePhotocard();
-                List<String> tags = getView().getTags();
+                List<String> tags = mStrings;
                 String idAlbum = getView().getIdAlbum();
 
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     if (namePhotocard == null) {
                         getRootView().showMessage("Не выбрано имя фотокарточки");
                         return;
@@ -291,7 +289,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
         @Override
         public void addAlbum(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     ((RootActivity) getRootView()).runOnUiThread(() -> {
                         initPropertyView();
                         if (getView() != null) {
@@ -305,7 +303,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
         @Override
         public void addAlbumFrom(String name, String description) {
             mModel.createAlbumObs(name, description, () -> {
-                if (getRootView() != null && getView() != null){
+                if (getRootView() != null && getView() != null) {
                     ((RootActivity) getRootView()).runOnUiThread(() -> {
                         getView().initView();
                         getView().showPhotoPanel();
@@ -325,6 +323,10 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             if (getView() != null) {
                 getView().removeTag(string);
             }
+        }
+
+        public List<String> getStrings() {
+            return mStrings;
         }
     }
 }

@@ -27,8 +27,6 @@ public class AddPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<AddP
 
     @Inject
     AddPhotocardScreen.AddPhotocardPresenter mPresenter;
-    @Inject
-    AddPhotocardSelectTagsAdapter mTagsSelectedAdapter;
 
     private List<String> mStringRealms = new ArrayList<>();
     private List<String> mStringResult = new ArrayList<>();
@@ -103,7 +101,7 @@ public class AddPhotocardSuggestionTagsAdapter extends RecyclerView.Adapter<AddP
                     String s = mStringRealms.get(i).toUpperCase();
                     if (s.contains(sEqual) && !s.equals(sEqual)) {
                         boolean b = true;
-                        for (String s1 : mTagsSelectedAdapter.getStrings()) {
+                        for (String s1 : mPresenter.getStrings()) {
                             if (s1.toUpperCase().equals(s)){
                                 b = false;
                                 break;

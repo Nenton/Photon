@@ -33,12 +33,13 @@ public class SearchFiltersView extends AbstractView<SearchFiltersScreen.SearchFi
         DaggerService.<SearchFiltersScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    public ViewPager getViewPager(){
+    public ViewPager getViewPager() {
         return mViewPager;
     }
 
-    public void initView(){
+    public void initView(int item) {
         SearchFiltersAdapter adapter = new SearchFiltersAdapter();
         mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(item);
     }
 }

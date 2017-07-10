@@ -2,7 +2,8 @@
 <com.nenton.photon.ui.screens.search_filters.search.SearchTitleView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/search_wrap"
@@ -82,12 +83,15 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/tags_RV"
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/flexbox_search"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"/>
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:flexWrap="wrap"
+                    app:alignItems="stretch"
+                    app:alignContent="stretch"/>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

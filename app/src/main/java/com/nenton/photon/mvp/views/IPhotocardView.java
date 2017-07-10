@@ -8,7 +8,8 @@ import com.nenton.photon.data.storage.realm.PhotocardRealm;
  */
 
 public interface IPhotocardView {
-    void initView(PhotocardRealm photocardRealm, UserInfoDto infoDto);
+    void initUser(UserInfoDto infoDto);
+    void initPhoto(PhotocardRealm photocardRealm);
     void showDialogAddFav();
     void showDialogSharePhoto();
 }

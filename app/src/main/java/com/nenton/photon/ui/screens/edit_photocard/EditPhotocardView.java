@@ -2,21 +2,21 @@ package com.nenton.photon.ui.screens.edit_photocard;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.WordsLayoutManager;
 import android.text.Editable;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.FiltersDto;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
@@ -26,9 +26,6 @@ import com.nenton.photon.data.storage.realm.UserRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IEditPhotocardView;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectAlbumAdapter;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectTagsAdapter;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSuggestionTagsAdapter;
 import com.nenton.photon.utils.TextWatcherEditText;
 
 import java.util.List;
@@ -47,8 +44,6 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
 
     @BindView(R.id.edit_album_for_photocard_rv)
     RecyclerView mAlbums;
-    @BindView(R.id.edit_tags_selected_rv)
-    RecyclerView mSelectedTags;
     @BindView(R.id.edit_available_tags)
     RecyclerView mAvailableTags;
 
@@ -60,6 +55,9 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
     ImageButton mCancelTag;
     @BindView(R.id.check_edit_tag)
     ImageButton mCheckTag;
+
+    @BindView(R.id.flexbox_tag_selected)
+    FlexboxLayout mTagsSelected;
 
     @BindViews({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     List<CheckBox> mNuances;
@@ -76,10 +74,6 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
     RadioGroup mDir;
     @BindView(R.id.radio_group_light_source)
     RadioGroup mLightSource;
-
-
-    @Inject
-    EditPhotocardSelectTagsAdapter mTagsSelectedAdapter;
 
     private EditPhotocardSelectAlbumAdapter mAdapter = new EditPhotocardSelectAlbumAdapter();
     private EditPhotocardSuggestionTagsAdapter mTagsSuggestionAdapter = new EditPhotocardSuggestionTagsAdapter();
@@ -102,11 +96,20 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         DaggerService.<EditPhotocardScreen.Component>getDaggerComponent(context).inject(this);
     }
 
+    public void addViewTagSelected(final String s){
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag_add_photocard, mTagsSelected, false);
+        TextView text = (TextView) view.findViewById(R.id.tag_add_photocard_TV);
+        text.setText(s);
+        view.findViewById(R.id.cancel_tag_ib).setOnClickListener(v -> {
+            mTagsSelected.removeView(view);
+            mPresenter.removeString(s);
+        });
+        mTagsSelected.addView(view);
+    }
+
     public void initView() {
         mAlbums.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
         mAlbums.setAdapter(mAdapter);
-        mSelectedTags.setLayoutManager(new WordsLayoutManager(getContext()));
-        mSelectedTags.setAdapter(mTagsSelectedAdapter);
         mAvailableTags.setLayoutManager(new LinearLayoutManager(getContext()));
         mAvailableTags.setAdapter(mTagsSuggestionAdapter);
     }
@@ -129,7 +132,7 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
 
         for (StringRealm string : photocardRealm.getTags()) {
-            mTagsSelectedAdapter.addTag(string.getString());
+            addViewTagSelected(string.getString());
         }
     }
 
@@ -171,15 +174,6 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
         }
     }
 
-    @Override
-    @Nullable
-    public List<String> getTags() {
-        if (mTagsSelectedAdapter.getStrings().size() == 0) {
-            return null;
-        } else {
-            return mTagsSelectedAdapter.getStrings();
-        }
-    }
 
     @Override
     @Nullable
@@ -193,7 +187,8 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
 
     @Override
     public void addTag(String string) {
-        mTagsSelectedAdapter.addTag(string);
+        addViewTagSelected(string);
+        mPresenter.addString(string);
         mTagsSuggestionAdapter.deleteString(string);
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
@@ -240,7 +235,9 @@ public class EditPhotocardView extends AbstractView<EditPhotocardScreen.EditPhot
 
     @OnClick(R.id.check_edit_tag)
     public void checkTag() {
-        mTagsSelectedAdapter.addTag("#" + mAddTags.getText().toString());
+        addViewTagSelected("#" + mAddTags.getText().toString());
+
+        mPresenter.addString("#" + mAddTags.getText().toString());
         mAddTags.setText("");
     }
 

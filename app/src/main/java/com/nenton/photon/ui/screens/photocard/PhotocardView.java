@@ -3,15 +3,16 @@ package com.nenton.photon.ui.screens.photocard;
 import android.content.Context;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.WordsLayoutManager;
 import android.util.AttributeSet;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
@@ -21,7 +22,6 @@ import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IPhotocardView;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoBigTransform;
-import com.nenton.photon.utils.PhotoTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -36,10 +36,7 @@ import butterknife.OnClick;
  */
 
 public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresenter> implements IPhotocardView {
-    private PhotocardAdapter mAdapter = new PhotocardAdapter();
 
-    @BindView(R.id.photocard_RV)
-    RecyclerView mRecyclerView;
     @BindView(R.id.photo_IV)
     ImageView mPhoto;
     @BindView(R.id.name_photocard)
@@ -56,6 +53,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     NestedScrollView mNested;
     @BindView(R.id.fav_icon)
     ImageView mFavIcon;
+    @BindView(R.id.flexbox_photocard)
+    FlexboxLayout mFlexboxLayout;
+    @BindView(R.id.info_user_wrap)
+    LinearLayout mUserWrap;
 
     @OnClick(R.id.avatar_photocard_IV)
     public void clickOnAuthor() {
@@ -77,6 +78,18 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     @Override
     protected void initDagger(Context context) {
         DaggerService.<PhotocardScreen.Component>getDaggerComponent(getContext()).inject(this);
+    }
+
+    public void addView(StringRealm s) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag_photocard, mFlexboxLayout, false);
+        ((TextView) view.findViewById(R.id.tag_photocard_TV)).setText(s.getString());
+        setAnimation(view);
+        mFlexboxLayout.addView(view);
+    }
+
+    private void setAnimation(View viewToAnimate) {
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        viewToAnimate.startAnimation(animation);
     }
 
 //    @Override
@@ -104,31 +117,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 //    }
 
     @Override
-    public void initView(PhotocardRealm photocardRealm, UserInfoDto infoDto) {
-
-        mName.setText(photocardRealm.getTitle());
-
-        mPicasso.load(photocardRealm.getPhoto())
-                .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(500, 500)
-                .centerCrop()
-                .transform(new PhotoBigTransform())
-
-                .into(mPhoto, new Callback() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError() {
-                        mPicasso.load(photocardRealm.getPhoto())
-                                .resize(500, 500)
-                                .centerCrop()
-                                .transform(new PhotoBigTransform())
-                                .into(mPhoto);
-                    }
-                });
+    public void initUser(UserInfoDto infoDto) {
 
         mPicasso.with(getContext())
                 .load(infoDto.getAvatar())
@@ -162,11 +151,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         mAlbumCount.setText(String.valueOf(infoDto.getCountAlbum()));
         mPhotocardCount.setText(String.valueOf(infoDto.getCountPhoto()));
 
-        mRecyclerView.setLayoutManager(new WordsLayoutManager(getContext()));
-        for (StringRealm s : photocardRealm.getTags()) {
-            mAdapter.addString(s);
-        }
-        mRecyclerView.setAdapter(mAdapter);
+        mUserWrap.setVisibility(VISIBLE);
     }
 
     @Override
@@ -205,5 +190,39 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         } else {
             mFavIcon.setVisibility(GONE);
         }
+    }
+
+    @Override
+    public void initPhoto(PhotocardRealm photocard) {
+
+        mName.setText(photocard.getTitle());
+
+        mPicasso.load(photocard.getPhoto())
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .fit()
+                .centerCrop()
+                .transform(new PhotoBigTransform())
+                .into(mPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPicasso.load(photocard.getPhoto())
+                                .fit()
+                                .centerCrop()
+                                .transform(new PhotoBigTransform())
+                                .into(mPhoto);
+                    }
+                });
+
+
+        for (StringRealm s : photocard.getTags()) {
+            addView(s);
+        }
+
+        mUserWrap.setVisibility(GONE);
     }
 }

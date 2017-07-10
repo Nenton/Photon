@@ -82,8 +82,6 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
         void inject(PhotocardView view);
 
-        void inject(PhotocardAdapter adapter);
-
         RootPresenter getRootPresenter();
 
         Picasso getPicasso();
@@ -197,6 +195,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
+            getView().initPhoto(mPhotocard);
             mCompSubs.add(mModel.getUser(mPhotocard.getOwner()).subscribe(new RealmSubscriber()));
             if (mModel.isSignIn()) {
                 mCompSubs.add(mModel.addViewsToPhotocard(mPhotocard.getId()).subscribe(new ViewSubscriber<Boolean>() {
@@ -241,7 +240,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             @Override
             public void onNext(UserRealm userRealm) {
                 if (getView() != null) {
-                    getView().initView(mPhotocard, new UserInfoDto(userRealm));
+                    getView().initUser(new UserInfoDto(userRealm));
                 }
             }
         }

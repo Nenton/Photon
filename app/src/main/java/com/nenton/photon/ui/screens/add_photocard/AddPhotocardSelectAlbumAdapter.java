@@ -63,11 +63,6 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         return new ViewHolder(view);
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        DaggerService.<AddPhotocardScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
-        super.onAttachedToRecyclerView(recyclerView);
-    }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {

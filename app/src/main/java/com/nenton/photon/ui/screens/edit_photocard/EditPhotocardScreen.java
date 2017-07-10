@@ -19,10 +19,10 @@ import com.nenton.photon.mvp.presenters.IEditPhotocardPresenter;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.account.AccountScreen;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSelectTagsAdapter;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardSuggestionTagsAdapter;
+
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dagger.Provides;
@@ -63,11 +63,6 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
             return new EditPhotocardPresenter();
         }
 
-        @Provides
-        @DaggerScope(EditPhotocardScreen.class)
-        EditPhotocardSelectTagsAdapter provideEditPhotocardSelectTagsAdapter() {
-            return new EditPhotocardSelectTagsAdapter();
-        }
     }
 
     @dagger.Component(dependencies = RootActivity.RootComponent.class, modules = Module.class)
@@ -77,7 +72,6 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
         void inject(EditPhotocardView view);
         void inject(EditPhotocardSelectAlbumAdapter adapter);
         void inject(EditPhotocardSuggestionTagsAdapter adapter);
-        void inject(EditPhotocardSelectTagsAdapter adapter);
 
         Picasso getPicasso();
 
@@ -85,6 +79,20 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
     }
 
     public class EditPhotocardPresenter extends AbstractPresenter<EditPhotocardView, PhotocardModel> implements IEditPhotocardPresenter{
+
+        private List<String> mStrings = new ArrayList<>();
+
+        public void addString(String s) {
+            mStrings.add(s);
+        }
+
+        public void removeString(String s) {
+            mStrings.remove(s);
+        }
+
+        public List<String> getStrings() {
+            return mStrings;
+        }
 
         @Override
         protected void initActionBar() {
@@ -156,7 +164,7 @@ public class EditPhotocardScreen extends AbstractScreen<RootActivity.RootCompone
             if (getView() != null){
                 FiltersDto filters = getView().getFilters();
                 String namePhotocard = getView().getNamePhotocard();
-                List<String> tags = getView().getTags();
+                List<String> tags = mStrings;
                 String idAlbum = getView().getIdAlbum();
                 if (getRootView() != null){
                     if (filters == null) {

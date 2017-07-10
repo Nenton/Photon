@@ -19,6 +19,7 @@ import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.nenton.photon.ui.screens.search_filters.SearchFiltersScreen;
 import com.nenton.photon.utils.SearchQuery;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import dagger.Provides;
@@ -61,8 +62,6 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
 
         void inject(SearchTitleView view);
 
-        void inject(TagsAdapter adapter);
-
         void inject(SearchAdapter adapter);
 
         RootPresenter getRootPresenter();
@@ -70,11 +69,17 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
 
     public class SearchPresenter extends AbstractPresenter<SearchTitleView, SearchModel> implements ISearchPresenter {
 
-        public SearchQuery getSearchFilterQuery() {
-            return mSearchFilterQuery;
-        }
+        private Set<String> mStringSet = new HashSet<>();
 
         private SearchQuery mSearchFilterQuery = new SearchQuery();
+
+        public void addString(String s){
+            mStringSet.add(s);
+        }
+
+        public void removeString(String s){
+            mStringSet.remove(s);
+        }
 
         @Override
         protected void initActionBar() {
@@ -97,7 +102,7 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
                 @Override
                 public void onNext(String s) {
                     if (getView() != null){
-                        getView().getAdapter().addString(s);
+                        getView().addViewFlex(s);
                     }
                 }
             }));
@@ -114,9 +119,9 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         }
 
         @Override
-        public void clickOnSearch(CharSequence query, Set<String> stringSet) {
+        public void clickOnSearch(CharSequence query) {
             mModel.saveSearchString(query.toString());
-            mSearchFilterQuery.setTags(stringSet);
+            mSearchFilterQuery.setTags(mStringSet);
             mSearchFilterQuery.setTitle(query.toString());
             mRootPresenter.setSearchQuery(mSearchFilterQuery);
             mRootPresenter.setSearchEnum(SearchEnum.SEARCH);

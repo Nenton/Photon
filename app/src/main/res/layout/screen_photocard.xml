@@ -27,6 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:tag="overScrollScale"
+                    app:aspect_ratio="1.77"
                     tools:src="@drawable/splash"/>
 
                 <TextView
@@ -61,9 +62,12 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/info_user_wrap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -122,12 +126,16 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/photocard_RV"
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/flexbox_photocard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"/>
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    app:flexWrap="wrap"
+                    app:alignItems="stretch"
+                    app:alignContent="stretch"/>
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>

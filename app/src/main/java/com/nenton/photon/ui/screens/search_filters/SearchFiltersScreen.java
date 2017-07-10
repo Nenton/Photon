@@ -85,7 +85,11 @@ public class SearchFiltersScreen extends AbstractScreen<RootActivity.RootCompone
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
             if (getView() != null){
-                getView().initView();
+                if (mRootPresenter.getSearchEnum() == SearchEnum.FILTER){
+                    getView().initView(1);
+                } else {
+                    getView().initView(0);
+                }
             }
         }
     }

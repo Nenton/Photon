@@ -4,18 +4,18 @@ import android.content.Context;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.WordsLayoutManager;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.nenton.photon.R;
-import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.ISearchView;
@@ -34,21 +34,22 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
 
     @BindView(R.id.search_rv)
     RecyclerView mSearchRV;
-    @BindView(R.id.tags_RV)
-    RecyclerView mRecyclerViewTags;
+//    @BindView(R.id.tags_RV)
+//    RecyclerView mRecyclerViewTags;
     @BindView(R.id.search_view)
     EditText mSearchView;
     @BindView(R.id.reboot_settings_search)
     ImageButton mRebootBtn;
     @BindView(R.id.back_and_check)
     ImageButton mBackCheckBtn;
+    @BindView(R.id.flexbox_search)
+    FlexboxLayout mFlexboxLayout;
 
     @OnClick(R.id.reboot_settings_search)
     public void clickSearch() {
         mSearchView.setText("");
     }
 
-    private TagsAdapter mTagsAdapter = new TagsAdapter();
     private SearchAdapter adapter = new SearchAdapter();
 
     public SearchTitleView(Context context, AttributeSet attrs) {
@@ -65,10 +66,22 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         DaggerService.<SearchScreen.Component>getDaggerComponent(context).inject(this);
     }
 
+    public void addViewFlex(String s){
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag, mFlexboxLayout, false);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.tag_TV);
+        checkBox.setText(s);
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                mPresenter.addString(checkBox.getText().toString());
+            } else {
+                mPresenter.removeString(checkBox.getText().toString());
+            }
+        });
+        mFlexboxLayout.addView(view);
+    }
+
     @Override
     public void initView(List<String> strings) {
-        mRecyclerViewTags.setLayoutManager(new WordsLayoutManager(getContext()));
-        mRecyclerViewTags.setAdapter(mTagsAdapter);
 
         adapter.addStrings(strings);
 
@@ -82,7 +95,7 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
                     mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_check_black_24dp));
                     mBackCheckBtn.setOnClickListener(v -> {
                         ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mSearchView.getWindowToken(),0);
-                        mPresenter.clickOnSearch(mSearchView.getText(), mTagsAdapter.getStringSet());
+                        mPresenter.clickOnSearch(mSearchView.getText());
                         adapter.addString(mSearchView.getText().toString());
                     });
                 } else {
@@ -94,10 +107,6 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         });
         adapter.getFilter().filter("");
         mBackCheckBtn.setOnClickListener(v -> mPresenter.goBack());
-    }
-
-    public TagsAdapter getAdapter() {
-        return mTagsAdapter;
     }
 
     @Override

@@ -20,8 +20,6 @@ public interface IAddPhotocardView {
     @Nullable
     String getNamePhotocard();
     @Nullable
-    List<String> getTags();
-    @Nullable
     String getIdAlbum();
     void addTag(String string);
 }

@@ -70,12 +70,15 @@
                 style="@style/TitleAddPhoto"
                 android:text="Укажите тэги"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_tags_selected_rv"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexbox_tag_selected"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_marginRight="@dimen/spacing_normal_16"/>
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:flexWrap="wrap"
+                app:alignItems="stretch"
+                app:alignContent="stretch"/>
 
             <View style="@style/DividerView"/>
 

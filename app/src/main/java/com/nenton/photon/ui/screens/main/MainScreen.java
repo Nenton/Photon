@@ -134,7 +134,7 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
             } else {
                 mRootPresenter.newMenuPopupBuilder()
                         .setIdMenuRes(R.menu.main_un_auth_settings_menu)
-                        .addMenuPopup(new PopupMenuItem(R.id.exit_dial, this::exitUser))
+                        .addMenuPopup(new PopupMenuItem(R.id.exit_dial, () -> getView().showExitUser()))
                         .build();
             }
         }
@@ -259,6 +259,7 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         public void clickOnPhoto(PhotocardRealm photocard) {
             if (getView() != null){
+                getRootView().hideSnackbar();
                 Flow.get(getView().getContext()).set(new PhotocardScreen(photocard));
             }
         }

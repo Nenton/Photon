@@ -19,8 +19,6 @@ public interface IEditPhotocardView {
     @Nullable
     String getNamePhotocard();
     @Nullable
-    List<String> getTags();
-    @Nullable
     String getIdAlbum();
     void addTag(String string);
     void initAlbums(UserRealm userRealm);

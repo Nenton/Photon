@@ -7,7 +7,7 @@ import java.util.Set;
  */
 
 public interface ISearchPresenter {
-    void clickOnSearch(CharSequence query, Set<String> stringSet);
+    void clickOnSearch(CharSequence query);
     void clickOnStringQuery(String s);
     void goBack();
 }

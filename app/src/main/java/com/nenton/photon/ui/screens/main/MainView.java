@@ -86,4 +86,18 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
     public void reloadAdapter() {
         mMainAdapter.reload();
     }
+
+    public void showExitUser() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Выход из профиля")
+                .setMessage("Вы действительной хотите выйти?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    mPresenter.exitUser();
+                })
+                .setNegativeButton("Отмена", (dialog, which) -> {
+                    dialog.cancel();
+                })
+                .create()
+                .show();
+    }
 }

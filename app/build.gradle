@@ -9,7 +9,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.nenton.photon"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -60,6 +60,8 @@ dependencies {
 
     compile 'com.google.firebase:firebase-core:11.0.2'
     compile 'com.google.firebase:firebase-crash:11.0.2'
+
+    compile 'com.google.android:flexbox:0.3.0'
 
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.6.0'
