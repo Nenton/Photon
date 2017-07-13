@@ -18,7 +18,6 @@ import com.nenton.photon.utils.AlbumTransform;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +26,18 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by serge on 18.06.2017.
  */
 
 public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhotocardSelectAlbumAdapter.ViewHolder> {
+
+    @Inject
+    Picasso mPicasso;
+    @Inject
+    AddPhotocardScreen.AddPhotocardPresenter mPresenter;
 
     private int positionOnSelectItem = 0;
     private List<AlbumRealm> mAlbumRealmList = new ArrayList<>();
@@ -47,14 +52,9 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         return positionOnSelectItem;
     }
 
-    public String getIdAlbum(){
+    public String getIdAlbum() {
         return mAlbumRealmList.get(positionOnSelectItem).getId();
     }
-
-    @Inject
-    Picasso mPicasso;
-    @Inject
-    AddPhotocardScreen.AddPhotocardPresenter mPresenter;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -63,6 +63,11 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         return new ViewHolder(view);
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        DaggerService.<AddPhotocardScreen.Component>getDaggerComponent(recyclerView.getContext()).inject(this);
+        super.onAttachedToRecyclerView(recyclerView);
+    }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -73,8 +78,8 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
 
         mPicasso.with(mContext)
                 .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
-                .placeholder(R.drawable.placeholder_album)
-                .error(R.drawable.placeholder_album)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
                 .centerCrop()
@@ -89,8 +94,8 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
                     public void onError() {
                         mPicasso.with(mContext)
                                 .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
-                                .placeholder(R.drawable.placeholder_album)
-                                .error(R.drawable.placeholder_album)
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(250, 250)
                                 .centerCrop()
                                 .transform(new AlbumTransform())
@@ -102,12 +107,6 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
             holder.mCheckBox.setChecked(true);
         }
 
-        holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (positionOnSelectItem != position) {
-                mPresenter.clickAlbum(positionOnSelectItem);
-                positionOnSelectItem = position;
-            }
-        });
         setAnimation(holder.itemView);
     }
 
@@ -115,6 +114,7 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
         viewToAnimate.startAnimation(animation);
     }
+
     @Override
     public int getItemCount() {
         return mAlbumRealmList.size();
@@ -130,6 +130,14 @@ public class AddPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<AddPhot
         ImageViewSquare mView;
         @BindView(R.id.check_album_add)
         CheckBox mCheckBox;
+
+        @OnClick(R.id.check_album_add)
+        void clickOnAlbum() {
+            if (positionOnSelectItem != getAdapterPosition()) {
+                mPresenter.clickAlbum(positionOnSelectItem);
+                positionOnSelectItem = getAdapterPosition();
+            }
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);

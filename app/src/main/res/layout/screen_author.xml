@@ -1,83 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.nenton.photon.ui.screens.author.AuthorView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/author_avatar_IV"
-                style="@style/Avatar"
-                tools:background="@color/black"/>
-
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:orientation="vertical">
+                android:layout_margin="16dp"
+                android:isScrollContainer="true"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/author_login_TV"
-                    style="@style/TextFullName"
-                    tools:text="rufus21"/>
+                <ImageView
+                    android:id="@+id/author_avatar_IV"
+                    style="@style/Avatar"
+                    tools:background="@color/black"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/author_login_TV"
+                        style="@style/TextFullName"
+                        tools:text="rufus21"/>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="16dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <TextView
-                            style="@style/TextCountTitle"
-                            android:text="Альбомы"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="16dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/author_albums_count"
-                            style="@style/TextCount"
-                            tools:text="6"/>
-                    </LinearLayout>
+                            <TextView
+                                style="@style/TextCountTitle"
+                                android:text="Альбомы"/>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/author_albums_count"
+                                style="@style/TextCount"
+                                tools:text="6"/>
+                        </LinearLayout>
 
-                        <TextView
-                            style="@style/TextCountTitle"
-                            android:text="Карты"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/author_photocard_count"
-                            style="@style/TextCount"
-                            tools:text="20"/>
+                            <TextView
+                                style="@style/TextCountTitle"
+                                android:text="Карты"/>
+
+                            <TextView
+                                android:id="@+id/author_photocard_count"
+                                style="@style/TextCount"
+                                tools:text="20"/>
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/author_photocard_RV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/author_photocard_RV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    </android.support.v4.widget.NestedScrollView>
 
-        </android.support.v7.widget.RecyclerView>
-
-    </LinearLayout>
 </com.nenton.photon.ui.screens.author.AuthorView>

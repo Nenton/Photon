@@ -62,7 +62,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
 
         @Provides
         @DaggerScope(AddPhotocardScreen.class)
-        AddPhotocardPresenter provideAccountPresenter() {
+        AddPhotocardPresenter provideAddPhotocardPresenter() {
             return new AddPhotocardPresenter();
         }
     }
@@ -224,7 +224,7 @@ public class AddPhotocardScreen extends AbstractScreen<RootActivity.RootComponen
             }));
         }
 
-        void clickAlbum(int positionOnSelectItem) {
+        public void clickAlbum(int positionOnSelectItem) {
             if (getView() != null) {
                 getView().checkedCurrentAlbum(positionOnSelectItem);
             }

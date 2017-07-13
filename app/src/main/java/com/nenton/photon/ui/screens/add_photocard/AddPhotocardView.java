@@ -43,7 +43,7 @@ import butterknife.OnClick;
  * Created by serge on 18.06.2017.
  */
 
-public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotocardPresenter> implements IAddPhotocardView{
+public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotocardPresenter> implements IAddPhotocardView {
 
     @BindView(R.id.add_album_for_photocard_rv)
     RecyclerView mAlbums;
@@ -95,7 +95,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         super(context, attrs);
     }
 
-    public void addViewTagSelected(final String s){
+    public void addViewTagSelected(final String s) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag_add_photocard, mTagsSelected, false);
         TextView text = (TextView) view.findViewById(R.id.tag_add_photocard_TV);
         text.setText(s);
@@ -143,8 +143,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     public void initView() {
         mAlbums.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
         mAlbums.setAdapter(mAdapter);
-//        mSelectedTags.setLayoutManager(new WordsLayoutManager(getContext()));
-//        mSelectedTags.setAdapter(mTagsSelectedAdapter);
+        mAlbums.setNestedScrollingEnabled(false);
         mAvailableTags.setLayoutManager(new LinearLayoutManager(getContext()));
         mAvailableTags.setAdapter(mTagsSuggestionAdapter);
     }
@@ -258,8 +257,12 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
 
     @OnClick(R.id.check_add_tag)
     public void checkTag() {
-        addViewTagSelected("#" + mAddTags.getText().toString());
-        mPresenter.addString("#" + mAddTags.getText().toString());
+        String s = mAddTags.getText().toString();
+        if (!s.contains("#")) {
+            s = "#" + s;
+        }
+        addViewTagSelected(s);
+        mPresenter.addString(s);
         mAddTags.setText("");
     }
 

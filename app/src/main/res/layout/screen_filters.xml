@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.nenton.photon.ui.screens.search_filters.filters.FilterView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <Button
-        android:id="@+id/search_filters_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ButtonStyle"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="@dimen/spacing_medial_24"
-        android:text="@string/search"/>
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="75dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/include_filters"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp">
+
+            <include layout="@layout/include_filters"/>
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/btn_wrap_filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/search_filters_btn"
+                style="@style/ButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medial_24"
+                android:text="@string/search"/>
+
+            <Button
+                android:id="@+id/reload_filters_btn"
+                style="@style/ButtonStyle.Dialog"
+                android:layout_marginBottom="@dimen/spacing_medial_24"
+                android:text="Сбросить"
+                android:visibility="gone"/>
+        </LinearLayout>
 
 </com.nenton.photon.ui.screens.search_filters.filters.FilterView>

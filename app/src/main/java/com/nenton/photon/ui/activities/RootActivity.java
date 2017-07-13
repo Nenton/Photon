@@ -2,6 +2,7 @@ package com.nenton.photon.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -104,6 +107,7 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         BundleServiceRunner.getBundleServiceRunner(this).onCreate(savedInstanceState);
         ButterKnife.bind(this);
         RootComponent rootComponent = DaggerService.getDaggerComponent(this);
@@ -146,6 +150,14 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
         mDrawerLayout.setDrawerListener(mToggle);
         mToggle.syncState();
+    }
+
+    public void stateBottomNavView(boolean is){
+        if (is){
+            mBottomNavigationView.setVisibility(View.VISIBLE);
+        } else {
+            mBottomNavigationView.setVisibility(View.GONE);
+        }
     }
 
     @Override

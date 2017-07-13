@@ -107,5 +107,9 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
                 }
             }
         }
+
+        public void reloadFilters() {
+            mSearchFilterQuery = new SearchFilterQuery();
+        }
     }
 }

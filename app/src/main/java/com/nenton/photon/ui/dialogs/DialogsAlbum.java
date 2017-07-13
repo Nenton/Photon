@@ -26,21 +26,6 @@ public class DialogsAlbum {
         Button ok = (Button) view.findViewById(R.id.add_album_ok_btn);
         Button cancel = (Button) view.findViewById(R.id.add_album_cancel_btn);
 
-        name_уе.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
-                    name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.black));
-                    name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    name_уе.setHint("Имя");
-                } else {
-                    name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    name_уе.setHint("Имя (Не валидное имя)");
-                }
-            }
-        });
-
         ok.setOnClickListener(v -> {
             String name = name_уе.getEditText().getText().toString();
             String description = description_et.getEditText().getText().toString();
@@ -56,6 +41,21 @@ public class DialogsAlbum {
                             dialog.cancel();
                         });
                 builder.create().show();
+            } else {
+                name_уе.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.black));
+                            name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            name_уе.setHint("Имя");
+                        } else {
+                            name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            name_уе.setHint("Имя (Не валидное имя)");
+                        }
+                    }
+                });
             }
         });
 
@@ -64,6 +64,7 @@ public class DialogsAlbum {
         AlertDialog dialog = builder.setTitle("Новый альбом")
                 .setView(view)
                 .create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_animation;
 
         cancel.setOnClickListener(v -> {
             dialog.cancel();
@@ -82,21 +83,6 @@ public class DialogsAlbum {
         name_til.getEditText().setText(titleOld);
         description_til.getEditText().setText(descriptionOld);
 
-        name_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
-                    name_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
-                    name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    name_til.setHint("Имя");
-                } else {
-                    name_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    name_til.setHint("Имя (Не валидное имя)");
-                }
-            }
-        });
-
         ok.setOnClickListener(v -> {
             String name = name_til.getEditText().getText().toString();
             String description = description_til.getEditText().getText().toString();
@@ -112,6 +98,21 @@ public class DialogsAlbum {
                             dialog.cancel();
                         });
                 builder.create().show();
+            } else {
+                name_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            name_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
+                            name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            name_til.setHint("Имя");
+                        } else {
+                            name_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            name_til.setHint("Имя (Не валидное имя)");
+                        }
+                    }
+                });
             }
         });
 
@@ -119,6 +120,7 @@ public class DialogsAlbum {
         AlertDialog dialog = builder.setTitle("Редактирование альбома")
                 .setView(view)
                 .create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_animation;
 
         cancel.setOnClickListener(v -> {
             dialog.cancel();

@@ -31,36 +31,6 @@ public class DialogEditUser {
         Button okBtn = (Button) view.findViewById(R.id.edit_positive_btn);
         Button cancelBtn = (Button) view.findViewById(R.id.edit_negative_btn);
 
-        login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_LOGIN)) {
-                    login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    login_ti.setHint("Логин");
-                } else {
-                    login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    login_ti.setHint("Логин (Не валидный логин)");
-                }
-            }
-        });
-
-        name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
-                    name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    name_ti.setHint("Имя");
-                } else {
-                    name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    name_ti.setHint("Имя (Не валидное имя)");
-                }
-            }
-        });
-
 
         okBtn.setOnClickListener(v -> {
             String login = login_ti.getEditText().getText().toString();
@@ -68,6 +38,36 @@ public class DialogEditUser {
 
             if (login.matches(ConstantsManager.REG_EXP_LOGIN) && name.matches(ConstantsManager.REG_EXP_NAME)) {
                 listener.action(name, login);
+            } else {
+                login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_LOGIN)) {
+                            login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            login_ti.setHint("Логин");
+                        } else {
+                            login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            login_ti.setHint("Логин (Не валидный логин)");
+                        }
+                    }
+                });
+
+                name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            name_ti.setHint("Имя");
+                        } else {
+                            name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            name_ti.setHint("Имя (Не валидное имя)");
+                        }
+                    }
+                });
             }
         });
 
@@ -75,6 +75,7 @@ public class DialogEditUser {
         AlertDialog dialog = builder.setTitle("Редактирование профиля")
                 .setView(view)
                 .create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_animation;
 
         cancelBtn.setOnClickListener(v -> {
             dialog.cancel();

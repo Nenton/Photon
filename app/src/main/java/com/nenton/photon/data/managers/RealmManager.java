@@ -165,7 +165,8 @@ public class RealmManager {
                 .asObservable()
                 .filter(RealmResults::isLoaded)
                 .flatMap(Observable::from)
-                .filter(albumRealm1 -> albumRealm1.getId().equals(id));
+                .filter(albumRealm1 -> albumRealm1.getId().equals(id))
+                .first();
     }
 
     public void saveUserInfo(UserRealm userRealm) {

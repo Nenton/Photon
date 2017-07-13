@@ -18,7 +18,6 @@ import com.nenton.photon.utils.AlbumTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +76,8 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
 
         picasso.with(mContext)
                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
-                .placeholder(R.drawable.placeholder_album)
-                .error(R.drawable.placeholder_album)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(500, 500)
                 .centerCrop()
@@ -93,8 +92,8 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AccountVie
                     public void onError() {
                         picasso.with(mContext)
                                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
-                                .placeholder(R.drawable.placeholder_album)
-                                .error(R.drawable.placeholder_album)
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(500, 500)
                                 .centerCrop()
                                 .transform(new AlbumTransform())

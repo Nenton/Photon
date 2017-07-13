@@ -1,13 +1,20 @@
 package com.nenton.photon.ui.screens.photocard;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,11 +27,17 @@ import com.nenton.photon.data.storage.realm.StringRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IPhotocardView;
+import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoBigTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.ChangeImageTransform;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import javax.inject.Inject;
 
@@ -38,7 +51,7 @@ import butterknife.OnClick;
 public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresenter> implements IPhotocardView {
 
     @BindView(R.id.photo_IV)
-    ImageView mPhoto;
+    ImageViewSquare mPhoto;
     @BindView(R.id.name_photocard)
     TextView mName;
     @BindView(R.id.album_count_TV)
@@ -57,11 +70,15 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     FlexboxLayout mFlexboxLayout;
     @BindView(R.id.info_user_wrap)
     LinearLayout mUserWrap;
+    @BindView(R.id.photo_wrap)
+    FrameLayout mPhotoWrap;
 
     @OnClick(R.id.avatar_photocard_IV)
     public void clickOnAuthor() {
         mPresenter.clickOnAuthor();
     }
+
+    private float y;
 
     @Inject
     Picasso mPicasso;
@@ -92,29 +109,46 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         viewToAnimate.startAnimation(animation);
     }
 
-//    @Override
-//    protected void afterInflate() {
-//        mNested.getViewTreeObserver().addOnScrollChangedListener(new ScrollPositionObserver());
-//    }
+    @Override
+    protected void afterInflate() {
+        mNested.setOnTouchListener((v, event) -> {
+            float width = mPhoto.getWidth();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    y = event.getY();
+                }
+                case MotionEvent.ACTION_MOVE: {
+                    width = (mPhoto.getHeight() + (event.getY() - y)) / mPhoto.getHeight() * mPhoto.getWidth();
+                    if (mPhotoWrap.getMeasuredWidth() < width && width < mPhotoWrap.getMeasuredWidth() * 1.5) {
+                        y = event.getY();
+                        LayoutParams layoutParams = new LayoutParams((int) width, ((int) (mPhoto.getHeight() + event.getY() - y)));
+                        mPhoto.setX((mPhotoWrap.getMeasuredWidth() - width) / 2);
+                        mPhoto.setLayoutParams(layoutParams);
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_UP: {
+                    normalStateWithAnim();
+                    break;
+                }
+            }
+            return super.onTouchEvent(event);
+        });
+    }
 
-//    private class ScrollPositionObserver implements ViewTreeObserver.OnScrollChangedListener {
-//
-//        private int mImageViewHeight;
-//
-//        public ScrollPositionObserver() {
-//            mImageViewHeight = mNested.getScrollY();
-//            mImageViewHeight = mNested.getScrollY();
-//        }
-//
-//        @Override
-//        public void onScrollChanged() {
-//            mImageViewHeight = mNested.getScrollY();
-//            int scrollY = Math.min(Math.max(mNested.getScrollY(), 0), mImageViewHeight);
-//
-//            mPhoto.setScaleX(2f - (float)scrollY/200);
-//            mPhoto.setScaleY(2f - (float)scrollY/200);
-//        }
-//    }
+    private void normalStateWithAnim() {
+        ValueAnimator animWidth = ValueAnimator.ofInt(mPhoto.getMeasuredWidth(), mPhotoWrap.getMeasuredWidth());
+        animWidth.addUpdateListener(valueAnimator -> {
+            int val = (Integer) valueAnimator.getAnimatedValue();
+            ViewGroup.LayoutParams layoutParams = mPhoto.getLayoutParams();
+            layoutParams.width = val;
+            mPhoto.setX((mPhotoWrap.getMeasuredWidth() - val) / 2);
+            mPhoto.setLayoutParams(layoutParams);
+        });
+        animWidth.setDuration(300);
+        animWidth.setInterpolator(new FastOutSlowInInterpolator());
+        animWidth.start();
+    }
 
     @Override
     public void initUser(UserInfoDto infoDto) {
@@ -194,10 +228,12 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 
     @Override
     public void initPhoto(PhotocardRealm photocard) {
-
         mName.setText(photocard.getTitle());
 
-        mPicasso.load(photocard.getPhoto())
+        mPicasso.with(getContext())
+                .load(photocard.getPhoto())
+                .placeholder(R.drawable.splash)
+                .error(R.drawable.splash)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .fit()
                 .centerCrop()
@@ -211,6 +247,8 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
+                                .placeholder(R.drawable.splash)
+                                .error(R.drawable.splash)
                                 .fit()
                                 .centerCrop()
                                 .transform(new PhotoBigTransform())
@@ -225,4 +263,5 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 
         mUserWrap.setVisibility(GONE);
     }
+
 }

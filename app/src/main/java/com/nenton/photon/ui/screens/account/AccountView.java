@@ -89,6 +89,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
 
     @Override
     public void showAuthState(UserRealm userRealm) {
+        mRecycleView.setNestedScrollingEnabled(false);
         mUserWrap.setVisibility(VISIBLE);
         mNoUserWrap.setVisibility(GONE);
 
@@ -139,6 +140,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
         }
 
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAccountAdapter);
     }

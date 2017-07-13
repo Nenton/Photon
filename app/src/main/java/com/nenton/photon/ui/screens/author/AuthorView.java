@@ -64,7 +64,7 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
 
     @Override
     public void initView(UserRealm userRealm) {
-
+        mRecycleView.setNestedScrollingEnabled(false);
         mPicasso.with(getContext())
                 .load(userRealm.getAvatar())
                 .error(R.drawable.ic_account_black_24dp)
@@ -106,6 +106,7 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
         mPhotocardCount.setText(String.valueOf(countPhotocard));
 
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAuthorAdapter);
     }

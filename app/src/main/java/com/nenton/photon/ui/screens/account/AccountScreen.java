@@ -305,8 +305,9 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             mCompSubs.add(mModel.signUp(createReq).subscribe(new ViewSubscriber<SignUpRes>() {
                 @Override
                 public void onNext(SignUpRes signUpRes) {
-                    if (getView() != null) {
+                    if (getView() != null && getRootView() != null) {
                         getView().cancelSignUp();
+                        getRootView().showMessage("Пользователь успешно зарегистрирован");
                     }
                 }
             }));

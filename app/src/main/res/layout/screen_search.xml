@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.nenton.photon.ui.screens.search_filters.search.SearchTitleView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/search_wrap"
@@ -13,17 +13,19 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_big_48"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:paddingRight="16dp"
+            android:paddingTop="16dp">
 
             <EditText
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@null"
                 android:layout_toLeftOf="@+id/back_and_check"
+                android:background="@null"
                 android:hint="Поиск"
                 android:inputType="text"/>
 
@@ -33,8 +35,8 @@
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical|right"
-                android:layout_toLeftOf="@+id/reboot_settings_search"
                 android:layout_marginRight="@dimen/spacing_normal_16"
+                android:layout_toLeftOf="@+id/reboot_settings_search"
                 android:background="@drawable/ic_custom_back_arrow_black_24dp"/>
 
             <ImageButton
@@ -52,12 +54,19 @@
             android:layout_height="1dp"
             android:background="@color/darkGrey"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/search_rv"
+        <LinearLayout
+            android:id="@+id/suggest_search_wrap"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"/>
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -66,6 +75,7 @@
 
 
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_tags_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/search_wrap">
@@ -79,9 +89,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
+                    android:fontFamily="@string/roboto_medium"
                     android:text="Тэги"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
+                    android:textColor="@color/black"/>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/flexbox_search"
@@ -89,9 +99,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    app:flexWrap="wrap"
+                    app:alignContent="stretch"
                     app:alignItems="stretch"
-                    app:alignContent="stretch"/>
+                    app:flexWrap="wrap"/>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

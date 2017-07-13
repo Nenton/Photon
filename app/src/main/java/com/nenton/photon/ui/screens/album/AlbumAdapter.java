@@ -1,6 +1,7 @@
 package com.nenton.photon.ui.screens.album;
 
 import android.content.Context;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Callback;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     private List<PhotocardRealm> mPhotocards = new ArrayList<>();
     private int posLongTap = -1;
     private Context mContext;
+    private ViewGroup parentWrap;
 
     public void addPhotocard(PhotocardRealm album) {
         mPhotocards.add(album);
@@ -57,6 +62,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     @Override
     public AlbumAdapter.AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
+        parentWrap = parent;
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo_album, parent, false);
         return new AccountViewHolder(convertView);
     }
@@ -71,7 +77,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
     public void onBindViewHolder(AlbumAdapter.AccountViewHolder holder, int position) {
         PhotocardRealm mPhoto = mPhotocards.get(position);
 
-        picasso.load(mPhoto.getPhoto()).networkPolicy(NetworkPolicy.OFFLINE)
+        picasso.with(mContext)
+                .load(mPhoto.getPhoto())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
                 .centerCrop()
                 .into(holder.mPhoto, new Callback() {
@@ -83,6 +93,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
                     @Override
                     public void onError() {
                         picasso.load(mPhoto.getPhoto())
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(250, 250)
                                 .centerCrop()
                                 .into(holder.mPhoto);
@@ -95,6 +107,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
         viewToAnimate.startAnimation(animation);
     }
+
     @Override
     public int getItemCount() {
         return mPhotocards.size();
@@ -123,6 +136,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
                     mPresenter.updateLongTapAdapter(posLongTap);
                 }
                 posLongTap = getAdapterPosition();
+                Transition transition = new Fade();
+                transition.setDuration(300);
+                transition.addTarget(mLongTapWrap);
+                transition.setInterpolator(new FastOutSlowInInterpolator());
+                TransitionManager.beginDelayedTransition(parentWrap, transition);
                 mLongTapWrap.setVisibility(View.VISIBLE);
                 return true;
             }

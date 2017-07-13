@@ -14,7 +14,6 @@ import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
-import com.nenton.photon.ui.screens.add_photocard.AddPhotocardScreen;
 import com.nenton.photon.utils.AlbumTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -78,8 +77,8 @@ public class EditPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<EditPh
 
         mPicasso.with(mContext)
                 .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
-                .placeholder(R.drawable.placeholder_album)
-                .error(R.drawable.placeholder_album)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
                 .centerCrop()
@@ -94,8 +93,8 @@ public class EditPhotocardSelectAlbumAdapter extends RecyclerView.Adapter<EditPh
                     public void onError() {
                         mPicasso.with(mContext)
                                 .load(!albumRealm.getPhotocards().isEmpty() ? albumRealm.getPhotocards().get(0).getPhoto() : null)
-                                .placeholder(R.drawable.placeholder_album)
-                                .error(R.drawable.placeholder_album)
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(250, 250)
                                 .centerCrop()
                                 .transform(new AlbumTransform())

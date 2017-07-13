@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.network.errors.ApiError;
 import com.nenton.photon.data.storage.dto.UserInfoDto;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.data.storage.realm.UserRealm;
@@ -22,6 +23,7 @@ import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.author.AuthorScreen;
+import com.nenton.photon.utils.NetworkStatusChecker;
 import com.squareup.picasso.Picasso;
 
 import dagger.Provides;
@@ -141,7 +143,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
         @Override
         public void downloadPhoto() {
-            if (!mPhotocard.getPhoto().isEmpty()) {
+            if (!mPhotocard.getPhoto().isEmpty() && NetworkStatusChecker.isNetworkAvailible()) {
                 DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
 
                 r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
@@ -150,6 +152,8 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
                 DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
                 dm.enqueue(r);
+            } else {
+                getRootView().showError(new ApiError("Интернет недоступен попробуйте позже"));
             }
         }
 

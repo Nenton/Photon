@@ -73,11 +73,11 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
 
         private SearchQuery mSearchFilterQuery = new SearchQuery();
 
-        public void addString(String s){
+        public void addString(String s) {
             mStringSet.add(s);
         }
 
-        public void removeString(String s){
+        public void removeString(String s) {
             mStringSet.remove(s);
         }
 
@@ -101,31 +101,33 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
             mCompSubs.add(mModel.getPhotocardTagsObs().subscribe(new ViewSubscriber<String>() {
                 @Override
                 public void onNext(String s) {
-                    if (getView() != null){
+                    if (getView() != null) {
                         getView().addViewFlex(s);
                     }
                 }
             }));
-            if (getView() != null){
+            if (getView() != null) {
                 getView().initView(mModel.getStrings());
             }
         }
 
         @Override
         public void clickOnStringQuery(String s) {
-            if (getView() != null){
+            if (getView() != null) {
                 getView().setTextSearchViewByQueryString(s);
             }
         }
 
         @Override
         public void clickOnSearch(CharSequence query) {
-            mModel.saveSearchString(query.toString());
+            if (!query.toString().isEmpty()) {
+                mModel.saveSearchString(query.toString());
+            }
             mSearchFilterQuery.setTags(mStringSet);
             mSearchFilterQuery.setTitle(query.toString());
             mRootPresenter.setSearchQuery(mSearchFilterQuery);
             mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
-            if (getView() != null){
+            if (getView() != null) {
                 Flow.get(getView().getContext()).set(new MainScreen());
             }
         }

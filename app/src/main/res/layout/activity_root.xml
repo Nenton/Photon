@@ -46,6 +46,7 @@
             android:layout_gravity="bottom"
             android:background="@android:color/white"
             app:elevation="@dimen/spacing_normal_16"
+            app:layout_insetEdge="bottom"
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
             app:layout_behavior=".ui.behaviors.BottomNavigationBehavior"

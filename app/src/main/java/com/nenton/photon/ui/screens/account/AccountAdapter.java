@@ -14,12 +14,10 @@ import android.widget.TextView;
 import com.nenton.photon.R;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.di.DaggerService;
-import com.nenton.photon.ui.screens.album.AlbumScreen;
 import com.nenton.photon.utils.AlbumTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import flow.Flow;
 
 /**
  * Created by serge_000 on 06.06.2017.
@@ -87,8 +84,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
 
         picasso.with(mContext)
                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
-                .placeholder(R.drawable.placeholder_album)
-                .error(R.drawable.placeholder_album)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(500, 500)
                 .centerCrop()
@@ -103,8 +100,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
                     public void onError() {
                         picasso.with(mContext)
                                 .load(!album.getPhotocards().isEmpty() ? album.getPhotocards().get(0).getPhoto() : null)
-                                .placeholder(R.drawable.placeholder_album)
-                                .error(R.drawable.placeholder_album)
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(500, 500)
                                 .centerCrop()
                                 .transform(new AlbumTransform())

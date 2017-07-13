@@ -167,6 +167,7 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
+            ((RootActivity) getRootView()).stateBottomNavView(true);
             initView();
         }
 
@@ -239,8 +240,9 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     .subscribe(new ViewSubscriber<SignUpRes>() {
                         @Override
                         public void onNext(SignUpRes signUpRes) {
-                            if (getView() != null){
+                            if (getView() != null && getRootView() != null){
                                 getView().cancelSignUp();
+                                getRootView().showMessage("Пользователь успешно зарегистрирован");
                                 getView().signIn();
                             }
                         }

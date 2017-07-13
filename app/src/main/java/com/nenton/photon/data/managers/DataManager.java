@@ -7,6 +7,7 @@ import com.nenton.photon.data.network.RestCallTransformer;
 import com.nenton.photon.data.network.RestService;
 import com.nenton.photon.data.network.errors.AccessError;
 import com.nenton.photon.data.network.errors.ApiError;
+import com.nenton.photon.data.network.errors.NetworkAvailableError;
 import com.nenton.photon.data.network.req.AlbumCreateReq;
 import com.nenton.photon.data.network.req.AlbumEditReq;
 import com.nenton.photon.data.network.req.PhotoIdReq;
@@ -33,6 +34,7 @@ import com.nenton.photon.di.modules.LocalModule;
 import com.nenton.photon.di.modules.NetworkModule;
 import com.nenton.photon.utils.App;
 import com.nenton.photon.utils.AppConfig;
+import com.nenton.photon.utils.NetworkStatusChecker;
 import com.nenton.photon.utils.SearchFilterQuery;
 import com.nenton.photon.utils.SearchQuery;
 
@@ -131,7 +133,8 @@ public class DataManager {
 
     @RxLogObservable
     public Observable<String> getPhotocardTagsObs() {
-        return mRestService.getTagsObs()
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.getTagsObs() : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -167,7 +170,8 @@ public class DataManager {
 
     @RxLogObservable
     public Observable<SignInRes> singIn(UserLoginReq loginReq) {
-        return mRestService.signIn(loginReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.signIn(loginReq) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(signInResResponse -> {
@@ -189,7 +193,8 @@ public class DataManager {
     }
 
     public Observable<SignUpRes> singUp(UserCreateReq createReq) {
-        return mRestService.signUp(createReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.signUp(createReq) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(signInResResponse -> {
@@ -224,7 +229,8 @@ public class DataManager {
 
     @RxLogObservable
     public Observable<UserRealm> getUserFromNetwork(String id) {
-        return mRestService.getUserInfoObs(id)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.getUserInfoObs(id) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -251,8 +257,10 @@ public class DataManager {
     }
 
     public Observable<UserEditRes> editUserInfoObs(UserEditReq userEditReq) {
-        return mRestService.editUserInfoObs(getPreferencesManager().getAuthToken(),
-                getPreferencesManager().getUserId(), userEditReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.editUserInfoObs(getPreferencesManager().getAuthToken(),
+                        getPreferencesManager().getUserId(), userEditReq)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {
@@ -269,7 +277,10 @@ public class DataManager {
     }
 
     public Observable<String> uploadPhoto(MultipartBody.Part file) {
-        return mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), file)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.uploadPhoto(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), file)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
@@ -286,7 +297,10 @@ public class DataManager {
     }
 
     public Observable<String> createPhotocard(PhotocardReq photocardReq) {
-        return mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.createPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardReq)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
@@ -302,7 +316,10 @@ public class DataManager {
     }
 
     public Observable<Boolean> addToFav(String photocardId) {
-        return mRestService.addPhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.addPhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(photoResResponse -> {
@@ -318,7 +335,10 @@ public class DataManager {
     }
 
     public Observable<Boolean> deleteFromFav(String photocardId) {
-        return mRestService.deletePhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.deletePhotocardFavObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photocardId)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(photoResResponse -> {
@@ -334,7 +354,8 @@ public class DataManager {
     }
 
     public Observable<Boolean> addViewsToPhotocard(String photoId) {
-        return mRestService.addPhotocardViewsObs(photoId, new PhotoIdReq(getPreferencesManager().getUserId()))
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.addPhotocardViewsObs(photoId, new PhotoIdReq(getPreferencesManager().getUserId())) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -350,7 +371,8 @@ public class DataManager {
     }
 
     public Observable<PhotocardRealm> getPhotocardObs(String dateLastModified, String userId, String photoId) {
-        return mRestService.getPhotocardObs(dateLastModified, userId, photoId)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.getPhotocardObs(dateLastModified, userId, photoId) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -368,7 +390,10 @@ public class DataManager {
     }
 
     public Observable<Photocard> editPhotocardObs(String photoId, PhotocardReq photocardReq) {
-        return mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId, photocardReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.editPhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId, photocardReq)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {
@@ -384,7 +409,10 @@ public class DataManager {
     }
 
     public Observable<Object> deletePhotocardObs(String photoId) {
-        return mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.deletePhotocardObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), photoId)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {
@@ -400,7 +428,8 @@ public class DataManager {
     }
 
     public Observable<AlbumRealm> getAlbumListObs(String userId, int limit, int offset) {
-        return mRestService.getAlbumListObs(userId, limit, offset)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.getAlbumListObs(userId, limit, offset) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -419,7 +448,8 @@ public class DataManager {
     }
 
     public Observable<AlbumRealm> getAlbumObs(String userId, String id) {
-        return mRestService.getAlbumObs(userId, id)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ? mRestService.getAlbumObs(userId, id) : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> {
@@ -437,7 +467,10 @@ public class DataManager {
     }
 
     public Observable<Album> createAlbumObs(AlbumCreateReq albumCreateReq) {
-        return mRestService.createAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), albumCreateReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.createAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), albumCreateReq)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {
@@ -453,7 +486,10 @@ public class DataManager {
     }
 
     public Observable<Album> editAlbumObs(String id, AlbumEditReq albumEditReq) {
-        return mRestService.editAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id, albumEditReq)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.editAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id, albumEditReq)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {
@@ -470,7 +506,10 @@ public class DataManager {
     }
 
     public Observable<Object> deleteAlbumObs(String id) {
-        return mRestService.deleteAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id)
+        return NetworkStatusChecker.isInternetAvailible()
+                .flatMap(aBoolean -> aBoolean ?
+                        mRestService.deleteAlbumObs(getPreferencesManager().getAuthToken(), getPreferencesManager().getUserId(), id)
+                        : Observable.error(new NetworkAvailableError()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.io())
                 .flatMap(response -> {

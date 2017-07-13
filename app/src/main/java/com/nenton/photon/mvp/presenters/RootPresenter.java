@@ -170,7 +170,7 @@ public class RootPresenter extends Presenter<IRootView> {
             return this;
         }
 
-        public MenuPopupBuilder addMenuPopup(PopupMenuItem menuPopup){
+        public MenuPopupBuilder addMenuPopup(PopupMenuItem menuPopup) {
             items.add(menuPopup);
             return this;
         }

@@ -30,66 +30,6 @@ public class DialogSign {
         Button okBtn = (Button) view.findViewById(R.id.sign_up_positive_btn);
         Button cancelBtn = (Button) view.findViewById(R.id.sign_up_negative_btn);
 
-        login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_LOGIN)) {
-                    login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    login_ti.setHint("Логин");
-                } else {
-                    login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    login_ti.setHint("Логин (Не валидный логин)");
-                }
-            }
-        });
-
-        email_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
-                    email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    email_ti.setHint("E-mail");
-                } else {
-                    email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    email_ti.setHint("E-mail (Не валидный E-mail)");
-                }
-            }
-        });
-
-        name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
-                    name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    name_ti.setHint("Имя");
-                } else {
-                    name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    name_ti.setHint("Имя (Не валидное имя)");
-                }
-            }
-        });
-
-        password_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
-                    password_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    password_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    password_ti.setHint("Пароль");
-                } else {
-                    password_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    password_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    password_ti.setHint("Пароль (Не валидный пароль)");
-                }
-            }
-        });
-
         okBtn.setOnClickListener(v -> {
             String login = login_ti.getEditText().getText().toString();
             String email = email_ti.getEditText().getText().toString();
@@ -101,6 +41,66 @@ public class DialogSign {
                     && name.matches(ConstantsManager.REG_EXP_NAME)
                     && password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
                 listener.action(new UserCreateReq(name, login, email, password));
+            } else {
+                login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_LOGIN)) {
+                            login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            login_ti.setHint("Логин");
+                        } else {
+                            login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            login_ti.setHint("Логин (Не валидный логин)");
+                        }
+                    }
+                });
+
+                email_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
+                            email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            email_ti.setHint("E-mail");
+                        } else {
+                            email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            email_ti.setHint("E-mail (Не валидный E-mail)");
+                        }
+                    }
+                });
+
+                name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            name_ti.setHint("Имя");
+                        } else {
+                            name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            name_ti.setHint("Имя (Не валидное имя)");
+                        }
+                    }
+                });
+
+                password_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
+                            password_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            password_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            password_ti.setHint("Пароль");
+                        } else {
+                            password_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            password_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            password_ti.setHint("Пароль (Не валидный пароль)");
+                        }
+                    }
+                });
             }
         });
 
@@ -108,6 +108,7 @@ public class DialogSign {
         AlertDialog signUp = builder.setTitle("Регистрация")
                 .setView(view)
                 .create();
+        signUp.getWindow().getAttributes().windowAnimations = R.style.dialog_animation;
 
         cancelBtn.setOnClickListener(v -> {
             signUp.cancel();
@@ -127,43 +128,42 @@ public class DialogSign {
         Button okBtn = (Button) view.findViewById(R.id.sign_in_positive_btn);
         Button cancelBtn = (Button) view.findViewById(R.id.sign_in_negative_btn);
 
-        email_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
-                    email_til.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    email_til.setHint("E-mail");
-                } else {
-                    email_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    email_til.setHint("E-mail (Не валидный E-mail)");
-                }
-            }
-        });
-
-        password_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
-                    password_til.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
-                    password_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                    password_til.setHint("Пароль");
-                } else {
-                    password_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
-                    password_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                    password_til.setHint("Пароль (Не валидный пароль)");
-                }
-            }
-        });
-
-
         okBtn.setOnClickListener(v -> {
             String email = email_til.getEditText().getText().toString();
             String password = password_til.getEditText().getText().toString();
 
             if (email.matches(ConstantsManager.REG_EXP_EMAIL) && password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
                 listener.action(new UserLoginReq(email, password));
+            } else {
+                email_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
+                            email_til.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            email_til.setHint("E-mail");
+                        } else {
+                            email_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            email_til.setHint("E-mail (Не валидный E-mail)");
+                        }
+                    }
+                });
+
+                password_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
+                            password_til.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            password_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            password_til.setHint("Пароль");
+                        } else {
+                            password_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            password_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            password_til.setHint("Пароль (Не валидный пароль)");
+                        }
+                    }
+                });
 
             }
         });
@@ -171,6 +171,7 @@ public class DialogSign {
         AlertDialog dialog = builder.setTitle("Вход в аккаунт")
                 .setView(view)
                 .create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_animation;
 
         cancelBtn.setOnClickListener(v -> {
             dialog.cancel();

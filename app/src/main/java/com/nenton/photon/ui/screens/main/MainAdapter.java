@@ -67,7 +67,10 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
         holder.mTextSea.setText(String.valueOf(photocard.getViews()));
         holder.mTextFav.setText(String.valueOf(photocard.getFavorits()));
 
-        mPicasso.load(photocard.getPhoto())
+        mPicasso.with(mContext)
+                .load(photocard.getPhoto())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(500, 500)
                 .centerCrop()
@@ -82,6 +85,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
+                                .placeholder(R.drawable.placeholder)
+                                .error(R.drawable.placeholder)
                                 .resize(500, 500)
                                 .centerCrop()
                                 .transform(new PhotoTransform())
