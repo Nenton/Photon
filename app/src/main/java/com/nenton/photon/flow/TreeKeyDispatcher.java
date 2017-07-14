@@ -10,6 +10,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,6 +22,10 @@ import com.nenton.photon.mortar.ScreenScoper;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.photocard.PhotocardScreen;
 import com.nenton.photon.utils.ViewHelper;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import java.util.Collections;
 import java.util.Map;
@@ -110,19 +115,19 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
             // restore state to new view
             incomingState.restore(newView);
 
-            mRootFrame.addView(newView);
-            ViewHelper.waitForMeasure(newView, (view, width, height) -> runAnimation(mRootFrame, oldView, newView, direction, () -> {
+            ViewHelper.waitForMeasure(newView, (view, width, height) -> runAnimation(mRootFrame, oldView, newView, () -> {
                 if ((outKey) != null && !(inKey instanceof TreeKey)) {
                     ((AbstractScreen) outKey).unregisterScope();
                 }
                 callback.onTraversalCompleted();
             }));
+            mRootFrame.addView(newView);
         }
     }
 
-    private void runAnimation(FrameLayout container, View from, View to, Direction direction, TraversalCallback callback) {
+    private void runAnimation(FrameLayout container, View from, View to, TraversalCallback callback) {
 
-        Animator animator = createAnimation(from, to, direction);
+        Animator animator = createAnimation(from, to);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -134,24 +139,28 @@ public class TreeKeyDispatcher implements Dispatcher, KeyChanger {
         });
         animator.setInterpolator(new FastOutLinearInInterpolator());
         animator.start();
+
     }
 
     @NonNull
-    private Animator createAnimation(@Nullable View from, View to, Direction direction) {
-        boolean backward = direction == Direction.BACKWARD;
+    private Animator createAnimation(@Nullable View from, View to) {
 
         AnimatorSet set = new AnimatorSet();
-
-        int fromTranslation;
+        ObjectAnimator outAnimation = null;
         if (from != null){
-            fromTranslation = backward ? from.getWidth() : -from.getWidth();
-            final ObjectAnimator outAnimation = ObjectAnimator.ofFloat(from, "translationX", fromTranslation);
-            set.play(outAnimation);
+            outAnimation = ObjectAnimator.ofFloat(from, "alpha", 1f, 0f);
+            outAnimation.setDuration(300);
         }
 
-        int toTranslation = backward ? -to.getWidth() : to.getWidth();
-        final ObjectAnimator toAnimation = ObjectAnimator.ofFloat(to, "translationX", toTranslation, 0);
-        set.play(toAnimation);
+        if (from == null){
+            ObjectAnimator toAnimation = ObjectAnimator.ofFloat(to, "alpha", 0f, 1f);
+            toAnimation.setDuration(300);
+            set.play(toAnimation);
+        } else {
+            ObjectAnimator toAnimation = ObjectAnimator.ofFloat(to, "alpha", 0f, 0f, 1f);
+            toAnimation.setDuration(600);
+            set.playTogether(outAnimation, toAnimation);
+        }
         return set;
     }
 }

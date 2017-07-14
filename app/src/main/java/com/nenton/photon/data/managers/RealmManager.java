@@ -144,7 +144,7 @@ public class RealmManager {
                 .where(PhotocardRealm.class);
 
         if (sq.getTitle() != null && !sq.getTitle().isEmpty()) {
-            photocardRealms.contains("title", sq.getTitle());
+            photocardRealms.contains("title", sq.getTitle()).or().contains("tags.string", sq.getTitle());
         }
 
         if (sq.getTags() != null) {

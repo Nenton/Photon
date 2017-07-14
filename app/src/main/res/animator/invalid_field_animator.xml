@@ -3,18 +3,18 @@
     android:ordering="sequentially">
 
     <objectAnimator
-        android:duration="100"
+        android:duration="50"
         android:propertyName="rotationY"
         android:valueTo="2f"
         android:valueType="floatType"/>
 
     <objectAnimator
-        android:duration="100"
+        android:duration="50"
         android:propertyName="rotationY"
         android:valueTo="-2f"
         android:valueType="floatType"/>
     <objectAnimator
-        android:duration="100"
+        android:duration="50"
         android:propertyName="rotationY"
         android:valueTo="0f"
         android:valueType="floatType"/>

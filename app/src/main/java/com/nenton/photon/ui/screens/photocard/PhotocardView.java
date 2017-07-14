@@ -101,6 +101,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag_photocard, mFlexboxLayout, false);
         ((TextView) view.findViewById(R.id.tag_photocard_TV)).setText(s.getString());
         setAnimation(view);
+        view.setOnLongClickListener(v -> {
+            mPresenter.startSearchOneTag(((TextView) view.findViewById(R.id.tag_photocard_TV)).getText().toString());
+            return true;
+        });
         mFlexboxLayout.addView(view);
     }
 

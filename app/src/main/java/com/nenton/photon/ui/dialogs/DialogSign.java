@@ -1,5 +1,7 @@
 package com.nenton.photon.ui.dialogs;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -56,6 +58,14 @@ public class DialogSign {
                         }
                     }
                 });
+                login_ti.getEditText().setText(login_ti.getEditText().getText());
+
+                if (!login.matches(ConstantsManager.REG_EXP_LOGIN)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(login_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
                 email_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
@@ -71,6 +81,14 @@ public class DialogSign {
                         }
                     }
                 });
+                email_ti.getEditText().setText(email_ti.getEditText().getText());
+
+                if (!email.matches(ConstantsManager.REG_EXP_EMAIL)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(email_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
                 name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
@@ -86,6 +104,14 @@ public class DialogSign {
                         }
                     }
                 });
+                name_ti.getEditText().setText(name_ti.getEditText().getText());
+
+                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(name_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
                 password_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
@@ -101,6 +127,14 @@ public class DialogSign {
                         }
                     }
                 });
+                password_ti.getEditText().setText(password_ti.getEditText().getText());
+
+                if (!password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(password_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+            }
             }
         });
 
@@ -149,6 +183,14 @@ public class DialogSign {
                         }
                     }
                 });
+                email_til.getEditText().setText(email_til.getEditText().getText());
+
+                if (!email.matches(ConstantsManager.REG_EXP_EMAIL)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(email_til.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
                 password_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
@@ -164,6 +206,14 @@ public class DialogSign {
                         }
                     }
                 });
+                password_til.getEditText().setText(password_til.getEditText().getText());
+
+                if (!password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(password_til.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
             }
         });

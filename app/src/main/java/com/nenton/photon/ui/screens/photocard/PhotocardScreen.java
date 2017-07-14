@@ -23,8 +23,13 @@ import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
 import com.nenton.photon.ui.screens.author.AuthorScreen;
+import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.nenton.photon.utils.NetworkStatusChecker;
+import com.nenton.photon.utils.SearchQuery;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashSet;
 
 import dagger.Provides;
 import flow.Flow;
@@ -224,6 +229,19 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         public void clickOnAuthor() {
             if (getView() != null) {
                 Flow.get(getView().getContext()).set(new AuthorScreen(mPhotocard.getOwner()));
+            }
+        }
+
+        public void startSearchOneTag(String text) {
+            SearchQuery mSearchFilterQuery = new SearchQuery();
+            HashSet<String> strings = new HashSet<>();
+            strings.add(text);
+            mSearchFilterQuery.setTags(strings);
+            mSearchFilterQuery.setTitle("");
+            mRootPresenter.setSearchQuery(mSearchFilterQuery);
+            mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
+            if (getView() != null) {
+                getRootView().changeOnBottom(R.id.action_home);
             }
         }
 

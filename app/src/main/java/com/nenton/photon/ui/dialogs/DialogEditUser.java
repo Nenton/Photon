@@ -1,5 +1,7 @@
 package com.nenton.photon.ui.dialogs;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +41,7 @@ public class DialogEditUser {
             if (login.matches(ConstantsManager.REG_EXP_LOGIN) && name.matches(ConstantsManager.REG_EXP_NAME)) {
                 listener.action(name, login);
             } else {
+
                 login_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
                     public void afterTextChanged(Editable s) {
@@ -53,6 +56,14 @@ public class DialogEditUser {
                         }
                     }
                 });
+                login_ti.getEditText().setText(login_ti.getEditText().getText());
+
+                if (!login.matches(ConstantsManager.REG_EXP_LOGIN)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(login_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
 
                 name_ti.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
@@ -68,6 +79,13 @@ public class DialogEditUser {
                         }
                     }
                 });
+                name_ti.getEditText().setText(name_ti.getEditText().getText());
+                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(name_ti.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
             }
         });
 

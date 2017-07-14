@@ -1,5 +1,7 @@
 package com.nenton.photon.ui.dialogs;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +44,7 @@ public class DialogsAlbum {
                         });
                 builder.create().show();
             } else {
+
                 name_уе.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
                     public void afterTextChanged(Editable s) {
@@ -56,6 +59,38 @@ public class DialogsAlbum {
                         }
                     }
                 });
+                name_уе.getEditText().setText(name_уе.getEditText().getText());
+
+                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(name_уе.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
+
+                description_et.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            description_et.getEditText().setTextColor(context.getResources().getColor(R.color.black));
+                            description_et.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            description_et.setHint("Описание");
+                        } else {
+                            description_et.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            description_et.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            description_et.setHint("Описание (Количество символов от 3 до 400)");
+                        }
+                    }
+                });
+
+                description_et.getEditText().setText(description_et.getEditText().getText());
+
+                if (!(description.length() > 2 && description.length() < 400)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(description_et.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
             }
         });
 
@@ -90,7 +125,7 @@ public class DialogsAlbum {
             if (name.matches(ConstantsManager.REG_EXP_NAME) && description.length() > 2 && description.length() < 400) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Сохранение альбома")
-                        .setMessage("Вы точно хотите редактировать альбом?")
+                        .setMessage("Вы действительно хотите редактировать альбом?")
                         .setPositiveButton("Да", (dialog, which) -> {
                             action.action(name, description);
                         })
@@ -113,6 +148,39 @@ public class DialogsAlbum {
                         }
                     }
                 });
+
+                name_til.getEditText().setText(name_til.getEditText().getText());
+
+                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(name_til.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
+
+                description_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                            description_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
+                            description_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
+                            description_til.setHint("Описание");
+                        } else {
+                            description_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
+                            description_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
+                            description_til.setHint("Описание (Количество символов от 3 до 400)");
+                        }
+                    }
+                });
+
+                description_til.getEditText().setText(description_til.getEditText().getText());
+
+                if (!(description.length() > 2 && description.length() < 400)) {
+                    AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
+                    set.setTarget(description_til.getEditText());
+                    set.setDuration(300);
+                    set.start();
+                }
             }
         });
 

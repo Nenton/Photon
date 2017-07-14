@@ -212,7 +212,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         public boolean isAlbumOnUser() {
             final boolean[] b = new boolean[1];
             mModel.isAlbumFromUser(mAlbum.getOwner()).subscribe(aBoolean -> {
-                b[0] = aBoolean;
+                b[0] = aBoolean && !mAlbum.isFavorite();
             });
             return b[0];
         }

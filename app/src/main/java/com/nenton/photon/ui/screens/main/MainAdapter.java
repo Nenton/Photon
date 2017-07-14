@@ -72,7 +72,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(500, 500)
+                .resize(250, 250)
                 .centerCrop()
                 .transform(new PhotoTransform())
 
@@ -87,7 +87,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                         mPicasso.load(photocard.getPhoto())
                                 .placeholder(R.drawable.placeholder)
                                 .error(R.drawable.placeholder)
-                                .resize(500, 500)
+                                .resize(250, 250)
                                 .centerCrop()
                                 .transform(new PhotoTransform())
                                 .into(holder.mPhoto);

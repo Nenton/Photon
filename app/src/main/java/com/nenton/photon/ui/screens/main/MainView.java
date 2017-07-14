@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.nenton.photon.R;
 import com.nenton.photon.di.DaggerService;
@@ -24,8 +25,10 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
     private MainAdapter mMainAdapter = new MainAdapter();
     @BindView(R.id.list_photos_main_rv)
     RecyclerView mRecyclerView;
-    @BindView(R.id.anchor_popup_menu)
-    View mView;
+    @BindView(R.id.network_dis_wrap)
+    LinearLayout networkWrap;
+    @BindView(R.id.search_wrap)
+    LinearLayout searchWrap;
 
     private AlertDialog dialogSignIn = null;
     private AlertDialog dialogSignUp = null;
@@ -99,5 +102,26 @@ public class MainView extends AbstractView<MainScreen.MainPresenter> implements 
                 })
                 .create()
                 .show();
+    }
+
+
+    public void showNetworkWrap(){
+        networkWrap.setVisibility(VISIBLE);
+    }
+
+    public void hideNetworkWrap(){
+        if (!(networkWrap.getVisibility() == GONE)){
+            networkWrap.setVisibility(GONE);
+        }
+    }
+
+    public void showSearchWrap(){
+        searchWrap.setVisibility(VISIBLE);
+    }
+
+    public void hideSearchWrap(){
+        if (!(searchWrap.getVisibility() == GONE)){
+            searchWrap.setVisibility(GONE);
+        }
     }
 }

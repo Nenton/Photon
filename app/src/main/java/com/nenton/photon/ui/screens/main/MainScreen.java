@@ -178,26 +178,29 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     case SEARCH:
                         mCompSubs.clear();
                         mCompSubs.add(subscribeOnSearchRealmObs());
-                        getRootView().showSearchSetting("Поиск", () -> {
+                        getRootView().showSearchSetting("Применен поиск", () -> {
                             getView().reloadAdapter();
                             initActionBar();
                             initView();
                         });
+                        getView().showSearchWrap();
                         break;
                     case FILTER:
                         mCompSubs.clear();
                         mCompSubs.add(subscribeOnSearchFilterRealmObs());
-                        getRootView().showFilterSetting("Фильтер", () -> {
+                        getRootView().showFilterSetting("Применен фильтр", () -> {
                             getView().reloadAdapter();
                             initActionBar();
                             initView();
                         });
+                        getView().showSearchWrap();
                         break;
                     case NONE:
                     default:
                         mCompSubs.clear();
                         getView().reloadAdapter();
                         mCompSubs.add(subscribeOnProductRealmObs());
+                        getView().showNetworkWrap();
                 }
             }
         }
@@ -286,6 +289,8 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                 mAdapter.addPhoto(photocardRealm);
                 if (getRootView() != null){
                     getRootView().hideLoad();
+                    getView().hideNetworkWrap();
+                    getView().hideSearchWrap();
                 }
             }
         }
