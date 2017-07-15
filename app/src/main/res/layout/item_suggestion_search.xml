@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/spacing_small_8"
+    android:layout_marginBottom="@dimen/spacing_small_8"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/suggest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="@string/roboto_regular"
+        android:textColor="@color/black"
+        tools:text="Привет"/>
+    <ImageView
+        android:id="@+id/delete_suggest"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_custom_cancel_black_24dp"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

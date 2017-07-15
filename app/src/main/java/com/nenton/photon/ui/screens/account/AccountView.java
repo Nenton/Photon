@@ -1,7 +1,11 @@
 package com.nenton.photon.ui.screens.account;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Build;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +13,7 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,10 +32,13 @@ import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.ConstantsManager;
 import com.nenton.photon.utils.TextWatcherEditText;
+import com.nenton.photon.utils.ViewHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.TransitionManager;
 
 import javax.inject.Inject;
 
@@ -93,34 +101,9 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
         mUserWrap.setVisibility(VISIBLE);
         mNoUserWrap.setVisibility(GONE);
 
-        mPicasso.with(getContext())
-                .load(userRealm.getAvatar())
-                .error(R.drawable.ic_account_black_24dp)
-                .placeholder(R.drawable.ic_account_black_24dp)
-                .networkPolicy(NetworkPolicy.OFFLINE)
-                .resize(200, 200)
-                .centerCrop()
-                .transform(new AvatarTransform())
-                .into(mAvatar, new Callback() {
-                    @Override
-                    public void onSuccess() {
+        insertAvatar(userRealm.getAvatar());
 
-                    }
-
-                    @Override
-                    public void onError() {
-                        mPicasso.with(getContext())
-                                .load(userRealm.getAvatar())
-                                .error(R.drawable.ic_account_black_24dp)
-                                .placeholder(R.drawable.ic_account_black_24dp)
-                                .resize(200, 200)
-                                .centerCrop()
-                                .transform(new AvatarTransform())
-                                .into(mAvatar);
-                    }
-                });
-
-        mLogin.setText(userRealm.getLogin());
+        mLogin.setText(userRealm.getLogin() + " / " + userRealm.getName());
 
         mAccountAdapter.reloadAdapter();
 
@@ -143,10 +126,29 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
 
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAccountAdapter);
+        showAnim();
+    }
+
+    private void showAnim() {
+        final int cx = (int) ViewHelper.getDensity(getContext()) * 44;
+        final int cy = (int) ViewHelper.getDensity(getContext()) * 44;
+
+        Animator showCircleAnim = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            showCircleAnim = ViewAnimationUtils.createCircularReveal(mUserWrap, cx, cy, ViewHelper.getDensity(getContext()) * 28, 1500);
+            showCircleAnim.setDuration(600);
+            showCircleAnim.setStartDelay(mPresenter.getDelayAnim());
+            showCircleAnim.start();
+        }
+        mPresenter.setDelay(0);
     }
 
     @Override
     public void showUnAuthState() {
+        final Fade fade = new Fade();
+        fade.setInterpolator(new FastOutSlowInInterpolator());
+        fade.setDuration(300);
+        TransitionManager.beginDelayedTransition(this, fade);
         mUserWrap.setVisibility(GONE);
         mNoUserWrap.setVisibility(VISIBLE);
     }
@@ -213,7 +215,7 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
     @Override
     public void showDialogEditUserInfo(String loginOld, String nameOld) {
         if (dialogEditUserInfo == null) {
-            dialogEditUserInfo = DialogEditUser.editUserInfoDialog(getContext(), loginOld, nameOld,(name, login) -> {
+            dialogEditUserInfo = DialogEditUser.editUserInfoDialog(getContext(), loginOld, nameOld, (name, login) -> {
                 mPresenter.editUserInfo(name, login);
             });
         }
@@ -240,6 +242,35 @@ public class AccountView extends AbstractView<AccountScreen.AccountPresenter> im
                 })
                 .create()
                 .show();
+    }
+
+    public void insertAvatar(String mAvatarUri) {
+        mPicasso.with(getContext())
+                .load(mAvatarUri)
+                .error(R.drawable.ic_account_black_24dp)
+//                .placeholder(R.drawable.ic_account_black_24dp)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(200, 200)
+                .centerCrop()
+                .transform(new AvatarTransform())
+                .into(mAvatar, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPicasso.with(getContext())
+                                .load(mAvatarUri)
+                                .error(R.drawable.ic_account_black_24dp)
+//                                .placeholder(R.drawable.ic_account_black_24dp)
+                                .resize(200, 200)
+                                .centerCrop()
+                                .transform(new AvatarTransform())
+                                .into(mAvatar);
+                    }
+                });
     }
     //endregion
 }

@@ -58,10 +58,9 @@ public class EditAlbumJob extends Job {
                     Realm realm = Realm.getDefaultInstance();
                     AlbumRealm albumRealm = realm.where(AlbumRealm.class).equalTo("id", mAlbumId).findFirst();
                     UserRealm userRealm = realm.where(UserRealm.class).equalTo("id", DataManager.getInstance().getPreferencesManager().getUserId()).findFirst();
-                    AlbumRealm albumNetwork = new AlbumRealm(album);
                     realm.executeTransaction(realm1 -> {
                         albumRealm.deleteFromRealm();
-                        userRealm.getAlbums().add(albumNetwork);
+                        userRealm.getAlbums().add(new AlbumRealm(album));
                     });
                     realm.close();
                 });

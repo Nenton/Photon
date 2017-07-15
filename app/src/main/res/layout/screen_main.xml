@@ -13,25 +13,25 @@
         android:id="@+id/network_dis_wrap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Интернет не доступен.\nПопробуйте позже."
-            android:fontFamily="@string/roboto_medium"/>
+            style="@style/Text"
+            android:fontFamily="@string/roboto_medium"
+            android:text="Интернет не доступен.\nПопробуйте позже."/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/search_wrap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ничего не найдено."
-            android:fontFamily="@string/roboto_medium"/>
+            style="@style/Text"
+            android:fontFamily="@string/roboto_medium"
+            android:text="Ничего не найдено."/>
     </LinearLayout>
 </com.nenton.photon.ui.screens.main.MainView>

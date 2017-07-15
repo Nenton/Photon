@@ -1,6 +1,7 @@
 package com.nenton.photon.ui.screens.album;
 
 import android.content.Context;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,9 @@ import com.nenton.photon.di.DaggerService;
 import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IAlbumView;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
 
 import butterknife.BindView;
 
@@ -54,6 +58,7 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> implemen
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAccountAdapter);
+        mRecycleView.setNestedScrollingEnabled(false);
         mNameAlbum.setText(mAlbum.getTitle());
         mCountPhoto.setText(String.valueOf(mAlbum.getPhotocards().size()));
         mDescription.setText(mAlbum.getDescription());
@@ -91,6 +96,11 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> implemen
     }
 
     public void updateLongTap(int posLongTap) {
+        Transition transition = new Fade();
+        transition.setDuration(300);
+        transition.addTarget(mRecycleView.getLayoutManager().findViewByPosition(posLongTap).findViewById(R.id.long_tap_photo));
+        transition.setInterpolator(new FastOutSlowInInterpolator());
+        TransitionManager.beginDelayedTransition(mRecycleView, transition);
         mRecycleView.getLayoutManager().findViewByPosition(posLongTap).findViewById(R.id.long_tap_photo).setVisibility(GONE);
     }
 
@@ -105,5 +115,9 @@ public class AlbumView extends AbstractView<AlbumScreen.AlbumPresenter> implemen
                 })
                 .setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
         builder.create().show();
+    }
+
+    public void deletePhotoCount() {
+        mCountPhoto.setText(String.valueOf(Integer.parseInt(mCountPhoto.getText().toString()) - 1));
     }
 }

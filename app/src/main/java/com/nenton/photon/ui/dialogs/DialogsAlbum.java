@@ -32,7 +32,7 @@ public class DialogsAlbum {
             String name = name_уе.getEditText().getText().toString();
             String description = description_et.getEditText().getText().toString();
 
-            if (name.matches(ConstantsManager.REG_EXP_NAME) && description.length() > 2 && description.length() < 400) {
+            if (name.matches(ConstantsManager.REG_EXP_NAME_ALBUM) && description.matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Создание альбома")
                         .setMessage("Вы точно хотите создать альбом?")
@@ -55,40 +55,40 @@ public class DialogsAlbum {
                         } else {
                             name_уе.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             name_уе.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            name_уе.setHint("Имя (Не валидное имя)");
+                            name_уе.setHint("Имя (более 2, нет (!@#$%^&*()\\|_=+-)");
                         }
                     }
                 });
                 name_уе.getEditText().setText(name_уе.getEditText().getText());
 
-                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                if (!name.matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(name_уе.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
                 description_et.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                             description_et.getEditText().setTextColor(context.getResources().getColor(R.color.black));
                             description_et.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
                             description_et.setHint("Описание");
                         } else {
                             description_et.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             description_et.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            description_et.setHint("Описание (Количество символов от 3 до 400)");
+                            description_et.setHint("Описание (от 3 до 400)");
                         }
                     }
                 });
 
                 description_et.getEditText().setText(description_et.getEditText().getText());
 
-                if (!(description.length() > 2 && description.length() < 400)) {
+                if (!(description.matches(ConstantsManager.REG_EXP_NAME_ALBUM))) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(description_et.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
             }
@@ -122,7 +122,7 @@ public class DialogsAlbum {
             String name = name_til.getEditText().getText().toString();
             String description = description_til.getEditText().getText().toString();
 
-            if (name.matches(ConstantsManager.REG_EXP_NAME) && description.length() > 2 && description.length() < 400) {
+            if (name.matches(ConstantsManager.REG_EXP_NAME_ALBUM) && description.matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Сохранение альбома")
                         .setMessage("Вы действительно хотите редактировать альбом?")
@@ -137,48 +137,48 @@ public class DialogsAlbum {
                 name_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                             name_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
                             name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
                             name_til.setHint("Имя");
                         } else {
                             name_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             name_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            name_til.setHint("Имя (Не валидное имя)");
+                            name_til.setHint("Имя (более 2, нет (!@#$%^&*()\\|_=+-)");
                         }
                     }
                 });
 
                 name_til.getEditText().setText(name_til.getEditText().getText());
 
-                if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
+                if (!name.matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(name_til.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
                 description_til.getEditText().addTextChangedListener(new TextWatcherEditText() {
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME)) {
+                        if (s.toString().matches(ConstantsManager.REG_EXP_NAME_ALBUM)) {
                             description_til.getEditText().setTextColor(context.getResources().getColor(R.color.black));
                             description_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
                             description_til.setHint("Описание");
                         } else {
                             description_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             description_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            description_til.setHint("Описание (Количество символов от 3 до 400)");
+                            description_til.setHint("Описание (от 3 до 400)");
                         }
                     }
                 });
 
                 description_til.getEditText().setText(description_til.getEditText().getText());
 
-                if (!(description.length() > 2 && description.length() < 400)) {
+                if (!(description.matches(ConstantsManager.REG_EXP_NAME_ALBUM))) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(description_til.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
             }

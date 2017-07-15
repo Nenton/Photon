@@ -102,13 +102,34 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
                 @Override
                 public void onNext(String s) {
                     if (getView() != null) {
-                        getView().addViewFlex(s);
+                        if (checkTag(s)) {
+                            getView().addViewFlex(s, true);
+                        } else {
+                            getView().addViewFlex(s, false);
+                        }
                     }
                 }
             }));
             if (getView() != null) {
                 getView().initView(mModel.getStrings());
             }
+            if (mRootPresenter.getSearchEnum() == SearchEnum.SEARCH && getView() != null) {
+                mStringSet = new HashSet<>(mRootPresenter.getSearchQuery().getTags());
+                getView().initSearchTitle(mRootPresenter.getSearchQuery().getTitle());
+                getView().setCountTag(mStringSet.size());
+                getView().checkState();
+            }
+        }
+
+        private boolean checkTag(String s) {
+            if (mRootPresenter.getSearchEnum() == SearchEnum.SEARCH) {
+                for (String string : mRootPresenter.getSearchQuery().getTags()) {
+                    if (s.equals(string)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
@@ -137,6 +158,10 @@ public class SearchScreen extends AbstractScreen<SearchFiltersScreen.Component> 
             if (getRootView() != null) {
                 ((RootActivity) getRootView()).onBackPressed();
             }
+        }
+
+        public void deleteSuggest(String s) {
+            mModel.deleteSuggest(s);
         }
     }
 }

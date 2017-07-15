@@ -54,7 +54,7 @@ public class DialogSign {
                         } else {
                             login_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             login_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            login_ti.setHint("Логин (Не валидный логин)");
+                            login_ti.setHint("Логин (более 2, нет (!@#$%^&*()\\|=+-)");
                         }
                     }
                 });
@@ -63,7 +63,7 @@ public class DialogSign {
                 if (!login.matches(ConstantsManager.REG_EXP_LOGIN)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(login_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
@@ -73,11 +73,11 @@ public class DialogSign {
                         if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
                             email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
                             email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                            email_ti.setHint("E-mail");
+                            email_ti.setHint("Email");
                         } else {
                             email_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             email_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            email_ti.setHint("E-mail (Не валидный E-mail)");
+                            email_ti.setHint("Email (Не валидный)");
                         }
                     }
                 });
@@ -86,7 +86,7 @@ public class DialogSign {
                 if (!email.matches(ConstantsManager.REG_EXP_EMAIL)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(email_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
@@ -100,7 +100,7 @@ public class DialogSign {
                         } else {
                             name_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             name_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            name_ti.setHint("Имя (Не валидное имя)");
+                            name_ti.setHint("Имя (более 2, нет (!@#$%^&*()\\|_=+-)");
                         }
                     }
                 });
@@ -109,7 +109,7 @@ public class DialogSign {
                 if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(name_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
@@ -123,7 +123,7 @@ public class DialogSign {
                         } else {
                             password_ti.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             password_ti.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            password_ti.setHint("Пароль (Не валидный пароль)");
+                            password_ti.setHint("Пароль (более 7, нет (!@#$%^&*()\\|_=+-))");
                         }
                     }
                 });
@@ -132,7 +132,7 @@ public class DialogSign {
                 if (!password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(password_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
             }
             }
@@ -175,11 +175,11 @@ public class DialogSign {
                         if (s.toString().matches(ConstantsManager.REG_EXP_EMAIL)) {
                             email_til.getEditText().setTextColor(context.getResources().getColor(R.color.colorAccent));
                             email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.stroke_field));
-                            email_til.setHint("E-mail");
+                            email_til.setHint("Email");
                         } else {
                             email_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             email_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            email_til.setHint("E-mail (Не валидный E-mail)");
+                            email_til.setHint("Email (Не валидный)");
                         }
                     }
                 });
@@ -188,7 +188,7 @@ public class DialogSign {
                 if (!email.matches(ConstantsManager.REG_EXP_EMAIL)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(email_til.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
@@ -202,7 +202,7 @@ public class DialogSign {
                         } else {
                             password_til.getEditText().setTextColor(context.getResources().getColor(R.color.error));
                             password_til.getEditText().setBackground(context.getResources().getDrawable(R.drawable.et_error_state));
-                            password_til.setHint("Пароль (Не валидный пароль)");
+                            password_til.setHint("Пароль (более 7, нет (!@#$%^&*()\\|_=+-))");
                         }
                     }
                 });
@@ -211,7 +211,7 @@ public class DialogSign {
                 if (!password.matches(ConstantsManager.REG_EXP_PASSWORD_SIMPLE)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(password_til.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 

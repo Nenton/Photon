@@ -44,6 +44,7 @@ public abstract class AbstractPresenter<V extends AbstractView, M extends Abstra
         mCompSubs = new CompositeSubscription();
         initActionBar();
         initMenuPopup();
+        getRootView().checkBottomNavView(getView());
     }
 
     @Override

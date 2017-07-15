@@ -1,8 +1,12 @@
 package com.nenton.photon.ui.screens.search_filters.filters;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,9 +40,6 @@ import butterknife.OnClick;
 
 public class FilterView extends AbstractView<FilterScreen.FilterPresenter> implements IFilterView {
 
-    private final int STATE_RELOAD = 800;
-    private final int STATE_CHECK = 900;
-
     @BindViews({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     List<CheckBox> mNuances;
 
@@ -68,14 +69,14 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> imple
     @OnClick(R.id.reload_filters_btn)
     void clickOnReload() {
         reloadQuery();
-        changeState(STATE_CHECK);
+        mPresenter.changeState(mPresenter.STATE_CHECK);
     }
 
     @OnClick({R.id.red_cb, R.id.orange_cb, R.id.yellow_cb, R.id.green_cb, R.id.blue_light_cb, R.id.blue_cb, R.id.purple_cb, R.id.brown_cb, R.id.black_cb, R.id.white_cb,})
     void clickOnCheckbox() {
         for (CheckBox cb : mNuances) {
             if (cb.isChecked()) {
-                changeState(STATE_RELOAD);
+                mPresenter.changeState(mPresenter.STATE_RELOAD);
                 return;
             }
         }
@@ -136,44 +137,44 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> imple
                 ((CheckBox) findViewWithTag(s)).setChecked(true);
             }
         }
-        changeState(STATE_RELOAD);
+        mPresenter.changeState(mPresenter.STATE_RELOAD);
     }
 
     private void initRadioGroup() {
         mDish.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setDish((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
 
         mDecor.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setDecor((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
 
         mTemperature.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setTemperature((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
 
         mLight.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setLight((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
 
         mDir.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setLightDirection((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
 
         mLightSource.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId != RadioGroup.NO_ID)
                 mPresenter.getSearchFilterQuery().setLightSource((String) findViewById(checkedId).getTag());
-            changeState(STATE_RELOAD);
+            mPresenter.changeState(mPresenter.STATE_RELOAD);
         });
     }
 
@@ -182,15 +183,7 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> imple
         initRadioGroup();
     }
 
-    private void changeState(int state) {
-        if (state == STATE_CHECK) {
-            hideReloadBtn();
-        } else {
-            showReloadBtn();
-        }
-    }
-
-    private void showReloadBtn() {
+    public void showReloadBtn() {
         TransitionSet set = new TransitionSet();
         set.addTransition(new ChangeBounds())
                 .addTransition(new Fade())
@@ -204,25 +197,36 @@ public class FilterView extends AbstractView<FilterScreen.FilterPresenter> imple
         params.rightMargin = ((int) (ViewHelper.getDensity(getContext()) * 8));
         params.topMargin = ((int) (ViewHelper.getDensity(getContext()) * 16));
         params.bottomMargin = ((int) (ViewHelper.getDensity(getContext()) * 24));
+
         mFilterBtn.setLayoutParams(params);
+        mReloadBtn.setAlpha(1f);
         mReloadBtn.setVisibility(VISIBLE);
     }
 
-    private void hideReloadBtn() {
-        TransitionSet set = new TransitionSet();
-        set.addTransition(new Fade())
-                .addTransition(new ChangeBounds())
-                .setDuration(300)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
+    public void hideReloadBtn() {
 
-        TransitionManager.beginDelayedTransition(mWrapBtn, set);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mReloadBtn, "alpha", 1f, 0f);
+        animator.setDuration(300);
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mReloadBtn.setVisibility(GONE);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        params.rightMargin = ((int) (ViewHelper.getDensity(getContext()) * 8));
-        params.topMargin = ((int) (ViewHelper.getDensity(getContext()) * 16));
-        params.bottomMargin = ((int) (ViewHelper.getDensity(getContext()) * 24));
-        mFilterBtn.setLayoutParams(params);
-        mReloadBtn.setVisibility(GONE);
+                TransitionSet set = new TransitionSet();
+                set.addTransition(new ChangeBounds())
+                        .setDuration(300)
+                        .setInterpolator(new FastOutSlowInInterpolator());
+
+                TransitionManager.beginDelayedTransition(mWrapBtn, set);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.topMargin = ((int) (ViewHelper.getDensity(getContext()) * 16));
+                params.bottomMargin = ((int) (ViewHelper.getDensity(getContext()) * 24));
+                mFilterBtn.setLayoutParams(params);
+            }
+        });
+        animator.start();
     }
 }

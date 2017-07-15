@@ -272,8 +272,7 @@ public class DataManager {
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(userEditRes -> getPreferencesManager().editUserInfo(new UserInfoDto(userEditRes)));
+                });
     }
 
     public Observable<String> uploadPhoto(MultipartBody.Part file) {
@@ -501,8 +500,7 @@ public class DataManager {
                         default:
                             return Observable.error(new ApiError(response.code()));
                     }
-                })
-                .doOnNext(idRes -> getRealmManager().saveAlbumToRealm(idRes.getId(), albumEditReq));
+                });
     }
 
     public Observable<Object> deleteAlbumObs(String id) {

@@ -16,5 +16,6 @@ public interface ConstantsManager {
     String REG_EXP_PASSWORD_HARD = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}";
     String REG_EXP_PASSWORD_SIMPLE = "[0-9a-zA-Z]{8,}";
     String REG_EXP_NAME = "([a-zA-Zа-яА-Я]){3,}";
+    String REG_EXP_NAME_ALBUM = "([a-zA-Zа-я А-Я0-9]){3,}";
     String REG_EXP_LOGIN = "(?=.*[A-Za-z])[a-zA-Z0-9_]{3,}";
 }

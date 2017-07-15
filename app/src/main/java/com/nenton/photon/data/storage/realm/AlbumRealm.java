@@ -75,8 +75,7 @@ public class AlbumRealm extends RealmObject implements Serializable {
         this.isFavorite = false;
         this.views = 0;
         this.favorits = 0;
-
-        photocards = new RealmList<>();
+        this.photocards = new RealmList<>();
     }
 
     public AlbumRealm(AlbumRealm album, String name, String description) {
@@ -87,7 +86,10 @@ public class AlbumRealm extends RealmObject implements Serializable {
         this.isFavorite = album.isFavorite();
         this.views = album.getViews();
         this.favorits = album.getFavorits();
-        photocards = album.getPhotocards();
+        this.photocards = new RealmList<>();
+        for (PhotocardRealm photo : album.getPhotocards()) {
+            this.photocards.add(photo);
+        }
     }
 
     public boolean isFavorite() {

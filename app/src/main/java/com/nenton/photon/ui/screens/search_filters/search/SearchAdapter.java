@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by serge on 05.06.2017.
@@ -37,6 +38,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchTV> 
         notifyDataSetChanged();
     }
 
+    public void removeString(String s){
+        mStringFilterList.remove(s);
+        notifyDataSetChanged();
+    }
+
     public void addStrings(List<String> ss){
         mStringFilterList = ss;
         notifyDataSetChanged();
@@ -50,7 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchTV> 
 
     @Override
     public SearchTV onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_suggestion, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_suggestion_search, parent, false);
         return new SearchTV(convertView);
     }
 
@@ -80,6 +86,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchTV> 
 
         @BindView(R.id.suggest)
         TextView mTextView;
+
+        @OnClick(R.id.delete_suggest)
+        void deleteSuggest(){
+            mPresenter.deleteSuggest(mTextView.getText().toString());
+            removeString(mTextView.getText().toString());
+        }
 
         public SearchTV(View itemView) {
             super(itemView);

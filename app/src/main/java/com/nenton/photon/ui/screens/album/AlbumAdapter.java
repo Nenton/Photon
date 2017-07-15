@@ -79,7 +79,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
         picasso.with(mContext)
                 .load(mPhoto.getPhoto())
-                .placeholder(R.drawable.placeholder)
+//                .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
@@ -93,7 +93,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
                     @Override
                     public void onError() {
                         picasso.load(mPhoto.getPhoto())
-                                .placeholder(R.drawable.placeholder)
+//                                .placeholder(R.drawable.placeholder)
                                 .error(R.drawable.placeholder)
                                 .resize(250, 250)
                                 .centerCrop()
@@ -149,6 +149,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AccountViewH
 
         @OnClick(R.id.long_tap_photo)
         void clickOnWrap() {
+            Transition transition = new Fade();
+            transition.setDuration(300);
+            transition.addTarget(mLongTapWrap);
+            transition.setInterpolator(new FastOutSlowInInterpolator());
+            TransitionManager.beginDelayedTransition(parentWrap, transition);
             mLongTapWrap.setVisibility(View.GONE);
         }
 

@@ -28,4 +28,8 @@ public class SearchModel extends AbstractModel {
     public void saveSearchString(String s) {
         mDataManager.getPreferencesManager().saveSearchString(s);
     }
+
+    public void deleteSuggest(String s) {
+        mDataManager.getPreferencesManager().removeSearchString(s);
+    }
 }

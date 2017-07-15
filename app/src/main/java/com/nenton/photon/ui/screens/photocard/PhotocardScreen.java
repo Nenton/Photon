@@ -22,9 +22,11 @@ import com.nenton.photon.mvp.presenters.MenuItemHolder;
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.mvp.presenters.RootPresenter;
 import com.nenton.photon.ui.activities.RootActivity;
+import com.nenton.photon.ui.screens.account.AccountScreen;
 import com.nenton.photon.ui.screens.author.AuthorScreen;
 import com.nenton.photon.ui.screens.main.MainScreen;
 import com.nenton.photon.ui.screens.search_filters.SearchEnum;
+import com.nenton.photon.utils.ConstantsManager;
 import com.nenton.photon.utils.NetworkStatusChecker;
 import com.nenton.photon.utils.SearchQuery;
 import com.squareup.picasso.Picasso;
@@ -36,6 +38,8 @@ import flow.Flow;
 import mortar.MortarScope;
 import rx.Subscriber;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
@@ -148,17 +152,23 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
 
         @Override
         public void downloadPhoto() {
-            if (!mPhotocard.getPhoto().isEmpty() && NetworkStatusChecker.isNetworkAvailible()) {
-                DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
+            if (getRootView() != null) {
+                String[] permissions = new String[]{WRITE_EXTERNAL_STORAGE};
+                if (mRootPresenter.checkPermissionsAndRequestIfNotGranted(permissions,
+                        ConstantsManager.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE)) {
+                    if (!mPhotocard.getPhoto().isEmpty() && NetworkStatusChecker.isNetworkAvailible()) {
+                        DownloadManager.Request r = new DownloadManager.Request(Uri.parse(mPhotocard.getPhoto()));
 
-                r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
-                r.allowScanningByMediaScanner();
-                r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        r.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, mPhotocard.getTitle());
+                        r.allowScanningByMediaScanner();
+                        r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-                DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
-                dm.enqueue(r);
-            } else {
-                getRootView().showError(new ApiError("Интернет недоступен попробуйте позже"));
+                        DownloadManager dm = (DownloadManager) ((RootActivity) getRootView()).getSystemService(DOWNLOAD_SERVICE);
+                        dm.enqueue(r);
+                    } else {
+                        getRootView().showError(new ApiError("Интернет недоступен попробуйте позже"));
+                    }
+                }
             }
         }
 
@@ -182,8 +192,12 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
         }
 
         private void addToFavouriteDialog() {
-            if (mModel.isSignIn() && getView() != null) {
-                getView().showDialogAddFav();
+            if (getView() != null) {
+                if (mModel.isSignIn()) {
+                    getView().showDialogAddFav();
+                } else {
+                    Flow.get(getView().getContext()).set(new AccountScreen());
+                }
             }
         }
 
@@ -241,7 +255,7 @@ public class PhotocardScreen extends AbstractScreen<RootActivity.RootComponent> 
             mRootPresenter.setSearchQuery(mSearchFilterQuery);
             mRootPresenter.setSearchEnum(SearchEnum.SEARCH);
             if (getView() != null) {
-                getRootView().changeOnBottom(R.id.action_home);
+                Flow.get(getView().getContext()).set(new MainScreen());
             }
         }
 

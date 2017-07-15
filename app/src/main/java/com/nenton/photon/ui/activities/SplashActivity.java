@@ -7,9 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
 import com.nenton.photon.R;
 import com.nenton.photon.data.managers.DataManager;
@@ -34,21 +31,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        StartAnimations();
+        start();
     }
 
-    private void StartAnimations() {
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
-        anim.reset();
-        TextView l = (TextView) findViewById(R.id.description_splash);
-        l.clearAnimation();
-        l.startAnimation(anim);
-
-        anim = AnimationUtils.loadAnimation(this, R.anim.translate);
-        anim.reset();
-        TextView iv = (TextView) findViewById(R.id.app_label);
-        iv.clearAnimation();
-        iv.startAnimation(anim);
+    private void start() {
 
         if (!NetworkStatusChecker.isNetworkAvailible()) {
             b = true;

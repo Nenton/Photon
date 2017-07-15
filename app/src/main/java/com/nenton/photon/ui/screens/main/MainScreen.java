@@ -229,9 +229,9 @@ public class MainScreen extends AbstractScreen<RootActivity.RootComponent> {
                     .subscribe(new ViewSubscriber<SignInRes>() {
                         @Override
                         public void onNext(SignInRes signInRes) {
-                            if (getRootView() != null && getView() != null) {
+                            if (getView() != null) {
                                 getView().cancelSignIn();
-                                getRootView().changeOnBottom(R.id.action_account);
+                                Flow.get(getView().getContext()).set(new AccountScreen());
                             }
                         }
                     }));

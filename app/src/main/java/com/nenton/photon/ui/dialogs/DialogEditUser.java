@@ -61,7 +61,7 @@ public class DialogEditUser {
                 if (!login.matches(ConstantsManager.REG_EXP_LOGIN)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(login_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
 
@@ -83,7 +83,7 @@ public class DialogEditUser {
                 if (!name.matches(ConstantsManager.REG_EXP_NAME)) {
                     AnimatorSet set = ((AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.invalid_field_animator));
                     set.setTarget(name_ti.getEditText());
-                    set.setDuration(300);
+                    set.setDuration(100);
                     set.start();
                 }
             }

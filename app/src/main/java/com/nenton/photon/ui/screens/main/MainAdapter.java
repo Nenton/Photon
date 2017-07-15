@@ -69,7 +69,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
         mPicasso.with(mContext)
                 .load(photocard.getPhoto())
-                .placeholder(R.drawable.placeholder)
+//                .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(250, 250)
@@ -85,7 +85,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
-                                .placeholder(R.drawable.placeholder)
+//                                .placeholder(R.drawable.placeholder)
                                 .error(R.drawable.placeholder)
                                 .resize(250, 250)
                                 .centerCrop()

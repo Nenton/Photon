@@ -54,8 +54,11 @@ import com.nenton.photon.mvp.views.IActionBarView;
 import com.nenton.photon.mvp.views.IRootView;
 import com.nenton.photon.mvp.views.IView;
 import com.nenton.photon.ui.screens.account.AccountScreen;
+import com.nenton.photon.ui.screens.account.AccountView;
 import com.nenton.photon.ui.screens.add_photocard.AddPhotocardScreen;
+import com.nenton.photon.ui.screens.add_photocard.AddPhotocardView;
 import com.nenton.photon.ui.screens.main.MainScreen;
+import com.nenton.photon.ui.screens.main.MainView;
 import com.nenton.photon.ui.screens.search_filters.SearchEnum;
 import com.squareup.picasso.Picasso;
 
@@ -142,6 +145,19 @@ public class RootActivity extends AppCompatActivity implements IRootView, IActio
     @Override
     public void changeOnBottom(@IdRes int id){
         mBottomNavigationView.setSelectedItemId(id);
+    }
+
+    @Override
+    public void checkBottomNavView(View view) {
+        if (view instanceof MainView){
+            mBottomNavigationView.setSelectedItemId(R.id.action_home);
+        }
+        if (view instanceof AccountView){
+            mBottomNavigationView.setSelectedItemId(R.id.action_account);
+        }
+        if (view instanceof AddPhotocardView){
+            mBottomNavigationView.setSelectedItemId(R.id.action_upload);
+        }
     }
 
     private void initToolbar() {

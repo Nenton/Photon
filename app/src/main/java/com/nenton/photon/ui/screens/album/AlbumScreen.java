@@ -3,6 +3,7 @@ package com.nenton.photon.ui.screens.album;
 import android.os.Bundle;
 
 import com.nenton.photon.R;
+import com.nenton.photon.data.managers.DataManager;
 import com.nenton.photon.data.storage.realm.AlbumRealm;
 import com.nenton.photon.data.storage.realm.PhotocardRealm;
 import com.nenton.photon.di.DaggerService;
@@ -86,7 +87,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
                     .setBackArrow(true);
             if (isCurAlbumUser) {
                 builder.addAction(new MenuItemHolder("Меню", R.drawable.ic_custom_menu_black_24dp, item -> {
-                    if (getRootView() != null){
+                    if (getRootView() != null) {
                         getRootView().showSettings();
                     }
                     return true;
@@ -148,11 +149,15 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
 
         @Override
         public void editAlbum(String name, String description) {
-            mModel.editAlbum(mAlbum.getId(), name, description, () -> {
-                if (getRootView() != null && getView() != null){
+            String id = mAlbum.getId();
+            mModel.editAlbum(id, name, description, () -> {
+                if (getRootView() != null && getView() != null) {
                     ((RootActivity) getRootView()).runOnUiThread(() -> {
                         getView().cancelEditAlbum();
-                        initView();
+                        mModel.getAlbumFromRealm(id, DataManager.getInstance().getPreferencesManager().getUserId()).subscribe(albumRealm -> {
+                            mAlbum = albumRealm;
+                            initView();
+                        });
                     });
                 }
             });
@@ -167,13 +172,12 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         public void deleteAlbum() {
             mModel.deleteAlbumObs(mAlbum.getId(), () -> {
-                if (getRootView() != null){
+                if (getRootView() != null) {
                     ((RootActivity) getRootView()).runOnUiThread(() -> {
                         ((RootActivity) getRootView()).onBackPressed();
                     });
                 }
             });
-
         }
 
         @Override
@@ -191,7 +195,7 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         }
 
         public void showDeletePhoto(String id, int adapterPosition) {
-            if (getView() != null){
+            if (getView() != null) {
                 getView().showDeletePhoto(id, adapterPosition);
             }
         }
@@ -199,12 +203,16 @@ public class AlbumScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         public void deletePhotocard(String id) {
             mModel.deletePhotocard(id, () -> {
-
+                ((RootActivity) getRootView()).runOnUiThread(() -> {
+                    if (getView() != null) {
+                        getView().deletePhotoCount();
+                    }
+                });
             });
         }
 
         public void updateLongTapAdapter(int posLongTap) {
-            if (getView() != null){
+            if (getView() != null) {
                 getView().updateLongTap(posLongTap);
             }
         }

@@ -11,6 +11,7 @@
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -18,34 +19,34 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/photo_wrap"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.nenton.photon.ui.custom_views.ImageViewSquare
-                android:id="@+id/photo_IV"
+            <FrameLayout
+                android:id="@+id/photo_wrap"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                app:aspect_ratio="1.77"
-                tools:src="@drawable/splash"/>
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/name_photocard"
-                style="@style/TextOnPhotocard"
-                tools:text="Хелена Марчиано"/>
+                <com.nenton.photon.ui.custom_views.ImageViewSquare
+                    android:id="@+id/photo_IV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    app:aspect_ratio="1.5"
+                    tools:src="@drawable/splash"/>
 
-            <ImageView
-                android:id="@+id/fav_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="@dimen/spacing_normal_16"
-                android:layout_marginRight="@dimen/spacing_normal_16"
-                android:src="@drawable/ic_fav_photocard_white_24dp"
-                android:visibility="gone"/>
-        </FrameLayout>
+                <TextView
+                    android:id="@+id/name_photocard"
+                    style="@style/TextOnPhotocard"
+                    tools:text="Хелена Марчиано"/>
+
+                <ImageView
+                    android:id="@+id/fav_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="@dimen/spacing_normal_16"
+                    android:layout_marginRight="@dimen/spacing_normal_16"
+                    android:src="@drawable/ic_fav_photocard_white_24dp"
+                    android:visibility="gone"/>
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/info_user_wrap"
@@ -62,6 +63,7 @@
                     tools:src="@color/colorAccent"/>
 
                 <LinearLayout
+                    android:id="@+id/info_wrap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"

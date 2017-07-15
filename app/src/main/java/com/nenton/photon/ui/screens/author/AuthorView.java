@@ -1,9 +1,13 @@
 package com.nenton.photon.ui.screens.author;
 
+import android.animation.Animator;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +20,7 @@ import com.nenton.photon.mvp.views.IAuthorView;
 import com.nenton.photon.ui.screens.account.AccountAdapter;
 import com.nenton.photon.ui.screens.account.AccountScreen;
 import com.nenton.photon.utils.AvatarTransform;
+import com.nenton.photon.utils.ViewHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -33,7 +38,8 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
 
     @BindView(R.id.author_photocard_RV)
     RecyclerView mRecycleView;
-
+    @BindView(R.id.author_nested)
+    NestedScrollView mNestedScrollView;
     @BindView(R.id.author_avatar_IV)
     ImageView mAvatar;
     @BindView(R.id.author_login_TV)
@@ -68,7 +74,7 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
         mPicasso.with(getContext())
                 .load(userRealm.getAvatar())
                 .error(R.drawable.ic_account_black_24dp)
-                .placeholder(R.drawable.ic_account_black_24dp)
+//                .placeholder(R.drawable.ic_account_black_24dp)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(200, 200)
                 .centerCrop()
@@ -84,7 +90,7 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
                         mPicasso.with(getContext())
                                 .load(userRealm.getAvatar())
                                 .error(R.drawable.ic_account_black_24dp)
-                                .placeholder(R.drawable.ic_account_black_24dp)
+//                                .placeholder(R.drawable.ic_account_black_24dp)
                                 .resize(200, 200)
                                 .centerCrop()
                                 .transform(new AvatarTransform())
@@ -92,7 +98,7 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
                     }
                 });
 
-        mLogin.setText(userRealm.getLogin());
+        mLogin.setText(userRealm.getLogin() + " / " + userRealm.getName());
 
         mAlbumCount.setText(String.valueOf(userRealm.getAlbums().size()));
 
@@ -109,5 +115,19 @@ public class AuthorView extends AbstractView<AuthorScreen.AuthorPresenter> imple
 
         mRecycleView.setLayoutManager(manager);
         mRecycleView.setAdapter(mAuthorAdapter);
+        showAnim();
+    }
+
+    private void showAnim() {
+        final int cx = (int) ViewHelper.getDensity(getContext()) * 44;
+        final int cy = (int) ViewHelper.getDensity(getContext()) * 44;
+
+        Animator showCircleAnim = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            showCircleAnim = ViewAnimationUtils.createCircularReveal(mNestedScrollView, cx, cy, ViewHelper.getDensity(getContext()) * 28, 1500);
+            showCircleAnim.setDuration(600);
+            showCircleAnim.setStartDelay(300);
+            showCircleAnim.start();
+        }
     }
 }

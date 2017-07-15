@@ -59,6 +59,7 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
     LinearLayout mSuggestWrap;
 
     private int mCountTag = 0;
+
     private boolean mCheckQuery = false;
 
     private final int STATE_HIDE_SEARCH = 300;
@@ -91,14 +92,19 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         return false;
     }
 
+    public void setCountTag(int countTag) {
+        mCountTag = countTag;
+    }
+
     @Override
     protected void initDagger(Context context) {
         DaggerService.<SearchScreen.Component>getDaggerComponent(context).inject(this);
     }
 
-    public void addViewFlex(String s) {
+    public void addViewFlex(String s, boolean checked) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag, mFlexboxLayout, false);
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.tag_TV);
+        checkBox.setChecked(checked);
         checkBox.setText(s);
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -114,7 +120,7 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         mFlexboxLayout.addView(view);
     }
 
-    private void checkState() {
+    public void checkState() {
         int state = mCheckQuery || mCountTag > 0 ? STATE_SHOW_SEARCH : STATE_HIDE_SEARCH;
         if (!(state == mStateSearch)) {
             mStateSearch = state;
@@ -122,15 +128,12 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
         }
     }
 
-    private void changeState() {
+    public void changeState() {
         if (mStateSearch == STATE_SHOW_SEARCH) {
             mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_check_black_24dp));
             mBackCheckBtn.setOnClickListener(v -> {
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
                 mPresenter.clickOnSearch(mSearchView.getText());
-//                if (!mSearchView.getText().toString().isEmpty()) {
-//                    adapter.addString(mSearchView.getText().toString());
-//                }
             });
         } else {
             mBackCheckBtn.setBackground(getContext().getResources().getDrawable(R.drawable.ic_custom_back_arrow_black_24dp));
@@ -242,5 +245,9 @@ public class SearchTitleView extends AbstractView<SearchScreen.SearchPresenter> 
     @Override
     public void setTextSearchViewByQueryString(String s) {
         mSearchView.setText(s);
+    }
+
+    public void initSearchTitle(String title) {
+        mSearchView.setText(title);
     }
 }

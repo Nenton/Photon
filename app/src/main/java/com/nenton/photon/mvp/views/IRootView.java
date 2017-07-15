@@ -2,6 +2,7 @@ package com.nenton.photon.mvp.views;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.nenton.photon.mvp.presenters.PopupMenuItem;
 import com.nenton.photon.ui.activities.RootActivity;
@@ -31,4 +32,6 @@ public interface IRootView extends IView{
     void showFilterSetting(String message, RootActivity.SnackBarAction action);
     void setMenuIdRes(int menuIdRes);
     void setMenuPopup(List<PopupMenuItem> menuPopup);
+
+    void checkBottomNavView(View view);
 }

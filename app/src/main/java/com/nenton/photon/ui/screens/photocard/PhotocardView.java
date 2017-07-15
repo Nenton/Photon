@@ -1,9 +1,12 @@
 package com.nenton.photon.ui.screens.photocard;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,6 +34,7 @@ import com.nenton.photon.mvp.views.IPhotocardView;
 import com.nenton.photon.ui.custom_views.ImageViewSquare;
 import com.nenton.photon.utils.AvatarTransform;
 import com.nenton.photon.utils.PhotoBigTransform;
+import com.nenton.photon.utils.ViewHelper;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -72,10 +77,27 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     LinearLayout mUserWrap;
     @BindView(R.id.photo_wrap)
     FrameLayout mPhotoWrap;
+    @BindView(R.id.info_wrap)
+    LinearLayout mInfoWrap;
 
     @OnClick(R.id.avatar_photocard_IV)
     public void clickOnAuthor() {
         mPresenter.clickOnAuthor();
+        showAnim();
+    }
+
+    private void showAnim() {
+        final int cx = (mAvatar.getLeft() + mAvatar.getRight()) / 2 + (int) ViewHelper.getDensity(getContext()) * 16;
+        final int cy = mPhoto.getBottom() + mUserWrap.getHeight() / 2 + (int) ViewHelper.getDensity(getContext()) * 16;
+        final int radius = Math.max(this.getWidth(), this.getHeight());
+
+        Animator showCircleAnim = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            showCircleAnim = ViewAnimationUtils.createCircularReveal(mNested, cx, cy, radius, ViewHelper.getDensity(getContext()) * 28);
+            showCircleAnim.setInterpolator(new FastOutSlowInInterpolator());
+            showCircleAnim.setDuration(300);
+            showCircleAnim.start();
+        }
     }
 
     private float y;
@@ -100,17 +122,11 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
     public void addView(StringRealm s) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_tag_photocard, mFlexboxLayout, false);
         ((TextView) view.findViewById(R.id.tag_photocard_TV)).setText(s.getString());
-        setAnimation(view);
         view.setOnLongClickListener(v -> {
             mPresenter.startSearchOneTag(((TextView) view.findViewById(R.id.tag_photocard_TV)).getText().toString());
             return true;
         });
         mFlexboxLayout.addView(view);
-    }
-
-    private void setAnimation(View viewToAnimate) {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
-        viewToAnimate.startAnimation(animation);
     }
 
     @Override
@@ -160,7 +176,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
         mPicasso.with(getContext())
                 .load(infoDto.getAvatar())
                 .error(R.drawable.ic_account_black_24dp)
-                .placeholder(R.drawable.ic_account_black_24dp)
+//                .placeholder(R.drawable.ic_account_black_24dp)
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(200, 200)
                 .centerCrop()
@@ -177,7 +193,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                         mPicasso.with(getContext())
                                 .load(infoDto.getAvatar())
                                 .error(R.drawable.ic_account_black_24dp)
-                                .placeholder(R.drawable.ic_account_black_24dp)
+//                                .placeholder(R.drawable.ic_account_black_24dp)
                                 .resize(200, 200)
                                 .centerCrop()
                                 .transform(new AvatarTransform())
@@ -185,7 +201,7 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                     }
                 });
 
-        mFullName.setText(infoDto.getName() + " " + infoDto.getLogin());
+        mFullName.setText(infoDto.getLogin() + " / " + infoDto.getName());
         mAlbumCount.setText(String.valueOf(infoDto.getCountAlbum()));
         mPhotocardCount.setText(String.valueOf(infoDto.getCountPhoto()));
 
@@ -236,10 +252,10 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
 
         mPicasso.with(getContext())
                 .load(photocard.getPhoto())
-                .placeholder(R.drawable.splash)
-                .error(R.drawable.splash)
+//                .placeholder(R.drawable.splash)
+                .error(R.drawable.placeholder_photo)
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .fit()
+                .resize(900, 600)
                 .centerCrop()
                 .transform(new PhotoBigTransform())
                 .into(mPhoto, new Callback() {
@@ -251,9 +267,9 @@ public class PhotocardView extends AbstractView<PhotocardScreen.PhotocardPresent
                     @Override
                     public void onError() {
                         mPicasso.load(photocard.getPhoto())
-                                .placeholder(R.drawable.splash)
-                                .error(R.drawable.splash)
-                                .fit()
+//                                .placeholder(R.drawable.splash)
+                                .error(R.drawable.placeholder_photo)
+                                .resize(900, 600)
                                 .centerCrop()
                                 .transform(new PhotoBigTransform())
                                 .into(mPhoto);

@@ -58,7 +58,6 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 .rootComponent(parentComponent)
                 .module(new Module())
                 .build();
-
     }
 
     @dagger.Module
@@ -93,6 +92,11 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
     public class AccountPresenter extends AbstractPresenter<AccountView, AccountModel> implements IAccountPresenter {
 
         private Subscription subscribe;
+        private int delayAnim;
+
+        public int getDelayAnim() {
+            return delayAnim;
+        }
 
         @Override
         protected void initActionBar() {
@@ -144,6 +148,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             mModel.unAuth();
             initActionBar();
             loadUserInfo();
+            delayAnim = 0;
         }
 
         @Override
@@ -216,7 +221,7 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                     File file = new File(uriHelper.getPath(getView().getContext(), Uri.parse(mAvatarUri)));
                     mModel.uploadUserAvatar(mAvatarUri, file, () -> {
                         if (getRootView() != null) {
-                            ((RootActivity) getRootView()).runOnUiThread(this::loadUserInfo);
+                            ((RootActivity) getRootView()).runOnUiThread(() -> insertAvatar(mAvatarUri));
                         }
                     });
                 }
@@ -224,6 +229,12 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
                 if (getRootView() != null) {
                     getRootView().showMessage("Что-то пошло не так");
                 }
+            }
+        }
+
+        private void insertAvatar(String mAvatarUri) {
+            if (getView() != null){
+                getView().insertAvatar(mAvatarUri);
             }
         }
 
@@ -251,6 +262,11 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
         @Override
         protected void onLoad(Bundle savedInstanceState) {
             super.onLoad(savedInstanceState);
+            if (mModel.isSignIn()) {
+                delayAnim = 300;
+            } else {
+                delayAnim = 0;
+            }
             loadUserInfo();
         }
 
@@ -329,6 +345,10 @@ public class AccountScreen extends AbstractScreen<RootActivity.RootComponent> {
             if (getView() != null) {
                 Flow.get(getView().getContext()).set(new AlbumScreen(albumRealm));
             }
+        }
+
+        public void setDelay(int delay) {
+            delayAnim = delay;
         }
     }
 }

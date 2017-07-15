@@ -2,6 +2,7 @@ package com.nenton.photon.ui.screens.add_photocard;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,6 +31,11 @@ import com.nenton.photon.mvp.views.AbstractView;
 import com.nenton.photon.mvp.views.IAddPhotocardView;
 import com.nenton.photon.ui.dialogs.DialogsAlbum;
 import com.nenton.photon.utils.TextWatcherEditText;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import org.w3c.dom.Text;
 
@@ -50,7 +58,7 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
     @BindView(R.id.available_tags)
     RecyclerView mAvailableTags;
     @BindView(R.id.add_property_photo_panel)
-    NestedScrollView mPropertyPanel;
+    LinearLayout mPropertyPanel;
     @BindView(R.id.add_photo_panel)
     LinearLayout mAddPhotoPanel;
     @BindView(R.id.show_not_album)
@@ -101,25 +109,42 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         text.setText(s);
         view.findViewById(R.id.cancel_tag_ib).setOnClickListener(v -> {
             mTagsSelected.removeView(view);
+            mTagsSuggestionAdapter.addTag(text.getText().toString());
+            mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
             mPresenter.removeString(s);
         });
+        view.setAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha));
         mTagsSelected.addView(view);
     }
 
     @Override
     public void showPhotoPanel() {
-        mAddPhotoPanel.setVisibility(VISIBLE);
+
+        TransitionSet set = new TransitionSet();
+        set.addTransition(new Fade())
+                .setDuration(300)
+                .setInterpolator(new FastOutSlowInInterpolator());
+        TransitionManager.beginDelayedTransition(this, set);
+
         mPropertyPanel.setVisibility(GONE);
         mNotIsSign.setVisibility(GONE);
         mNotAlbum.setVisibility(GONE);
+        mAddPhotoPanel.setVisibility(VISIBLE);
     }
 
     @Override
     public void showPropertyPanel() {
+
+        TransitionSet set = new TransitionSet();
+        set.addTransition(new Fade())
+                .setDuration(300)
+                .setInterpolator(new FastOutSlowInInterpolator());
+        TransitionManager.beginDelayedTransition(this, set);
+
         mAddPhotoPanel.setVisibility(GONE);
-        mPropertyPanel.setVisibility(VISIBLE);
         mNotIsSign.setVisibility(GONE);
         mNotAlbum.setVisibility(GONE);
+        mPropertyPanel.setVisibility(VISIBLE);
     }
 
     public AddPhotocardSelectAlbumAdapter getAdapter() {
@@ -227,7 +252,6 @@ public class AddPhotocardView extends AbstractView<AddPhotocardScreen.AddPhotoca
         mTagsSuggestionAdapter.deleteString(string);
         mTagsSuggestionAdapter.getFilter().filter(mAddTags.getText().toString());
     }
-
 
     public void goneAddAlbum() {
         mButton.setVisibility(GONE);

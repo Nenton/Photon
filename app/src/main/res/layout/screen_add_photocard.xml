@@ -7,18 +7,16 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/add_property_photo_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/add_property_photo_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 style="@style/TitleAddPhoto"
@@ -36,8 +34,8 @@
                     android:id="@+id/add_name_photocard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Название фотографии"
                     android:layout_toLeftOf="@+id/cancel_name"
+                    android:hint="Название фотографии"
                     android:inputType="textEmailAddress"/>
 
                 <ImageButton
@@ -76,9 +74,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                app:flexWrap="wrap"
+                app:alignContent="stretch"
                 app:alignItems="stretch"
-                app:alignContent="stretch"/>
+                app:flexWrap="wrap"/>
 
             <View style="@style/DividerView"/>
 
@@ -173,8 +171,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <TextView
             style="@style/TextDescription"

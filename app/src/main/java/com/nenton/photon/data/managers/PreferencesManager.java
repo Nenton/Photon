@@ -80,14 +80,6 @@ public class PreferencesManager {
         editor.apply();
     }
 
-    public void editUserInfo(UserInfoDto infoDto) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(PROFILE_NAME, infoDto.getName());
-        editor.putString(PROFILE_LOGIN, infoDto.getLogin());
-        editor.putString(PROFILE_AVATAR_KEY, infoDto.getAvatar());
-        editor.apply();
-    }
-
     public void removeUserInfo() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.remove(PROFILE_USER_ID);
@@ -132,6 +124,14 @@ public class PreferencesManager {
     public void saveSearchString(String s) {
         Set<String> stringSet = mSharedPreferences.getStringSet(SEARCH_SUGGESTION_QUERY_KEY, new HashSet<>());
         stringSet.add(s);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putStringSet(SEARCH_SUGGESTION_QUERY_KEY, stringSet);
+        editor.apply();
+    }
+
+    public void removeSearchString(String s) {
+        Set<String> stringSet = mSharedPreferences.getStringSet(SEARCH_SUGGESTION_QUERY_KEY, new HashSet<>());
+        stringSet.remove(s);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putStringSet(SEARCH_SUGGESTION_QUERY_KEY, stringSet);
         editor.apply();

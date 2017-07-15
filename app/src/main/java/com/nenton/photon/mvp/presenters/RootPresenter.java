@@ -106,7 +106,7 @@ public class RootPresenter extends Presenter<IRootView> {
     }
 
     public void onRequestPermissionResult(int requetCode, @NonNull String[] permissions, @NonNull int[] grantResult) {
-        // TODO: 18.12.2016 implement me
+
     }
 
     public class ActionBarBuilder {

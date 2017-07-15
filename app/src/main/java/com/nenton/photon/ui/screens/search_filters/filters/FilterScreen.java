@@ -59,6 +59,9 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
 
     public class FilterPresenter extends AbstractPresenter<FilterView, SearchModel> implements IFilterPresenter{
 
+        final int STATE_RELOAD = 800;
+        final int STATE_CHECK = 900;
+
         private SearchFilterQuery mSearchFilterQuery = new SearchFilterQuery();
 
         public SearchFilterQuery getSearchFilterQuery() {
@@ -73,6 +76,14 @@ public class FilterScreen extends AbstractScreen<SearchFiltersScreen.Component> 
         @Override
         protected void initMenuPopup() {
 
+        }
+
+        public void changeState(int state) {
+            if (state == STATE_CHECK) {
+                getView().hideReloadBtn();
+            } else {
+                getView().showReloadBtn();
+            }
         }
 
         @Override
